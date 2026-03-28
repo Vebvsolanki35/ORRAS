@@ -1,0 +1,899 @@
+[
+  {
+    "id": "2f32fb10-6ec8-41d4-bac5-e1aec4a1b168",
+    "timestamp": "2026-03-28T08:16:56.794388+00:00",
+    "type": "news",
+    "source": "NewsAPI",
+    "location": "Mozambique",
+    "latitude": -19.8317,
+    "longitude": 36.2543,
+    "title": "Artillery shelling reported in Mozambique eastern province",
+    "description": "Agent every development say quality throughout beautiful instead ahead despite measure ago current practice nation determine operation speak according south recently future.",
+    "raw_score": 0.0,
+    "keywords_matched": [],
+    "severity": "LOW"
+  },
+  {
+    "id": "0143029a-cf7c-49d6-b616-6032310cf848",
+    "timestamp": "2026-03-28T14:49:24.579729+00:00",
+    "type": "news",
+    "source": "NewsAPI",
+    "location": "Red Sea",
+    "latitude": 18.8075,
+    "longitude": 39.222,
+    "title": "Military exercise conducted near Red Sea disputed zone",
+    "description": "Democratic shake bill here grow gas enough analysis least by two bad fall pick those gun court attorney product significant world talk term.",
+    "raw_score": 2.0,
+    "keywords_matched": [
+      "exercise"
+    ],
+    "severity": "LOW"
+  },
+  {
+    "id": "40a35a72-7331-43e1-8263-b2b7ec7d723f",
+    "timestamp": "2026-03-27T18:44:22.216277+00:00",
+    "type": "news",
+    "source": "NewsAPI",
+    "location": "Azerbaijan",
+    "latitude": 38.7384,
+    "longitude": 46.358,
+    "title": "Artillery shelling reported in Azerbaijan eastern province",
+    "description": "Everyone player half have decide environment view possible participant commercial rock clear here writer policy news range successful simply director allow firm environment decision wall then fire pretty how trip learn enter.",
+    "raw_score": 0.0,
+    "keywords_matched": [],
+    "severity": "LOW"
+  },
+  {
+    "id": "437a13c9-e8be-4abd-a9af-c42f2b32ff2f",
+    "timestamp": "2026-03-27T22:51:34.585042+00:00",
+    "type": "news",
+    "source": "NewsAPI",
+    "location": "Russia",
+    "latitude": 61.7077,
+    "longitude": 105.9669,
+    "title": "Military exercise conducted near Russia disputed zone",
+    "description": "Seat much section investment on gun young catch management sense technology check civil quite others his other life edge network wall quite boy those seem shoulder future.",
+    "raw_score": 2.0,
+    "keywords_matched": [
+      "exercise"
+    ],
+    "severity": "LOW"
+  },
+  {
+    "id": "aa7cc9b8-d5bb-43e9-804e-f4702a8e77d6",
+    "timestamp": "2026-03-27T06:34:25.697113+00:00",
+    "type": "news",
+    "source": "NewsAPI",
+    "location": "Armenia",
+    "latitude": 40.3369,
+    "longitude": 45.9665,
+    "title": "troops massed near Armenia border amid escalating tensions",
+    "description": "Itself law west then enjoy may condition tree that fear police participant check several much single morning a food affect upon these story film around there water beat magazine.",
+    "raw_score": 7.0,
+    "keywords_matched": [
+      "troops"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "e1146795-2255-43dd-aef7-c8cc42d4745e",
+    "timestamp": "2026-03-28T08:39:41.392102+00:00",
+    "type": "news",
+    "source": "NewsAPI",
+    "location": "Iran",
+    "latitude": 33.0223,
+    "longitude": 53.2088,
+    "title": "Armed groups clash in Iran northern corridor",
+    "description": "Within mouth call process water close month parent who up sense ready require human public health tonight later easy ask.",
+    "raw_score": 0.0,
+    "keywords_matched": [],
+    "severity": "LOW"
+  },
+  {
+    "id": "2b48cec3-8f7c-40a9-b488-4ac36f01349a",
+    "timestamp": "2026-03-28T01:45:55.973285+00:00",
+    "type": "news",
+    "source": "NewsAPI",
+    "location": "Baltic Sea",
+    "latitude": 57.5098,
+    "longitude": 18.7782,
+    "title": "Missile launch detected near Baltic Sea coastline",
+    "description": "Open discover detail audience piece director town teacher audience draw protect Democrat car very number line six space.",
+    "raw_score": 10.0,
+    "keywords_matched": [
+      "missile"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "bedfdc3c-0f79-4832-8220-3aa2e8cc1b24",
+    "timestamp": "2026-03-27T17:15:27.396070+00:00",
+    "type": "news",
+    "source": "NewsAPI",
+    "location": "DR Congo",
+    "latitude": -3.7271,
+    "longitude": 22.6801,
+    "title": "Diplomatic relations strained between DR Congo and neighbors",
+    "description": "Behind probably great in tell approach president position art rock song body court movie cell contain leg themselves away space task better present music address.",
+    "raw_score": 0.0,
+    "keywords_matched": [],
+    "severity": "LOW"
+  },
+  {
+    "id": "63f9b11b-7b81-454d-a985-b316d1a0cd8c",
+    "timestamp": "2026-03-27T15:17:01.159611+00:00",
+    "type": "news",
+    "source": "NewsAPI",
+    "location": "Colombia",
+    "latitude": 3.3073,
+    "longitude": -74.9178,
+    "title": "Civil unrest spreading across Colombia major cities",
+    "description": "Unit support coach magazine degree husband around her world enter six lawyer institution whatever yet new responsibility choice father why often.",
+    "raw_score": 5.0,
+    "keywords_matched": [
+      "unrest"
+    ],
+    "severity": "LOW"
+  },
+  {
+    "id": "c683b326-c0ae-485c-b841-a054d25f5176",
+    "timestamp": "2026-03-26T19:42:21.331603+00:00",
+    "type": "news",
+    "source": "NewsAPI",
+    "location": "Taiwan Strait",
+    "latitude": 23.2087,
+    "longitude": 119.9838,
+    "title": "Protest erupts in Taiwan Strait capital over government crackdown",
+    "description": "Article finish anyone live try most arm meet surface attention attack technology identify walk now often always bank price north first end prove fire enter capital population lead upon very act perform none beyond Mrs media car give.",
+    "raw_score": 15.0,
+    "keywords_matched": [
+      "attack",
+      "protest"
+    ],
+    "severity": "HIGH"
+  },
+  {
+    "id": "9dac6c71-2502-4a4a-a5e3-f73d7a3cfe14",
+    "timestamp": "2026-03-27T12:29:01.338452+00:00",
+    "type": "news",
+    "source": "NewsAPI",
+    "location": "Pakistan",
+    "latitude": 31.4748,
+    "longitude": 68.9855,
+    "title": "Diplomatic relations strained between Pakistan and neighbors",
+    "description": "These hard citizen street region particularly would pressure account stage federal professional voice care break blood network evening painting response.",
+    "raw_score": 0.0,
+    "keywords_matched": [],
+    "severity": "LOW"
+  },
+  {
+    "id": "e371f270-1e39-4133-8edb-7645fbac3e7d",
+    "timestamp": "2026-03-27T09:18:33.060297+00:00",
+    "type": "news",
+    "source": "NewsAPI",
+    "location": "Venezuela",
+    "latitude": 5.4118,
+    "longitude": -67.0239,
+    "title": "Naval vessels patrolling disputed waters near Venezuela",
+    "description": "Reach table measure economy traditional anything plant stop analysis four capital woman claim kind relationship night born war real chance along hard need involve among.",
+    "raw_score": 0.0,
+    "keywords_matched": [],
+    "severity": "LOW"
+  },
+  {
+    "id": "19522156-5e29-4581-941d-4719938b7509",
+    "timestamp": "2026-03-27T17:21:28.239752+00:00",
+    "type": "news",
+    "source": "NewsAPI",
+    "location": "Kashmir",
+    "latitude": 34.7437,
+    "longitude": 76.4653,
+    "title": "Bombing campaign targets infrastructure in Kashmir",
+    "description": "Together someone team together decide economic bill sister this image per choice upon ten wish specific thing agent say forward us soon ten specific environment skin blue the teach develop staff.",
+    "raw_score": 10.0,
+    "keywords_matched": [
+      "bombing"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "21fafd37-658d-428b-8a1a-2ba1f749bcb2",
+    "timestamp": "2026-03-28T08:27:18.108480+00:00",
+    "type": "news",
+    "source": "NewsAPI",
+    "location": "India",
+    "latitude": 19.5839,
+    "longitude": 78.6013,
+    "title": "Military exercise conducted near India disputed zone",
+    "description": "Glass star the development process huge everything attorney significant go meeting quickly such former agree theory end oil worker although others generation skill job worker break tonight couple and job mind southern rather vote say.",
+    "raw_score": 2.0,
+    "keywords_matched": [
+      "exercise"
+    ],
+    "severity": "LOW"
+  },
+  {
+    "id": "66339364-d15d-4df8-a484-e9e3a299ef7f",
+    "timestamp": "2026-03-27T03:33:00.122340+00:00",
+    "type": "news",
+    "source": "NewsAPI",
+    "location": "Mali",
+    "latitude": 18.5993,
+    "longitude": -3.1682,
+    "title": "Artillery shelling reported in Mali eastern province",
+    "description": "Hair attorney professional form finish summer rest feel finally impact I fast camera inside wait quality total past feeling nature a expert involve oil pressure.",
+    "raw_score": 0.0,
+    "keywords_matched": [],
+    "severity": "LOW"
+  },
+  {
+    "id": "9897b1c7-961f-4dcf-a2a3-61b88267d956",
+    "timestamp": "2026-03-28T03:15:57.710063+00:00",
+    "type": "news",
+    "source": "GDELT",
+    "location": "Mali",
+    "latitude": 17.2742,
+    "longitude": -5.2976,
+    "title": "GDELT Event 20: Marshall Government vs Kenya in Mali",
+    "description": "GDELT recorded a conflict event (code 20) involving Marshall Government and forces from Kenya. Deployment and mobilization reported. Memory soldier where save probably exist professional people behavior weight dog financial southern.",
+    "raw_score": 16.8,
+    "keywords_matched": [
+      "deployment",
+      "mobilization"
+    ],
+    "severity": "HIGH"
+  },
+  {
+    "id": "80eb08c6-579a-40d1-be4e-72441a211c3f",
+    "timestamp": "2026-03-28T15:38:43.551249+00:00",
+    "type": "news",
+    "source": "GDELT",
+    "location": "Mexico",
+    "latitude": 24.7885,
+    "longitude": -102.1242,
+    "title": "GDELT Event 172: Hernandez Militia vs Aruba in Mexico",
+    "description": "GDELT recorded a conflict event (code 172) involving Hernandez Militia and forces from Aruba. Deployment and mobilization reported. Worker particularly shoulder lay though offer responsibility himself hundred challenge reach throughout team.",
+    "raw_score": 16.8,
+    "keywords_matched": [
+      "deployment",
+      "mobilization"
+    ],
+    "severity": "HIGH"
+  },
+  {
+    "id": "8de32707-0b56-40bc-81f4-956620fa05e3",
+    "timestamp": "2026-03-28T10:18:31.118237+00:00",
+    "type": "news",
+    "source": "GDELT",
+    "location": "Red Sea",
+    "latitude": 20.1841,
+    "longitude": 37.7882,
+    "title": "GDELT Event 174: Mcclure Army vs Slovakia (Slovak Republic) in Red Sea",
+    "description": "GDELT recorded a conflict event (code 174) involving Mcclure Army and forces from Slovakia (Slovak Republic). Deployment and mobilization reported. Despite sound receive let newspaper true building card let most next fish sense kind spring throughout interview.",
+    "raw_score": 16.8,
+    "keywords_matched": [
+      "deployment",
+      "mobilization"
+    ],
+    "severity": "HIGH"
+  },
+  {
+    "id": "d3d26045-1b06-4f31-8055-dd5ca820cc23",
+    "timestamp": "2026-03-28T15:19:42.121090+00:00",
+    "type": "news",
+    "source": "GDELT",
+    "location": "Ethiopia",
+    "latitude": 9.1736,
+    "longitude": 39.2624,
+    "title": "GDELT Event 18: Meadows Forces vs Kiribati in Ethiopia",
+    "description": "GDELT recorded a conflict event (code 18) involving Meadows Forces and forces from Kiribati. Deployment and mobilization reported. Season listen else easy point she miss phone ever back experience even.",
+    "raw_score": 16.8,
+    "keywords_matched": [
+      "deployment",
+      "mobilization"
+    ],
+    "severity": "HIGH"
+  },
+  {
+    "id": "b308d499-1efe-4c6d-ab73-2f6d34049818",
+    "timestamp": "2026-03-28T09:50:15.704830+00:00",
+    "type": "news",
+    "source": "GDELT",
+    "location": "Iran",
+    "latitude": 33.3041,
+    "longitude": 53.4545,
+    "title": "GDELT Event 174: Flores Forces vs Mauritius in Iran",
+    "description": "GDELT recorded a conflict event (code 174) involving Flores Forces and forces from Mauritius. Deployment and mobilization reported. Catch discuss really relationship ask imagine my indeed deal information.",
+    "raw_score": 16.8,
+    "keywords_matched": [
+      "deployment",
+      "mobilization"
+    ],
+    "severity": "HIGH"
+  },
+  {
+    "id": "a9797403-6017-4920-9f0c-a22a4d9a33fa",
+    "timestamp": "2026-03-28T02:38:07.835400+00:00",
+    "type": "news",
+    "source": "GDELT",
+    "location": "Serbia",
+    "latitude": 44.1038,
+    "longitude": 22.4191,
+    "title": "GDELT Event 18: Stein Forces vs Myanmar in Serbia",
+    "description": "GDELT recorded a conflict event (code 18) involving Stein Forces and forces from Myanmar. Deployment and mobilization reported. Task she herself accept goal send table well industry.",
+    "raw_score": 16.8,
+    "keywords_matched": [
+      "deployment",
+      "mobilization"
+    ],
+    "severity": "HIGH"
+  },
+  {
+    "id": "d1e0a7b1-9614-43a3-8aba-590b66383d04",
+    "timestamp": "2026-03-28T11:57:09.200296+00:00",
+    "type": "news",
+    "source": "GDELT",
+    "location": "Chad",
+    "latitude": 16.2068,
+    "longitude": 19.538,
+    "title": "GDELT Event 18: Adkins Government vs Mayotte in Chad",
+    "description": "GDELT recorded a conflict event (code 18) involving Adkins Government and forces from Mayotte. Deployment and mobilization reported. Today major event magazine home protect something right subject try wonder move trade option production base investment term consider employee.",
+    "raw_score": 16.8,
+    "keywords_matched": [
+      "deployment",
+      "mobilization"
+    ],
+    "severity": "HIGH"
+  },
+  {
+    "id": "427a2ca2-8b85-4356-94b2-8ab43c451d00",
+    "timestamp": "2026-03-28T06:48:43.914832+00:00",
+    "type": "news",
+    "source": "GDELT",
+    "location": "Iran",
+    "latitude": 32.2891,
+    "longitude": 55.0494,
+    "title": "GDELT Event 19: Murphy Government vs Korea in Iran",
+    "description": "GDELT recorded a conflict event (code 19) involving Murphy Government and forces from Korea. Deployment and mobilization reported. Front they everything week instead strong like see appear weight difference attention whatever American all.",
+    "raw_score": 16.8,
+    "keywords_matched": [
+      "deployment",
+      "mobilization"
+    ],
+    "severity": "HIGH"
+  },
+  {
+    "id": "44f89752-790d-4b1e-bc90-c7fe71ef7336",
+    "timestamp": "2026-03-28T10:01:21.454753+00:00",
+    "type": "news",
+    "source": "GDELT",
+    "location": "Somalia",
+    "latitude": 6.2637,
+    "longitude": 45.5949,
+    "title": "GDELT Event 19: Wright Militia vs Taiwan in Somalia",
+    "description": "GDELT recorded a conflict event (code 19) involving Wright Militia and forces from Taiwan. Deployment and mobilization reported. Perform draw list boy way let eight hard paper.",
+    "raw_score": 16.8,
+    "keywords_matched": [
+      "deployment",
+      "mobilization"
+    ],
+    "severity": "HIGH"
+  },
+  {
+    "id": "d076c5ce-5d5e-4dd7-bf28-2ffc5945bc18",
+    "timestamp": "2026-03-28T07:16:12.078545+00:00",
+    "type": "news",
+    "source": "GDELT",
+    "location": "Iran",
+    "latitude": 32.546,
+    "longitude": 54.5239,
+    "title": "GDELT Event 173: Stuart Forces vs Saint Barthelemy in Iran",
+    "description": "GDELT recorded a conflict event (code 173) involving Stuart Forces and forces from Saint Barthelemy. Deployment and mobilization reported. Sing clearly find official up office traditional heart walk cup option.",
+    "raw_score": 16.8,
+    "keywords_matched": [
+      "deployment",
+      "mobilization"
+    ],
+    "severity": "HIGH"
+  },
+  {
+    "id": "08be1bb6-8809-4dcc-b56f-552a7947037a",
+    "timestamp": "2026-03-28T08:27:37.597081+00:00",
+    "type": "movement",
+    "source": "OpenSky",
+    "location": "Sudan",
+    "latitude": 14.1501,
+    "longitude": 31.3538,
+    "title": "Aircraft COBRA9 alt=25153ft spd=545kts near Sudan",
+    "description": "Military-pattern callsign COBRA9 observed at 25153 ft, 545 knots. Squawk code: 7600. Unusual routing near conflict zone in Sudan. Deployment patterns suggest troop movement support. Drug recent feeling range south someone not American mouth product attention positive actually information.",
+    "raw_score": 7.7,
+    "keywords_matched": [
+      "deployment"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "3783a1c0-9a81-4969-af04-4dd9f2417a6f",
+    "timestamp": "2026-03-28T07:38:03.748848+00:00",
+    "type": "movement",
+    "source": "OpenSky",
+    "location": "Yemen",
+    "latitude": 14.3097,
+    "longitude": 48.4744,
+    "title": "Aircraft DUKE22 alt=39911ft spd=428kts near Yemen",
+    "description": "Military-pattern callsign DUKE22 observed at 39911 ft, 428 knots. Squawk code: 1234. Unusual routing near conflict zone in Yemen. Deployment patterns suggest troop movement support. Black whether player stock religious itself safe whole establish space Mrs low.",
+    "raw_score": 7.7,
+    "keywords_matched": [
+      "deployment"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "a90b232e-69f3-48d2-9e26-d04784c890cb",
+    "timestamp": "2026-03-28T10:26:28.216225+00:00",
+    "type": "movement",
+    "source": "OpenSky",
+    "location": "Iran",
+    "latitude": 31.7231,
+    "longitude": 54.8053,
+    "title": "Aircraft DUKE33 alt=18880ft spd=852kts near Iran",
+    "description": "Military-pattern callsign DUKE33 observed at 18880 ft, 852 knots. Squawk code: 7600. Unusual routing near conflict zone in Iran. Deployment patterns suggest troop movement support. Stay or focus early various everything late seek now property from.",
+    "raw_score": 7.7,
+    "keywords_matched": [
+      "deployment"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "7deffb16-c7e2-40c3-9b56-cb312a5b6ebb",
+    "timestamp": "2026-03-28T16:18:00.686929+00:00",
+    "type": "movement",
+    "source": "OpenSky",
+    "location": "Mexico",
+    "latitude": 25.1199,
+    "longitude": -102.1032,
+    "title": "Aircraft REACH67 alt=38919ft spd=762kts near Mexico",
+    "description": "Military-pattern callsign REACH67 observed at 38919 ft, 762 knots. Squawk code: 7600. Unusual routing near conflict zone in Mexico. Deployment patterns suggest troop movement support. Surface consider deep something future they red everybody act way beat result.",
+    "raw_score": 7.7,
+    "keywords_matched": [
+      "deployment"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "3274b5f7-3ec4-408a-bc5b-885ea5fcff15",
+    "timestamp": "2026-03-28T16:14:57.326871+00:00",
+    "type": "movement",
+    "source": "OpenSky",
+    "location": "Nigeria",
+    "latitude": 7.6451,
+    "longitude": 8.8371,
+    "title": "Aircraft TOPCAT15 alt=19432ft spd=307kts near Nigeria",
+    "description": "Military-pattern callsign TOPCAT15 observed at 19432 ft, 307 knots. Squawk code: 7700. Unusual routing near conflict zone in Nigeria. Deployment patterns suggest troop movement support. New drive live Republican large admit family identify during professional hard network.",
+    "raw_score": 7.7,
+    "keywords_matched": [
+      "deployment"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "570875cf-f9fa-4e5f-8321-5f26a119f76d",
+    "timestamp": "2026-03-28T10:18:58.781125+00:00",
+    "type": "movement",
+    "source": "OpenSky",
+    "location": "Syria",
+    "latitude": 35.881,
+    "longitude": 37.7094,
+    "title": "Aircraft JAKE77 alt=23250ft spd=797kts near Syria",
+    "description": "Military-pattern callsign JAKE77 observed at 23250 ft, 797 knots. Squawk code: 7600. Unusual routing near conflict zone in Syria. Deployment patterns suggest troop movement support. International second former reflect even edge building court build movie.",
+    "raw_score": 7.7,
+    "keywords_matched": [
+      "deployment"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "9d5d7a86-5b9c-40b9-8685-09e8e4c5ac68",
+    "timestamp": "2026-03-28T11:05:19.557230+00:00",
+    "type": "movement",
+    "source": "OpenSky",
+    "location": "Cameroon",
+    "latitude": 7.5983,
+    "longitude": 11.5837,
+    "title": "Aircraft REACH67 alt=31677ft spd=494kts near Cameroon",
+    "description": "Military-pattern callsign REACH67 observed at 31677 ft, 494 knots. Squawk code: 7700. Unusual routing near conflict zone in Cameroon. Deployment patterns suggest troop movement support. Course school everybody operation set others wonder strategy.",
+    "raw_score": 7.7,
+    "keywords_matched": [
+      "deployment"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "4e779849-ec59-4ad2-8319-461cd558699c",
+    "timestamp": "2026-03-28T10:15:28.785027+00:00",
+    "type": "movement",
+    "source": "OpenSky",
+    "location": "DR Congo",
+    "latitude": -4.2676,
+    "longitude": 21.6598,
+    "title": "Aircraft STEEL3 alt=8550ft spd=400kts near DR Congo",
+    "description": "Military-pattern callsign STEEL3 observed at 8550 ft, 400 knots. Squawk code: 1234. Unusual routing near conflict zone in DR Congo. Deployment patterns suggest troop movement support. Dinner conference add move ever window network recently call.",
+    "raw_score": 7.7,
+    "keywords_matched": [
+      "deployment"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "9ff64161-3fdf-42c4-b4c9-18511ae66386",
+    "timestamp": "2026-03-28T17:29:51.792829+00:00",
+    "type": "satellite",
+    "source": "NASA FIRMS",
+    "location": "Somalia",
+    "latitude": 4.3981,
+    "longitude": 45.2702,
+    "title": "Fire hotspot detected in Somalia — FRP=216.7 MW",
+    "description": "NASA MODIS_Aqua detected fire radiative power of 216.7 MW at brightness 434.6 K in Somalia. Confidence: nominal. Potential bombing or artillery strike signature. Bill activity expect long future whole education technology box.",
+    "raw_score": 13.0,
+    "keywords_matched": [
+      "bombing"
+    ],
+    "severity": "HIGH"
+  },
+  {
+    "id": "a69be8a7-ee35-4794-a726-203be1277d2e",
+    "timestamp": "2026-03-28T13:26:18.085317+00:00",
+    "type": "satellite",
+    "source": "NASA FIRMS",
+    "location": "Afghanistan",
+    "latitude": 33.7685,
+    "longitude": 68.794,
+    "title": "Fire hotspot detected in Afghanistan — FRP=34.8 MW",
+    "description": "NASA VIIRS_SNPP detected fire radiative power of 34.8 MW at brightness 465.1 K in Afghanistan. Confidence: low. Potential bombing or artillery strike signature. Husband available picture approach chance.",
+    "raw_score": 13.0,
+    "keywords_matched": [
+      "bombing"
+    ],
+    "severity": "HIGH"
+  },
+  {
+    "id": "435a52f0-b409-4101-97d2-202aa7fe03fa",
+    "timestamp": "2026-03-28T16:43:21.792822+00:00",
+    "type": "satellite",
+    "source": "NASA FIRMS",
+    "location": "India",
+    "latitude": 19.5926,
+    "longitude": 78.9198,
+    "title": "Fire hotspot detected in India — FRP=206.5 MW",
+    "description": "NASA VIIRS_SNPP detected fire radiative power of 206.5 MW at brightness 364.1 K in India. Confidence: low. Potential bombing or artillery strike signature. We be easy newspaper indicate other peace simply herself training.",
+    "raw_score": 9.1,
+    "keywords_matched": [
+      "bombing",
+      "peace"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "44dc3264-a644-4fb0-ba1c-af87462880e8",
+    "timestamp": "2026-03-28T17:51:25.818312+00:00",
+    "type": "satellite",
+    "source": "NASA FIRMS",
+    "location": "Colombia",
+    "latitude": 3.8665,
+    "longitude": -73.4451,
+    "title": "Fire hotspot detected in Colombia — FRP=217.3 MW",
+    "description": "NASA VIIRS_NOAA20 detected fire radiative power of 217.3 MW at brightness 436.5 K in Colombia. Confidence: low. Potential bombing or artillery strike signature. Team wrong figure perform participant science way.",
+    "raw_score": 13.0,
+    "keywords_matched": [
+      "bombing"
+    ],
+    "severity": "HIGH"
+  },
+  {
+    "id": "a48f6ebb-aec5-4940-bd02-2d72884f53e3",
+    "timestamp": "2026-03-28T15:29:29.376245+00:00",
+    "type": "satellite",
+    "source": "NASA FIRMS",
+    "location": "Taiwan",
+    "latitude": 25.1039,
+    "longitude": 121.198,
+    "title": "Fire hotspot detected in Taiwan — FRP=376.5 MW",
+    "description": "NASA VIIRS_SNPP detected fire radiative power of 376.5 MW at brightness 462.7 K in Taiwan. Confidence: low. Potential bombing or artillery strike signature. Personal enough ball dream necessary choose.",
+    "raw_score": 13.0,
+    "keywords_matched": [
+      "bombing"
+    ],
+    "severity": "HIGH"
+  },
+  {
+    "id": "8f599cd7-99e6-4dbb-aa74-57f27782941d",
+    "timestamp": "2026-03-28T15:25:34.854031+00:00",
+    "type": "satellite",
+    "source": "NASA FIRMS",
+    "location": "Georgia (Country)",
+    "latitude": 43.5736,
+    "longitude": 43.4503,
+    "title": "Fire hotspot detected in Georgia (Country) — FRP=258.8 MW",
+    "description": "NASA MODIS_Terra detected fire radiative power of 258.8 MW at brightness 317.1 K in Georgia (Country). Confidence: low. Potential bombing or artillery strike signature. Late order fact discuss religious reflect law reach.",
+    "raw_score": 13.0,
+    "keywords_matched": [
+      "bombing"
+    ],
+    "severity": "HIGH"
+  },
+  {
+    "id": "e65d5bb9-fa99-4fad-aa48-1ee185e0a784",
+    "timestamp": "2026-03-28T13:05:14.606350+00:00",
+    "type": "network",
+    "source": "NetBlocks",
+    "location": "Myanmar",
+    "latitude": 21.82,
+    "longitude": 96.3976,
+    "title": "Internet shutdown detected in Myanmar — 92% connectivity loss",
+    "description": "NetBlocks monitoring detected a 92% disruption to internet connectivity in Myanmar. Network blackout consistent with government-ordered shutdown during civil unrest or military operation. Skin person product value interesting name positive training step.",
+    "raw_score": 20.7,
+    "keywords_matched": [
+      "unrest",
+      "shutdown",
+      "blackout",
+      "disruption"
+    ],
+    "severity": "CRITICAL"
+  },
+  {
+    "id": "4c4faef9-2081-4334-94ff-494dbd7d3b4f",
+    "timestamp": "2026-03-28T05:25:52.006226+00:00",
+    "type": "network",
+    "source": "NetBlocks",
+    "location": "Pakistan",
+    "latitude": 29.915,
+    "longitude": 68.9271,
+    "title": "Internet shutdown detected in Pakistan — 94% connectivity loss",
+    "description": "NetBlocks monitoring detected a 94% disruption to internet connectivity in Pakistan. Network blackout consistent with government-ordered shutdown during civil unrest or military operation. Arrive society organization station TV keep.",
+    "raw_score": 20.7,
+    "keywords_matched": [
+      "unrest",
+      "shutdown",
+      "blackout",
+      "disruption"
+    ],
+    "severity": "CRITICAL"
+  },
+  {
+    "id": "1a1b30cd-d9b9-4477-8885-cde68af8c8cb",
+    "timestamp": "2026-03-28T13:16:05.146182+00:00",
+    "type": "network",
+    "source": "NetBlocks",
+    "location": "Venezuela",
+    "latitude": 6.8585,
+    "longitude": -66.8854,
+    "title": "Internet shutdown detected in Venezuela — 60% connectivity loss",
+    "description": "NetBlocks monitoring detected a 60% disruption to internet connectivity in Venezuela. Network blackout consistent with government-ordered shutdown during civil unrest or military operation. Read record wall matter management ball always it focus economy before.",
+    "raw_score": 20.7,
+    "keywords_matched": [
+      "unrest",
+      "shutdown",
+      "blackout",
+      "disruption"
+    ],
+    "severity": "CRITICAL"
+  },
+  {
+    "id": "1114334c-c316-4de3-916f-c2dcf6afeca0",
+    "timestamp": "2026-03-28T11:24:29.902770+00:00",
+    "type": "network",
+    "source": "NetBlocks",
+    "location": "Cuba",
+    "latitude": -0.3691,
+    "longitude": 0.1455,
+    "title": "Internet shutdown detected in Cuba — 78% connectivity loss",
+    "description": "NetBlocks monitoring detected a 78% disruption to internet connectivity in Cuba. Network blackout consistent with government-ordered shutdown during civil unrest or military operation. Onto again share start office several compare million kind everything young job sport.",
+    "raw_score": 20.7,
+    "keywords_matched": [
+      "unrest",
+      "shutdown",
+      "blackout",
+      "disruption"
+    ],
+    "severity": "CRITICAL"
+  },
+  {
+    "id": "03bebeaf-9942-4ec4-9e28-1318edb5e4ff",
+    "timestamp": "2026-03-27T19:05:24.879471+00:00",
+    "type": "network",
+    "source": "NetBlocks",
+    "location": "Russia",
+    "latitude": 61.0333,
+    "longitude": 105.44,
+    "title": "Internet shutdown detected in Russia — 92% connectivity loss",
+    "description": "NetBlocks monitoring detected a 92% disruption to internet connectivity in Russia. Network blackout consistent with government-ordered shutdown during civil unrest or military operation. Like impact fly bit claim in many.",
+    "raw_score": 20.7,
+    "keywords_matched": [
+      "unrest",
+      "shutdown",
+      "blackout",
+      "disruption"
+    ],
+    "severity": "CRITICAL"
+  },
+  {
+    "id": "b403c106-e0df-4b2a-8a27-09948f2aae18",
+    "timestamp": "2026-03-28T16:54:09.021781+00:00",
+    "type": "social",
+    "source": "Social/Mock",
+    "location": "Afghanistan",
+    "latitude": 34.052,
+    "longitude": 67.7277,
+    "title": "Trending: #riot in Afghanistan (490,296 engagements)",
+    "description": "Social media trending topic 'riot' is surging in Afghanistan with 490,296 engagements in the past hour. Associated terms include riot, protest, unrest. Spend nearly lawyer fire follow wife identify method write price my including could.",
+    "raw_score": 9.0,
+    "keywords_matched": [
+      "protest",
+      "riot",
+      "unrest"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "bfccd631-eabf-4a77-a8f9-790ac8f2c289",
+    "timestamp": "2026-03-28T13:59:38.721641+00:00",
+    "type": "social",
+    "source": "Social/Mock",
+    "location": "Afghanistan",
+    "latitude": 35.0769,
+    "longitude": 67.3186,
+    "title": "Trending: #riot in Afghanistan (230,734 engagements)",
+    "description": "Social media trending topic 'riot' is surging in Afghanistan with 230,734 engagements in the past hour. Associated terms include riot, protest, unrest. Performance material kind appear environment capital explain thing machine ahead picture son.",
+    "raw_score": 9.0,
+    "keywords_matched": [
+      "protest",
+      "riot",
+      "unrest"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "641741f3-edeb-4845-a541-b81e39ccf907",
+    "timestamp": "2026-03-28T15:49:22.493741+00:00",
+    "type": "social",
+    "source": "Social/Mock",
+    "location": "Taiwan Strait",
+    "latitude": 23.9076,
+    "longitude": 120.9516,
+    "title": "Trending: #occupation in Taiwan Strait (343,871 engagements)",
+    "description": "Social media trending topic 'occupation' is surging in Taiwan Strait with 343,871 engagements in the past hour. Associated terms include riot, protest, unrest. Financial add impact different success box water positive child.",
+    "raw_score": 9.0,
+    "keywords_matched": [
+      "protest",
+      "riot",
+      "unrest"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "5b201ce0-dc8a-435b-85e7-62d5aaba2e42",
+    "timestamp": "2026-03-28T13:21:46.724654+00:00",
+    "type": "social",
+    "source": "Social/Mock",
+    "location": "Iraq-Syria Border",
+    "latitude": 34.9513,
+    "longitude": 40.3981,
+    "title": "Trending: #sanctions in Iraq-Syria Border (55,309 engagements)",
+    "description": "Social media trending topic 'sanctions' is surging in Iraq-Syria Border with 55,309 engagements in the past hour. Associated terms include riot, protest, unrest. Meeting event strong woman during necessary himself two meet these tell.",
+    "raw_score": 9.0,
+    "keywords_matched": [
+      "protest",
+      "riot",
+      "unrest"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "5a3f69d3-d8c6-4d73-93ee-c7c66a2dcf82",
+    "timestamp": "2026-03-28T18:03:49.937933+00:00",
+    "type": "social",
+    "source": "Social/Mock",
+    "location": "Ethiopia",
+    "latitude": 8.4384,
+    "longitude": 41.6588,
+    "title": "Trending: #invasion in Ethiopia (291,048 engagements)",
+    "description": "Social media trending topic 'invasion' is surging in Ethiopia with 291,048 engagements in the past hour. Associated terms include riot, protest, unrest. Significant take future skin environment able rise study oil process tend.",
+    "raw_score": 9.0,
+    "keywords_matched": [
+      "protest",
+      "riot",
+      "unrest"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "aeb62ddf-b715-4fee-b4b8-9005294ea23d",
+    "timestamp": "2026-03-28T15:11:28.072910+00:00",
+    "type": "social",
+    "source": "Social/Mock",
+    "location": "Palestine",
+    "latitude": 32.2667,
+    "longitude": 35.886,
+    "title": "Trending: #strike in Palestine (361,446 engagements)",
+    "description": "Social media trending topic 'strike' is surging in Palestine with 361,446 engagements in the past hour. Associated terms include riot, protest, unrest. Mrs generation necessary myself lay focus country recently occur do simply analysis seat relate.",
+    "raw_score": 9.0,
+    "keywords_matched": [
+      "protest",
+      "riot",
+      "unrest"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "92ce4abf-b88b-4334-a6d9-c3c5078b337b",
+    "timestamp": "2026-03-28T15:11:27.068798+00:00",
+    "type": "social",
+    "source": "Social/Mock",
+    "location": "Israel",
+    "latitude": 31.0623,
+    "longitude": 34.105,
+    "title": "Trending: #militarycoup in Israel (49,390 engagements)",
+    "description": "Social media trending topic 'military coup' is surging in Israel with 49,390 engagements in the past hour. Associated terms include riot, protest, unrest. History professional star wonder manager already maybe opportunity thank them key moment.",
+    "raw_score": 9.0,
+    "keywords_matched": [
+      "protest",
+      "riot",
+      "unrest"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "c8b2c6ee-d7aa-440f-b138-00c88686bb71",
+    "timestamp": "2026-03-28T13:07:03.977094+00:00",
+    "type": "social",
+    "source": "Social/Mock",
+    "location": "Lebanon",
+    "latitude": 32.487,
+    "longitude": 35.363,
+    "title": "Trending: #riot in Lebanon (335,030 engagements)",
+    "description": "Social media trending topic 'riot' is surging in Lebanon with 335,030 engagements in the past hour. Associated terms include riot, protest, unrest. Address century that wide avoid sit enter perhaps however bag forget purpose move west.",
+    "raw_score": 9.0,
+    "keywords_matched": [
+      "protest",
+      "riot",
+      "unrest"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "6b61f8f7-d065-4df2-9814-307f69d89c30",
+    "timestamp": "2026-03-28T18:56:18.747422+00:00",
+    "type": "social",
+    "source": "Social/Mock",
+    "location": "Iran",
+    "latitude": 33.1516,
+    "longitude": 53.843,
+    "title": "Trending: #governmentcollapse in Iran (295,076 engagements)",
+    "description": "Social media trending topic 'government collapse' is surging in Iran with 295,076 engagements in the past hour. Associated terms include riot, protest, unrest. Responsibility service their along attention piece TV young section its better plant their kitchen really tough.",
+    "raw_score": 9.0,
+    "keywords_matched": [
+      "protest",
+      "riot",
+      "unrest"
+    ],
+    "severity": "MEDIUM"
+  },
+  {
+    "id": "f34abc60-8bc1-415b-8aa8-9376acdb8c85",
+    "timestamp": "2026-03-28T18:46:49.405188+00:00",
+    "type": "social",
+    "source": "Social/Mock",
+    "location": "Afghanistan",
+    "latitude": 35.2743,
+    "longitude": 68.2831,
+    "title": "Trending: #riot in Afghanistan (287,046 engagements)",
+    "description": "Social media trending topic 'riot' is surging in Afghanistan with 287,046 engagements in the past hour. Associated terms include riot, protest, unrest. Food argue grow issue each include radio.",
+    "raw_score": 9.0,
+    "keywords_matched": [
+      "protest",
+      "riot",
+      "unrest"
+    ],
+    "severity": "MEDIUM"
+  }
+]
