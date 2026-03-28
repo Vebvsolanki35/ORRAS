@@ -17,3 +17,29 @@
 2026-03-28 19:02:00 [INFO] test — Logger works!
 2026-03-28 19:02:04 [INFO] threat_engine — ThreatEngine: scored 54 signals.
 2026-03-28 19:02:04 [INFO] __main__ — EscalationTracker: snapshot saved (34 regions).
+2026-03-28 22:30:19 [INFO] __main__ — Generating threat summary for region: Eastern Europe
+2026-03-28 22:30:19 [DEBUG] __main__ — ANTHROPIC_API_KEY not set — returning mock response.
+2026-03-28 22:30:19 [INFO] __main__ — Generating global SITREP.
+2026-03-28 22:30:19 [DEBUG] __main__ — ANTHROPIC_API_KEY not set — returning mock response.
+2026-03-28 22:30:19 [INFO] __main__ — Generating daily intelligence brief.
+2026-03-28 22:30:19 [DEBUG] __main__ — ANTHROPIC_API_KEY not set — returning mock response.
+2026-03-28 22:30:19 [DEBUG] __main__ — AIAssistant initialised.
+2026-03-28 22:30:19 [DEBUG] __main__ — ANTHROPIC_API_KEY not set — chat returning mock response.
+2026-03-28 22:30:19 [DEBUG] __main__ — ANTHROPIC_API_KEY not set — chat returning mock response.
+2026-03-28 22:30:19 [INFO] __main__ — AIAssistant: conversation history cleared.
+2026-03-28 22:30:55 [INFO] __main__ — Generating threat summary for region: Eastern Europe
+2026-03-28 22:30:55 [DEBUG] __main__ — ANTHROPIC_API_KEY not set — returning mock response.
+2026-03-28 22:30:55 [INFO] __main__ — Generating global SITREP.
+2026-03-28 22:30:55 [DEBUG] __main__ — ANTHROPIC_API_KEY not set — returning mock response.
+2026-03-28 22:30:55 [INFO] __main__ — Generating daily intelligence brief.
+2026-03-28 22:30:55 [DEBUG] __main__ — ANTHROPIC_API_KEY not set — returning mock response.
+2026-03-28 22:30:55 [DEBUG] __main__ — AIAssistant initialised.
+2026-03-28 22:30:55 [DEBUG] __main__ — ANTHROPIC_API_KEY not set — chat returning mock response.
+2026-03-28 22:30:55 [DEBUG] __main__ — ANTHROPIC_API_KEY not set — chat returning mock response.
+2026-03-28 22:30:55 [INFO] __main__ — AIAssistant: conversation history cleared.
+2026-03-28 22:30:55 [INFO] __main__ — Forecast for 'Eastern Europe': current=25.3 → day3=32.0 (ESCALATING, conf=0.53)
+2026-03-28 22:30:55 [INFO] __main__ — Forecast for 'Middle East': current=6.2 → day3=1.2 (DE-ESCALATING, conf=0.56)
+2026-03-28 22:30:55 [INFO] __main__ — Forecast for 'West Africa': current=7.2 → day3=5.6 (ESCALATING, conf=0.62)
+2026-03-28 22:31:55 [INFO] __main__ — Forecast for 'Eastern Europe': current=25.3 → day3=32.0 (ESCALATING, conf=0.53)
+2026-03-28 22:31:55 [INFO] __main__ — Forecast for 'Middle East': current=6.2 → day3=1.2 (DE-ESCALATING, conf=0.56)
+2026-03-28 22:31:55 [INFO] __main__ — Forecast for 'West Africa': current=7.2 → day3=5.6 (ESCALATING, conf=0.62)

@@ -14,6 +14,8 @@ load_dotenv()
 # ---------------------------------------------------------------------------
 # API keys & mode flags
 # ---------------------------------------------------------------------------
+ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
+AI_MODEL: str = "claude-opus-4-5"
 NEWSAPI_KEY: str = os.getenv("NEWSAPI_KEY", "")
 NASA_FIRMS_KEY: str = os.getenv("NASA_FIRMS_KEY", "")
 OFFLINE_MODE: bool = os.getenv("OFFLINE_MODE", "false").lower() == "true"
@@ -99,6 +101,12 @@ ROLLING_WINDOW_DAYS: int = 7
 # ---------------------------------------------------------------------------
 ESCALATION_WINDOW_HOURS: int = 72
 ESCALATION_LEVEL_JUMP: int = 2
+
+# ---------------------------------------------------------------------------
+# Forecasting
+# ---------------------------------------------------------------------------
+FORECAST_DAYS: int = 3
+MIN_HISTORY_DAYS: int = 3
 
 # ---------------------------------------------------------------------------
 # Dashboard
