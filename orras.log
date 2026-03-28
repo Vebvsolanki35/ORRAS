@@ -214,3 +214,46 @@
 2026-03-28 22:50:53 [INFO] safety_engine — SafetyEngine: category='humanitarian', score=0.0, status=SECURE, matched=0 signals.
 2026-03-28 22:50:53 [INFO] safety_engine — SafetyEngine: scored all 6 categories.
 2026-03-28 22:50:53 [INFO] safety_engine — SafetyEngine: overall_score=77.08, grade=B, most_critical=infrastructure.
+2026-03-28 23:02:15 [INFO] threat_engine — ThreatEngine: scored 54 signals.
+2026-03-28 23:02:15 [INFO] safety_engine — SafetyEngine: category='cyber', score=0.0, status=SECURE, matched=0 signals.
+2026-03-28 23:02:15 [INFO] safety_engine — SafetyEngine: category='nuclear', score=0.0, status=SECURE, matched=0 signals.
+2026-03-28 23:02:15 [INFO] safety_engine — SafetyEngine: category='infrastructure', score=100.0, status=CRITICAL, matched=28 signals.
+2026-03-28 23:02:15 [INFO] safety_engine — SafetyEngine: category='maritime', score=21.67, status=SECURE, matched=4 signals.
+2026-03-28 23:02:15 [INFO] safety_engine — SafetyEngine: category='economic', score=5.0, status=SECURE, matched=1 signals.
+2026-03-28 23:02:15 [INFO] safety_engine — SafetyEngine: category='humanitarian', score=0.0, status=SECURE, matched=0 signals.
+2026-03-28 23:02:15 [INFO] safety_engine — SafetyEngine: scored all 6 categories.
+2026-03-28 23:02:15 [INFO] safety_engine — SafetyEngine: overall_score=77.08, grade=B, most_critical=infrastructure.
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Afghanistan' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Armenia' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Azerbaijan' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Baltic Sea' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Cameroon' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Chad' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Colombia' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Cuba' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'DR Congo' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Ethiopia' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Georgia (Country)' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'India' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Iran' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Iraq-Syria Border' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Israel' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Kashmir' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Lebanon' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Mali' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Mexico' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Mozambique' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Myanmar' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Nigeria' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Pakistan' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Palestine' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Red Sea' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Russia' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Serbia' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Somalia' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Sudan' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Syria' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Taiwan' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Taiwan Strait' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Venezuela' (only 1 day(s) of data).
+2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Yemen' (only 1 day(s) of data).
