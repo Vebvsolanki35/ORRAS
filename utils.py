@@ -118,7 +118,11 @@ def save_json(filepath: str, data: Any) -> None:
 
 def classify_severity(score: float) -> str:
     """
-    Map a numeric score to a severity label using RISK_THRESHOLDS.
+    Map a numeric score to a severity label.
+
+    Uses boundary comparisons so floating-point scores between the integer
+    boundaries defined in RISK_THRESHOLDS (e.g. 5.5, 10.3) are classified
+    correctly rather than falling through to an incorrect default.
 
     Args:
         score: A numeric risk score (typically 0–30).
@@ -126,10 +130,20 @@ def classify_severity(score: float) -> str:
     Returns:
         One of "LOW", "MEDIUM", "HIGH", or "CRITICAL".
     """
-    for level, (low, high) in RISK_THRESHOLDS.items():
-        if low <= score <= high:
-            return level
-    return "CRITICAL"
+    # Retrieve boundary integers from config (LOW≤5, MEDIUM 6-10, HIGH 11-20, CRITICAL≥21)
+    # Use >= comparisons from highest to lowest to handle fractional scores in gaps.
+    thresholds = RISK_THRESHOLDS
+    critical_min = thresholds["CRITICAL"][0]   # 21
+    high_min = thresholds["HIGH"][0]           # 11
+    medium_min = thresholds["MEDIUM"][0]       # 6
+
+    if score >= critical_min:
+        return "CRITICAL"
+    if score >= high_min:
+        return "HIGH"
+    if score >= medium_min:
+        return "MEDIUM"
+    return "LOW"
 
 
 # ---------------------------------------------------------------------------
@@ -213,8 +227,8 @@ if __name__ == "__main__":
     assert load_json("/tmp/nonexistent_orras.json") == []
     print("load_json (missing) → [] ✓")
 
-    scores = [0, 5, 6, 10, 11, 20, 21, 100]
-    expected = ["LOW", "LOW", "MEDIUM", "MEDIUM", "HIGH", "HIGH", "CRITICAL", "CRITICAL"]
+    scores = [0, 5, 5.5, 6, 10, 10.5, 11, 20, 21, 100]
+    expected = ["LOW", "LOW", "LOW", "MEDIUM", "MEDIUM", "MEDIUM", "HIGH", "HIGH", "CRITICAL", "CRITICAL"]
     for s, e in zip(scores, expected):
         result = classify_severity(s)
         assert result == e, f"Score {s}: expected {e}, got {result}"
