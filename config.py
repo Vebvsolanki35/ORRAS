@@ -14,6 +14,8 @@ load_dotenv()
 # ---------------------------------------------------------------------------
 # API keys & mode flags
 # ---------------------------------------------------------------------------
+ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
+AI_MODEL: str = "claude-opus-4-5"
 NEWSAPI_KEY: str = os.getenv("NEWSAPI_KEY", "")
 NASA_FIRMS_KEY: str = os.getenv("NASA_FIRMS_KEY", "")
 OFFLINE_MODE: bool = os.getenv("OFFLINE_MODE", "false").lower() == "true"
@@ -101,6 +103,12 @@ ESCALATION_WINDOW_HOURS: int = 72
 ESCALATION_LEVEL_JUMP: int = 2
 
 # ---------------------------------------------------------------------------
+# Forecasting
+# ---------------------------------------------------------------------------
+FORECAST_DAYS: int = 3
+MIN_HISTORY_DAYS: int = 3
+
+# ---------------------------------------------------------------------------
 # Dashboard
 # ---------------------------------------------------------------------------
 DASHBOARD_REFRESH_SECONDS: int = 60
@@ -112,3 +120,39 @@ DATA_DIR: str = "data/"
 SIGNALS_FILE: str = "data/signals.json"
 ESCALATION_FILE: str = "data/escalation_history.json"
 ALERT_LOG_FILE: str = "data/alert_log.json"
+
+# ---------------------------------------------------------------------------
+# AI Configuration
+# ---------------------------------------------------------------------------
+AI_FEATURES_ENABLED: bool = os.getenv("AI_FEATURES_ENABLED", "true").lower() == "true"
+
+# ---------------------------------------------------------------------------
+# Safety Engine
+# ---------------------------------------------------------------------------
+SAFETY_SCORE_WEIGHTS: dict[str, float] = {
+    "cyber": 0.20,
+    "nuclear": 0.25,
+    "infrastructure": 0.20,
+    "maritime": 0.10,
+    "economic": 0.15,
+    "humanitarian": 0.10,
+}
+
+# ---------------------------------------------------------------------------
+# Prediction Engine
+# ---------------------------------------------------------------------------
+FORECAST_CONFIDENCE_THRESHOLD: float = 0.6
+
+# ---------------------------------------------------------------------------
+# Report Engine
+# ---------------------------------------------------------------------------
+REPORTS_DIR: str = "data/reports/"
+MAX_REPORT_SIGNALS: int = 100
+
+# ---------------------------------------------------------------------------
+# UI
+# ---------------------------------------------------------------------------
+THEME_DEFAULT: str = "Dark"
+TICKER_SPEED_SECONDS: int = 30
+GLOBE_DEFAULT_CENTER: dict = {"lat": 20, "lon": 0}
+GLOBE_ROTATION_SPEED: float = 0.5
