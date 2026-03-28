@@ -120,3 +120,39 @@ DATA_DIR: str = "data/"
 SIGNALS_FILE: str = "data/signals.json"
 ESCALATION_FILE: str = "data/escalation_history.json"
 ALERT_LOG_FILE: str = "data/alert_log.json"
+
+# ---------------------------------------------------------------------------
+# AI Configuration
+# ---------------------------------------------------------------------------
+AI_FEATURES_ENABLED: bool = os.getenv("AI_FEATURES_ENABLED", "true").lower() == "true"
+
+# ---------------------------------------------------------------------------
+# Safety Engine
+# ---------------------------------------------------------------------------
+SAFETY_SCORE_WEIGHTS: dict[str, float] = {
+    "cyber": 0.20,
+    "nuclear": 0.25,
+    "infrastructure": 0.20,
+    "maritime": 0.10,
+    "economic": 0.15,
+    "humanitarian": 0.10,
+}
+
+# ---------------------------------------------------------------------------
+# Prediction Engine
+# ---------------------------------------------------------------------------
+FORECAST_CONFIDENCE_THRESHOLD: float = 0.6
+
+# ---------------------------------------------------------------------------
+# Report Engine
+# ---------------------------------------------------------------------------
+REPORTS_DIR: str = "data/reports/"
+MAX_REPORT_SIGNALS: int = 100
+
+# ---------------------------------------------------------------------------
+# UI
+# ---------------------------------------------------------------------------
+THEME_DEFAULT: str = "Dark"
+TICKER_SPEED_SECONDS: int = 30
+GLOBE_DEFAULT_CENTER: dict = {"lat": 20, "lon": 0}
+GLOBE_ROTATION_SPEED: float = 0.5
