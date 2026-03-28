@@ -43,3 +43,93 @@
 2026-03-28 22:31:55 [INFO] __main__ — Forecast for 'Eastern Europe': current=25.3 → day3=32.0 (ESCALATING, conf=0.53)
 2026-03-28 22:31:55 [INFO] __main__ — Forecast for 'Middle East': current=6.2 → day3=1.2 (DE-ESCALATING, conf=0.56)
 2026-03-28 22:31:55 [INFO] __main__ — Forecast for 'West Africa': current=7.2 → day3=5.6 (ESCALATING, conf=0.62)
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Mexico' — score=12.25, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Mexico' — score=12.25, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Yemen' — score=7.7, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: compared 'Mexico' vs 'Yemen' — winner=Mexico.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Mozambique' — score=0.0, severity=LOW.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Red Sea' — score=9.4, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Azerbaijan' — score=0.0, severity=LOW.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Russia' — score=11.35, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Armenia' — score=7.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Iran' — score=11.18, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Baltic Sea' — score=10.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'DR Congo' — score=3.85, severity=LOW.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Colombia' — score=9.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Taiwan Strait' — score=12.0, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Pakistan' — score=10.35, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Venezuela' — score=10.35, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Kashmir' — score=10.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'India' — score=5.55, severity=LOW.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Mali' — score=8.4, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Mexico' — score=12.25, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Ethiopia' — score=12.9, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Serbia' — score=16.8, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Chad' — score=16.8, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Somalia' — score=14.9, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Sudan' — score=7.7, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Yemen' — score=7.7, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Nigeria' — score=7.7, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Syria' — score=7.7, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Cameroon' — score=7.7, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Afghanistan' — score=10.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Taiwan' — score=13.0, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Georgia (Country)' — score=13.0, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Myanmar' — score=20.7, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Cuba' — score=20.7, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Iraq-Syria Border' — score=9.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Palestine' — score=9.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Israel' — score=9.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Lebanon' — score=9.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: ranked 34 regions.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Mexico' — score=12.25, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Mozambique' — score=0.0, severity=LOW.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Red Sea' — score=9.4, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Azerbaijan' — score=0.0, severity=LOW.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Russia' — score=11.35, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Armenia' — score=7.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Iran' — score=11.18, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Baltic Sea' — score=10.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'DR Congo' — score=3.85, severity=LOW.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Colombia' — score=9.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Taiwan Strait' — score=12.0, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Pakistan' — score=10.35, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Venezuela' — score=10.35, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Kashmir' — score=10.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'India' — score=5.55, severity=LOW.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Mali' — score=8.4, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Ethiopia' — score=12.9, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Serbia' — score=16.8, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Chad' — score=16.8, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Somalia' — score=14.9, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Sudan' — score=7.7, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Yemen' — score=7.7, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Nigeria' — score=7.7, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Syria' — score=7.7, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Cameroon' — score=7.7, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Afghanistan' — score=10.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Taiwan' — score=13.0, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Georgia (Country)' — score=13.0, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Myanmar' — score=20.7, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Cuba' — score=20.7, severity=HIGH.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Iraq-Syria Border' — score=9.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Palestine' — score=9.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Israel' — score=9.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: profiled 'Lebanon' — score=9.0, severity=MEDIUM.
+2026-03-28 22:36:22 [INFO] __main__ — ComparisonEngine: found 3 similar regions to 'Mexico'.
+2026-03-28 22:36:22 [INFO] __main__ — TimelineEngine: built global timeline with 3 days.
+2026-03-28 22:36:22 [INFO] __main__ — TimelineEngine: built region timeline for 'Israel' with 1 entries, 0 escalation(s).
+2026-03-28 22:36:22 [INFO] __main__ — TimelineEngine: found 0 turning point(s) for 'Israel'.
+2026-03-28 22:36:22 [INFO] __main__ — TimelineEngine: generated timeline summary narrative.
+2026-03-28 22:36:22 [INFO] __main__ — TimelineEngine: exported 3-entry timeline to 'data/test_timeline_export.json'.
+2026-03-28 22:36:23 [INFO] __main__ — SafetyEngine: category='cyber', score=0.0, status=SECURE, matched=0 signals.
+2026-03-28 22:36:23 [INFO] __main__ — SafetyEngine: category='cyber', score=0.0, status=SECURE, matched=0 signals.
+2026-03-28 22:36:23 [INFO] __main__ — SafetyEngine: category='nuclear', score=0.0, status=SECURE, matched=0 signals.
+2026-03-28 22:36:23 [INFO] __main__ — SafetyEngine: category='infrastructure', score=100.0, status=CRITICAL, matched=28 signals.
+2026-03-28 22:36:23 [INFO] __main__ — SafetyEngine: category='maritime', score=21.67, status=SECURE, matched=4 signals.
+2026-03-28 22:36:23 [INFO] __main__ — SafetyEngine: category='economic', score=5.0, status=SECURE, matched=1 signals.
+2026-03-28 22:36:23 [INFO] __main__ — SafetyEngine: category='humanitarian', score=0.0, status=SECURE, matched=0 signals.
+2026-03-28 22:36:23 [INFO] __main__ — SafetyEngine: scored all 6 categories.
+2026-03-28 22:36:23 [INFO] __main__ — SafetyEngine: overall_score=77.08, grade=B, most_critical=infrastructure.
+2026-03-28 22:36:23 [INFO] __main__ — SafetyEngine: detected 0 safety anomaly/anomalies.
+2026-03-28 22:36:23 [INFO] __main__ — SafetyEngine: generated professional safety brief.
