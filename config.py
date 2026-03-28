@@ -150,6 +150,96 @@ REPORTS_DIR: str = "data/reports/"
 MAX_REPORT_SIGNALS: int = 100
 
 # ---------------------------------------------------------------------------
+# Disaster Engine keyword weights
+# ---------------------------------------------------------------------------
+DISASTER_KEYWORD_WEIGHTS: dict[str, int] = {
+    "earthquake": 10,
+    "tsunami": 10,
+    "hurricane": 10,
+    "typhoon": 10,
+    "cyclone": 9,
+    "tornado": 8,
+    "flood": 8,
+    "wildfire": 8,
+    "volcano": 9,
+    "eruption": 9,
+    "landslide": 7,
+    "drought": 6,
+    "famine": 8,
+    "epidemic": 8,
+    "pandemic": 10,
+    "outbreak": 7,
+    "disease": 5,
+    "displacement": 6,
+    "evacuation": 6,
+    "casualties": 7,
+    "relief": 3,
+    "aid": 2,
+    "rescue": 3,
+    "aftershock": 6,
+    "magnitude": 5,
+    "storm": 6,
+    "surge": 5,
+    "collapse": 7,
+}
+
+# ---------------------------------------------------------------------------
+# Geofence Zones — each entry has lat, lon, radius_km
+# ---------------------------------------------------------------------------
+GEOFENCE_ZONES: dict[str, dict] = {
+    "Eastern Europe Critical Zone": {
+        "lat": 48.5, "lon": 31.5, "radius_km": 800,
+        "priority": "CRITICAL",
+        "description": "Ukraine-Russia conflict zone",
+    },
+    "Middle East Flashpoint": {
+        "lat": 33.0, "lon": 43.0, "radius_km": 700,
+        "priority": "CRITICAL",
+        "description": "Iraq-Syria-Iran corridor",
+    },
+    "Taiwan Strait Watch": {
+        "lat": 24.5, "lon": 119.5, "radius_km": 400,
+        "priority": "HIGH",
+        "description": "Taiwan Strait military activity zone",
+    },
+    "South China Sea Monitor": {
+        "lat": 13.5, "lon": 115.0, "radius_km": 900,
+        "priority": "HIGH",
+        "description": "Contested waters and islands",
+    },
+    "Korean Peninsula": {
+        "lat": 38.0, "lon": 127.5, "radius_km": 350,
+        "priority": "HIGH",
+        "description": "North/South Korea border zone",
+    },
+    "Persian Gulf Corridor": {
+        "lat": 26.5, "lon": 52.0, "radius_km": 500,
+        "priority": "HIGH",
+        "description": "Oil tanker routes and naval activity",
+    },
+    "Sahel Crisis Zone": {
+        "lat": 14.0, "lon": 2.0, "radius_km": 1200,
+        "priority": "MEDIUM",
+        "description": "Mali-Niger-Burkina Faso instability belt",
+    },
+    "Horn of Africa": {
+        "lat": 8.0, "lon": 44.0, "radius_km": 700,
+        "priority": "MEDIUM",
+        "description": "Somalia-Ethiopia-Eritrea tension zone",
+    },
+    "South Asia Nuclear Watch": {
+        "lat": 32.0, "lon": 73.0, "radius_km": 600,
+        "priority": "CRITICAL",
+        "description": "India-Pakistan-Kashmir nuclear flashpoint",
+    },
+    "Red Sea Chokepoint": {
+        "lat": 20.0, "lon": 38.5, "radius_km": 400,
+        "priority": "HIGH",
+        "description": "Bab-el-Mandeb strait and Houthi activity",
+    },
+}
+
+# ---------------------------------------------------------------------------
 # UI
 # ---------------------------------------------------------------------------
 THEME_DEFAULT: str = "Dark"
