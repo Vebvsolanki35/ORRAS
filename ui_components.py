@@ -10,7 +10,7 @@ All styling is inline so components work even without custom.css loaded.
 from __future__ import annotations
 
 import html
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 
@@ -109,8 +109,19 @@ def render_metric_card(
         delta_color = "#9ca3af"   # grey
         delta_prefix = "● "
 
-    # Build a subtle two-tone gradient using the accent colour
-    r, g, b = int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16)
+    # Build a subtle two-tone gradient using the accent colour.
+    # Accepts full 6-digit hex ("#rrggbb") or 3-digit shorthand ("#rgb").
+    color = color.strip()
+    try:
+        c = color.lstrip("#")
+        if len(c) == 3:
+            c = "".join(ch * 2 for ch in c)
+        if len(c) != 6:
+            raise ValueError(f"Unexpected colour length: {color!r}")
+        r, g, b = int(c[0:2], 16), int(c[2:4], 16), int(c[4:6], 16)
+    except ValueError:
+        # Fall back to a neutral blue if the colour string is unparseable
+        r, g, b = 59, 130, 246
     gradient = (
         f"linear-gradient(135deg,"
         f"rgba({r},{g},{b},0.18) 0%,"
@@ -764,7 +775,7 @@ def render_ai_message(role: str, content: str) -> str:
     Returns:
         HTML string for the chat message.
     """
-    now = datetime.now().strftime("%H:%M")
+    now = datetime.now(timezone.utc).strftime("%H:%M UTC")
 
     if role.lower() == "assistant":
         avatar       = "🤖"
@@ -901,8 +912,10 @@ def render_prediction_card(
                   letter-spacing:0.08em;color:#9ca3af;">7-Day Forecast</div>
       <div style="font-size:1rem;font-weight:700;color:#f9fafb;">{_esc(region)}</div>
     </div>
-    <div style="font-size:2rem;">{big_arrow}
-      <span style="color:{big_arrow_color};font-size:1rem;font-weight:700;">{_esc(dir_label)}</span>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+      <span style="font-size:2rem;line-height:1;">{big_arrow}</span>
+      <span style="color:{big_arrow_color};font-size:0.78rem;font-weight:700;
+                   white-space:nowrap;">{_esc(dir_label)}</span>
     </div>
   </div>
 

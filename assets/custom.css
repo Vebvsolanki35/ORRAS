@@ -1024,8 +1024,8 @@ code, pre {
 
 /* Continuous left-scrolling news ticker */
 @keyframes ticker-scroll {
-  0%   { transform: translateX(100vw); }
-  100% { transform: translateX(-100%); }
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 /* Smooth page / element fade-in */
