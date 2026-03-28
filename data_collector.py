@@ -1,5 +1,5 @@
 """
-data_collector.py — Live data collection from all six external sources.
+data_collector.py — Live data collection from all data sources.
 
 Each source has a dedicated collector class. A DataCollectionOrchestrator
 ties them together and automatically falls back to mock data when a live
@@ -29,6 +29,13 @@ from mock_data_generator import (
     generate_news_signals,
     generate_opensky_signals,
     generate_social_signals,
+)
+from collectors import (
+    USGSCollector,
+    NOAACollector,
+    ReliefWebCollector,
+    WHOCollector,
+    ACLEDCollector,
 )
 from utils import get_logger
 
@@ -235,6 +242,27 @@ class DataCollectionOrchestrator:
         self.opensky = OpenSkyCollector()
         self.firms = NASAFIRMSCollector()
         self.cloudflare = CloudflareRadarCollector()
+        self.usgs = USGSCollector()
+        self.noaa = NOAACollector()
+        self.reliefweb = ReliefWebCollector()
+        self.who = WHOCollector()
+        self.acled = ACLEDCollector()
+
+        # Tracks health status per source: LIVE / MOCK / FAILED / OFFLINE
+        self.source_health: dict[str, str] = {
+            "NewsAPI": "UNKNOWN",
+            "GDELT": "UNKNOWN",
+            "OpenSky": "UNKNOWN",
+            "NASA FIRMS": "UNKNOWN",
+            "NetBlocks": "UNKNOWN",
+            "Cloudflare Radar": "UNKNOWN",
+            "USGS": "UNKNOWN",
+            "NOAA": "UNKNOWN",
+            "ReliefWeb": "UNKNOWN",
+            "WHO": "UNKNOWN",
+            "ACLED": "UNKNOWN",
+            "Social/Mock": "UNKNOWN",
+        }
 
     def _collect_source(
         self,
@@ -274,39 +302,39 @@ class DataCollectionOrchestrator:
         Run all collectors and return raw data keyed by source name.
 
         Returns:
-            Dict with keys: newsapi, gdelt, opensky, firms, cloudflare, social.
+            Dict with keys: newsapi, gdelt, opensky, firms, netblocks,
+            cloudflare, usgs, noaa, reliefweb, who, acled, social.
             Each value is a list of raw records.
         """
         results: dict[str, Any] = {}
-        status_map: dict[str, str] = {}
 
         # NewsAPI
         status, data = self._collect_source(
             "NewsAPI", self.newsapi.fetch, generate_news_signals, {"n": 15}
         )
         results["newsapi"] = data
-        status_map["NewsAPI"] = status
+        self.source_health["NewsAPI"] = status
 
         # GDELT
         status, data = self._collect_source(
             "GDELT", self.gdelt.fetch, generate_gdelt_signals, {"n": 10}
         )
         results["gdelt"] = data
-        status_map["GDELT"] = status
+        self.source_health["GDELT"] = status
 
         # OpenSky
         status, data = self._collect_source(
             "OpenSky", self.opensky.fetch, generate_opensky_signals, {"n": 8}
         )
         results["opensky"] = data
-        status_map["OpenSky"] = status
+        self.source_health["OpenSky"] = status
 
         # NASA FIRMS
         status, data = self._collect_source(
             "NASA FIRMS", self.firms.fetch, generate_firms_signals, {"n": 6}
         )
         results["firms"] = data
-        status_map["NASA FIRMS"] = status
+        self.source_health["NASA FIRMS"] = status
 
         # Cloudflare Radar
         status, data = self._collect_source(
@@ -315,22 +343,65 @@ class DataCollectionOrchestrator:
         if not data:
             data = []  # Cloudflare has no mock; empty is acceptable
         results["cloudflare"] = data
-        status_map["Cloudflare Radar"] = status if data else "OFFLINE"
+        self.source_health["Cloudflare Radar"] = status if data else "OFFLINE"
 
         # Social (always mock — no live source)
         social_data = generate_social_signals(n=10)
         results["social"] = social_data
-        status_map["Social/Mock"] = "MOCK"
+        self.source_health["Social/Mock"] = "MOCK"
         logger.info(f"Social/Mock: MOCK — {len(social_data)} records")
 
         # NetBlocks (always mock — API requires paid access)
         netblocks_data = generate_netblocks_signals(n=5)
         results["netblocks"] = netblocks_data
-        status_map["NetBlocks"] = "MOCK"
+        self.source_health["NetBlocks"] = "MOCK"
         logger.info(f"NetBlocks: MOCK — {len(netblocks_data)} records")
 
-        results["_status"] = status_map
+        # USGS Earthquakes
+        status, data = self._collect_source(
+            "USGS", self.usgs.fetch, lambda: [], {}
+        )
+        results["usgs"] = data
+        self.source_health["USGS"] = status if data else "MOCK"
+
+        # NOAA Weather Alerts
+        status, data = self._collect_source(
+            "NOAA", self.noaa.fetch, lambda: [], {}
+        )
+        results["noaa"] = data
+        self.source_health["NOAA"] = status if data else "MOCK"
+
+        # ReliefWeb Disasters
+        status, data = self._collect_source(
+            "ReliefWeb", self.reliefweb.fetch, lambda: [], {}
+        )
+        results["reliefweb"] = data
+        self.source_health["ReliefWeb"] = status if data else "MOCK"
+
+        # WHO Outbreaks (always mock)
+        who_data = self.who.get_outbreaks()
+        results["who"] = who_data
+        self.source_health["WHO"] = "MOCK"
+        logger.info(f"WHO: MOCK — {len(who_data)} records")
+
+        # ACLED Conflict Events
+        status, data = self._collect_source(
+            "ACLED", self.acled.fetch, lambda: [], {}
+        )
+        results["acled"] = data
+        self.source_health["ACLED"] = status if data else "MOCK"
+
         return results
+
+    def get_source_health_report(self) -> dict[str, str]:
+        """
+        Return a dict mapping each source name to its collection status.
+
+        Returns:
+            Dict of {source_name: status_string} where status is one of
+            LIVE, MOCK, FAILED, OFFLINE, or UNKNOWN.
+        """
+        return dict(self.source_health)
 
 
 # ---------------------------------------------------------------------------
@@ -342,11 +413,12 @@ if __name__ == "__main__":
     orchestrator = DataCollectionOrchestrator()
     raw = orchestrator.collect_all()
 
-    status_map = raw.pop("_status", {})
-    print("Source collection status:")
-    for src, status in status_map.items():
+    health = orchestrator.get_source_health_report()
+    print("Source health report:")
+    for src, status in health.items():
         badge = "🟢 LIVE" if status == "LIVE" else "🔴 MOCK/OFFLINE"
-        print(f"  {src:20s}: {badge} — {len(raw.get(src.lower().replace(' ', '').replace('/', ''), []))} records")
+        count = len(raw.get(src.lower().replace(" ", "").replace("/", ""), []))
+        print(f"  {src:20s}: {badge} ({status}) — {count} records")
 
     print("\nRecord counts per source key:")
     for key, records in raw.items():

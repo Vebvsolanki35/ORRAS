@@ -5,6 +5,7 @@ Each source has a dedicated normaliser function. The DataProcessor class
 orchestrates all normalisers, deduplicates results, and validates every signal.
 """
 
+from datetime import datetime, timezone
 from typing import Any
 
 from utils import classify_severity, generate_id, get_logger, now_iso, truncate_text
@@ -12,7 +13,7 @@ from utils import classify_severity, generate_id, get_logger, now_iso, truncate_
 logger = get_logger(__name__)
 
 # ---------------------------------------------------------------------------
-# Country → (lat, lon) lookup (50+ countries)
+# Country → (lat, lon) lookup (60 countries)
 # ---------------------------------------------------------------------------
 COUNTRY_COORDS: dict[str, tuple[float, float]] = {
     "ukraine": (48.3794, 31.1656),
@@ -75,7 +76,11 @@ COUNTRY_COORDS: dict[str, tuple[float, float]] = {
     "vietnam": (14.0583, 108.2772),
     "cambodia": (12.5657, 104.9910),
     "malaysia": (4.2105, 101.9758),
+    "angola": (-11.2027, 17.8739),
 }
+
+# Alias used by external modules
+COUNTRY_COORDINATE_MAP = COUNTRY_COORDS
 
 # Country bounding boxes for reverse-geocoding: (min_lat, max_lat, min_lon, max_lon)
 COUNTRY_BBOXES: dict[str, tuple[float, float, float, float]] = {
@@ -176,6 +181,13 @@ def _fill_defaults(signal: dict) -> dict:
         "raw_score": 0.0,
         "keywords_matched": [],
         "severity": "LOW",
+        # Extended schema fields
+        "conflict_score": 0,
+        "disaster_score": 0,
+        "geofence_zones": [],
+        "dynamic_weight": 1.0,
+        "track": "unknown",
+        "signal_class": "unclassified",
     }
     for field, default in defaults.items():
         if field not in signal or signal[field] is None:
@@ -448,6 +460,281 @@ def normalize_mock(signals: list) -> list[dict]:
     return result
 
 
+def _usgs_epoch_to_iso(epoch_ms) -> str:
+    """Convert USGS epoch milliseconds to ISO 8601 string."""
+    try:
+        ts = int(epoch_ms) / 1000.0
+        return datetime.fromtimestamp(ts, tz=timezone.utc).isoformat()
+    except (TypeError, ValueError, OSError):
+        return now_iso()
+
+
+def normalize_usgs(earthquakes: list) -> list[dict]:
+    """
+    Normalise USGS earthquake records into the unified schema.
+
+    Args:
+        earthquakes: List of dicts from USGSCollector with keys:
+            magnitude, place, lat, lon, time, depth.
+
+    Returns:
+        List of normalised signal dicts with type="satellite", source="USGS".
+    """
+    signals = []
+    for eq in earthquakes:
+        if not isinstance(eq, dict):
+            continue
+        mag = float(eq.get("magnitude") or 0.0)
+        place = eq.get("place") or "Unknown"
+        lat = float(eq.get("lat") or 0.0)
+        lon = float(eq.get("lon") or 0.0)
+        depth = float(eq.get("depth") or 0.0)
+        ts = _usgs_epoch_to_iso(eq.get("time") or 0)
+
+        # Magnitude → raw_score: M4.5=5, M6.0=10, M7.0=20, M8.0=30
+        raw_score = min(30.0, max(0.0, (mag - 4.0) * 6.0))
+        title = truncate_text(f"M{mag:.1f} Earthquake — {place}", 100)
+        description = truncate_text(
+            f"USGS detected magnitude {mag:.1f} earthquake near {place}. "
+            f"Depth: {depth:.1f} km. Potential infrastructure damage and "
+            "humanitarian impact in affected region.",
+            500,
+        )
+
+        signal = _fill_defaults({
+            "id": generate_id(),
+            "timestamp": ts,
+            "type": "satellite",
+            "source": "USGS",
+            "location": _reverse_geocode(lat, lon) if (lat or lon) else _guess_country(place) or place,
+            "latitude": lat,
+            "longitude": lon,
+            "title": title,
+            "description": description,
+            "raw_score": round(raw_score, 2),
+            "keywords_matched": ["earthquake"] if mag >= 5.0 else [],
+            "severity": classify_severity(raw_score),
+        })
+        signals.append(signal)
+    return signals
+
+
+def normalize_noaa(alerts: list) -> list[dict]:
+    """
+    Normalise NOAA weather alert records into the unified schema.
+
+    Args:
+        alerts: List of dicts from NOAACollector with keys:
+            event, areaDesc, severity, description, onset.
+
+    Returns:
+        List of normalised signal dicts with type="satellite", source="NOAA".
+    """
+    signals = []
+    severity_scores = {"Extreme": 25.0, "Severe": 15.0, "Moderate": 8.0, "Minor": 3.0}
+    for item in alerts:
+        if not isinstance(item, dict):
+            continue
+        event = item.get("event") or "Weather Alert"
+        area = item.get("areaDesc") or "Unknown"
+        sev = item.get("severity") or "Minor"
+        onset = item.get("onset") or now_iso()
+        desc = item.get("description") or ""
+
+        raw_score = severity_scores.get(sev, 3.0)
+        location = _guess_country(area) or area[:50]
+        lat, lon = _coords_for_country(location)
+
+        title = truncate_text(f"{sev} {event} — {area}", 100)
+        description = truncate_text(
+            f"NOAA issued a {sev} {event} for {area}. {desc}", 500
+        )
+
+        signal = _fill_defaults({
+            "id": generate_id(),
+            "timestamp": onset,
+            "type": "satellite",
+            "source": "NOAA",
+            "location": location,
+            "latitude": float(lat),
+            "longitude": float(lon),
+            "title": title,
+            "description": description,
+            "raw_score": round(raw_score, 2),
+            "keywords_matched": [event.lower()] if event else [],
+            "severity": classify_severity(raw_score),
+        })
+        signals.append(signal)
+    return signals
+
+
+def normalize_reliefweb(disasters: list) -> list[dict]:
+    """
+    Normalise ReliefWeb disaster records into the unified schema.
+
+    Args:
+        disasters: List of dicts from ReliefWebCollector with keys:
+            name, date, type, country, status.
+
+    Returns:
+        List of normalised signal dicts with type="news", source="ReliefWeb".
+    """
+    signals = []
+    for rec in disasters:
+        if not isinstance(rec, dict):
+            continue
+        name = rec.get("name") or "Unknown Disaster"
+        date_str = rec.get("date") or now_iso()
+        disaster_type = rec.get("type") or "Unknown"
+        country = rec.get("country") or "Unknown"
+        status = rec.get("status") or "unknown"
+
+        lat, lon = _coords_for_country(country)
+        title = truncate_text(f"{disaster_type}: {name} ({country})", 100)
+        description = truncate_text(
+            f"ReliefWeb reports a {disaster_type} disaster: {name} in {country}. "
+            f"Status: {status}. Humanitarian response may be required.",
+            500,
+        )
+
+        signal = _fill_defaults({
+            "id": generate_id(),
+            "timestamp": date_str,
+            "type": "news",
+            "source": "ReliefWeb",
+            "location": country,
+            "latitude": float(lat),
+            "longitude": float(lon),
+            "title": title,
+            "description": description,
+            "raw_score": 8.0 if status == "alert" else 5.0,
+            "keywords_matched": [disaster_type.lower()] if disaster_type != "Unknown" else [],
+            "severity": "MEDIUM",
+        })
+        signals.append(signal)
+    return signals
+
+
+def normalize_who(outbreaks: list) -> list[dict]:
+    """
+    Normalise WHO disease outbreak records into the unified schema.
+
+    Args:
+        outbreaks: List of dicts from WHOCollector with keys:
+            disease, location, cases, deaths, status, date, lat, lon.
+
+    Returns:
+        List of normalised signal dicts with type="news", source="WHO".
+    """
+    signals = []
+    for rec in outbreaks:
+        if not isinstance(rec, dict):
+            continue
+        disease = rec.get("disease") or "Unknown Disease"
+        location = rec.get("location") or "Unknown"
+        cases = int(rec.get("cases") or 0)
+        deaths = int(rec.get("deaths") or 0)
+        status = rec.get("status") or "unknown"
+        date_str = rec.get("date") or now_iso()
+        lat = float(rec.get("lat") or 0.0)
+        lon = float(rec.get("lon") or 0.0)
+
+        # Score based on CFR and case count
+        cfr = (deaths / cases * 100) if cases > 0 else 0
+        raw_score = min(30.0, cfr * 0.5 + min(20.0, cases / 10000))
+        title = truncate_text(
+            f"{disease} Outbreak — {location} ({cases:,} cases, {deaths:,} deaths)", 100
+        )
+        description = truncate_text(
+            f"WHO reports active {disease} outbreak in {location}. "
+            f"Cases: {cases:,}, Deaths: {deaths:,}, CFR: {cfr:.1f}%. "
+            f"Status: {status}. Humanitarian and medical response ongoing.",
+            500,
+        )
+
+        signal = _fill_defaults({
+            "id": generate_id(),
+            "timestamp": date_str,
+            "type": "news",
+            "source": "WHO",
+            "location": location,
+            "latitude": lat,
+            "longitude": lon,
+            "title": title,
+            "description": description,
+            "raw_score": round(raw_score, 2),
+            "keywords_matched": [disease.lower(), "outbreak"],
+            "severity": classify_severity(raw_score),
+        })
+        signals.append(signal)
+    return signals
+
+
+def normalize_acled(events: list) -> list[dict]:
+    """
+    Normalise ACLED conflict event records into the unified schema.
+
+    Args:
+        events: List of dicts from ACLEDCollector with keys:
+            event_type, actor1, actor2, country, location,
+            fatalities, event_date, latitude, longitude.
+
+    Returns:
+        List of normalised signal dicts with type="news", source="ACLED".
+    """
+    signals = []
+    for rec in events:
+        if not isinstance(rec, dict):
+            continue
+        event_type = rec.get("event_type") or "Unknown"
+        actor1 = rec.get("actor1") or "Unknown"
+        actor2 = rec.get("actor2") or "Unknown"
+        country = rec.get("country") or "Unknown"
+        location = rec.get("location") or country
+        fatalities = int(rec.get("fatalities") or 0)
+        event_date = rec.get("event_date") or now_iso()
+        lat = float(rec.get("latitude") or 0.0)
+        lon = float(rec.get("longitude") or 0.0)
+
+        # Score based on event type and fatalities
+        type_scores = {
+            "Battle": 15.0,
+            "Explosion/Remote violence": 18.0,
+            "Violence against civilians": 16.0,
+            "Protests": 5.0,
+            "Strategic developments": 8.0,
+        }
+        base = type_scores.get(event_type, 5.0)
+        raw_score = min(30.0, base + min(10.0, fatalities * 0.2))
+
+        title = truncate_text(
+            f"{event_type}: {actor1} vs {actor2} in {location}, {country}", 100
+        )
+        description = truncate_text(
+            f"ACLED reports {event_type.lower()} involving {actor1} and {actor2} "
+            f"in {location}, {country}. Fatalities: {fatalities}. "
+            f"Date: {event_date}.",
+            500,
+        )
+
+        signal = _fill_defaults({
+            "id": generate_id(),
+            "timestamp": event_date,
+            "type": "news",
+            "source": "ACLED",
+            "location": country,
+            "latitude": lat,
+            "longitude": lon,
+            "title": title,
+            "description": description,
+            "raw_score": round(raw_score, 2),
+            "keywords_matched": [event_type.lower(), "conflict"],
+            "severity": classify_severity(raw_score),
+        })
+        signals.append(signal)
+    return signals
+
+
 # ---------------------------------------------------------------------------
 # DataProcessor orchestrator
 # ---------------------------------------------------------------------------
@@ -464,6 +751,11 @@ class DataProcessor:
         "opensky": normalize_opensky,
         "firms": normalize_firms,
         "cloudflare": normalize_cloudflare,
+        "usgs": normalize_usgs,
+        "noaa": normalize_noaa,
+        "reliefweb": normalize_reliefweb,
+        "who": normalize_who,
+        "acled": normalize_acled,
         "social": normalize_mock,
         "netblocks": normalize_mock,
     }
@@ -515,26 +807,40 @@ class DataProcessor:
 if __name__ == "__main__":
     import json
     from mock_data_generator import generate_all_mock_signals
+    from collectors.who_collector import WHOCollector
+    from collectors.acled_collector import ACLEDCollector
 
     print("=== data_processor.py self-test ===\n")
 
-    # Build fake raw_data dict
+    # Build raw_data dict covering all sources
     mock_signals = generate_all_mock_signals()
     raw_data = {
         "social": [s for s in mock_signals if s["source"] == "Social/Mock"],
         "netblocks": [s for s in mock_signals if s["source"] == "NetBlocks"],
-        "newsapi": [],   # empty — will get normalised to nothing
-        "gdelt": [],
-        "opensky": [],
-        "firms": [],
+        "newsapi": [s for s in mock_signals if s["source"] == "NewsAPI"],
+        "gdelt": [s for s in mock_signals if s["source"] == "GDELT"],
+        "opensky": [s for s in mock_signals if s["source"] == "OpenSky"],
+        "firms": [s for s in mock_signals if s["source"] == "NASA FIRMS"],
         "cloudflare": [],
+        "usgs": [
+            {"magnitude": 6.2, "place": "Near Kyiv, Ukraine", "lat": 50.45, "lon": 30.52, "time": 1700000000000, "depth": 10.0},
+            {"magnitude": 7.1, "place": "Off coast of Japan", "lat": 37.5, "lon": 143.0, "time": 1700100000000, "depth": 35.0},
+        ],
+        "noaa": [
+            {"event": "Tornado Warning", "areaDesc": "Central Oklahoma", "severity": "Extreme", "description": "Dangerous tornado.", "onset": "2025-01-10T15:00:00Z"},
+        ],
+        "reliefweb": [
+            {"name": "Flooding in Bangladesh", "date": "2025-01-05", "type": "Flood", "country": "Bangladesh", "status": "alert"},
+        ],
+        "who": WHOCollector().get_outbreaks(),
+        "acled": ACLEDCollector().fetch(),
     }
 
     processor = DataProcessor()
     signals = processor.process_all(raw_data)
 
     print(f"Total processed signals: {len(signals)}\n")
-    print("Sample 3 signals:")
+    print("Sample 3 signals (formatted):")
     for sig in signals[:3]:
-        print(json.dumps(sig, indent=2))
+        print(json.dumps(sig, indent=2, default=str))
         print()
