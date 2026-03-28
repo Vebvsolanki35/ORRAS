@@ -1,0 +1,177 @@
+[
+  {
+    "timestamp": "2026-03-28T19:02:04.634661+00:00",
+    "regions": {
+      "Myanmar": {
+        "score": 20.7,
+        "severity": "HIGH",
+        "timestamp": "2026-03-28T19:02:04.634487+00:00"
+      },
+      "Pakistan": {
+        "score": 10.35,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634495+00:00"
+      },
+      "Venezuela": {
+        "score": 10.35,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634499+00:00"
+      },
+      "Cuba": {
+        "score": 20.7,
+        "severity": "HIGH",
+        "timestamp": "2026-03-28T19:02:04.634503+00:00"
+      },
+      "Russia": {
+        "score": 11.35,
+        "severity": "HIGH",
+        "timestamp": "2026-03-28T19:02:04.634506+00:00"
+      },
+      "Mali": {
+        "score": 8.4,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634509+00:00"
+      },
+      "Mexico": {
+        "score": 12.25,
+        "severity": "HIGH",
+        "timestamp": "2026-03-28T19:02:04.634512+00:00"
+      },
+      "Red Sea": {
+        "score": 9.4,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634515+00:00"
+      },
+      "Ethiopia": {
+        "score": 12.9,
+        "severity": "HIGH",
+        "timestamp": "2026-03-28T19:02:04.634518+00:00"
+      },
+      "Iran": {
+        "score": 11.18,
+        "severity": "HIGH",
+        "timestamp": "2026-03-28T19:02:04.634520+00:00"
+      },
+      "Serbia": {
+        "score": 16.8,
+        "severity": "HIGH",
+        "timestamp": "2026-03-28T19:02:04.634523+00:00"
+      },
+      "Chad": {
+        "score": 16.8,
+        "severity": "HIGH",
+        "timestamp": "2026-03-28T19:02:04.634526+00:00"
+      },
+      "Somalia": {
+        "score": 14.9,
+        "severity": "HIGH",
+        "timestamp": "2026-03-28T19:02:04.634529+00:00"
+      },
+      "Taiwan Strait": {
+        "score": 12.0,
+        "severity": "HIGH",
+        "timestamp": "2026-03-28T19:02:04.634532+00:00"
+      },
+      "Afghanistan": {
+        "score": 10.0,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634535+00:00"
+      },
+      "Colombia": {
+        "score": 9.0,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634538+00:00"
+      },
+      "Taiwan": {
+        "score": 13.0,
+        "severity": "HIGH",
+        "timestamp": "2026-03-28T19:02:04.634541+00:00"
+      },
+      "Georgia (Country)": {
+        "score": 13.0,
+        "severity": "HIGH",
+        "timestamp": "2026-03-28T19:02:04.634548+00:00"
+      },
+      "Baltic Sea": {
+        "score": 10.0,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634551+00:00"
+      },
+      "Kashmir": {
+        "score": 10.0,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634556+00:00"
+      },
+      "India": {
+        "score": 5.55,
+        "severity": "LOW",
+        "timestamp": "2026-03-28T19:02:04.634558+00:00"
+      },
+      "Iraq-Syria Border": {
+        "score": 9.0,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634561+00:00"
+      },
+      "Palestine": {
+        "score": 9.0,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634564+00:00"
+      },
+      "Israel": {
+        "score": 9.0,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634569+00:00"
+      },
+      "Lebanon": {
+        "score": 9.0,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634572+00:00"
+      },
+      "Sudan": {
+        "score": 7.7,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634574+00:00"
+      },
+      "Yemen": {
+        "score": 7.7,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634577+00:00"
+      },
+      "Nigeria": {
+        "score": 7.7,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634580+00:00"
+      },
+      "Syria": {
+        "score": 7.7,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634584+00:00"
+      },
+      "Cameroon": {
+        "score": 7.7,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634587+00:00"
+      },
+      "DR Congo": {
+        "score": 3.85,
+        "severity": "LOW",
+        "timestamp": "2026-03-28T19:02:04.634591+00:00"
+      },
+      "Armenia": {
+        "score": 7.0,
+        "severity": "MEDIUM",
+        "timestamp": "2026-03-28T19:02:04.634595+00:00"
+      },
+      "Mozambique": {
+        "score": 0.0,
+        "severity": "LOW",
+        "timestamp": "2026-03-28T19:02:04.634598+00:00"
+      },
+      "Azerbaijan": {
+        "score": 0.0,
+        "severity": "LOW",
+        "timestamp": "2026-03-28T19:02:04.634601+00:00"
+      }
+    }
+  }
+]
