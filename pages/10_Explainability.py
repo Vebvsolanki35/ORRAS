@@ -317,4 +317,4 @@ pipeline_steps = [
 ]
 
 with st.expander("🕵️ Full Pipeline Audit (chronological)", expanded=False):
-    st.dataframe(pd.DataFrame(pipeline_steps), use_container_width=True)
+    st.dataframe(pd.DataFrame(pipeline_steps).astype(str), use_container_width=True)
