@@ -267,23 +267,17 @@ def _render_kpi_row(
 
         cols = st.columns(6)
         metrics = [
-            ("Total Signals", str(total_signals), "+live", "📡", "#3b82f6"),
-            ("Critical Regions", str(critical_regions), "⚠ active", "🚨", "#ef4444"),
-            ("Active Anomalies", str(active_anomalies), "detected", "⚡", "#f97316"),
-            (
-                "Safety Grade",
-                f"Grade {safety_grade}",
-                f"{safety_score:.0f}/100",
-                "🔒",
-                "#22c55e",
-            ),
-            ("Avg Confidence", f"{avg_conf:.0f}%", "multi-source", "🎯", "#8b5cf6"),
-            ("Regions Monitored", str(regions_monitored), "worldwide", "🌍", "#06b6d4"),
+            ("Total Signals", str(total_signals), "Live feed", "#3b82f6"),
+            ("Critical Regions", str(critical_regions), "Active warnings", "#ef4444"),
+            ("Active Anomalies", str(active_anomalies), "Detected", "#f97316"),
+            ("Safety Grade", f"Grade {safety_grade}", f"{safety_score:.0f}/100", "#22c55e"),
+            ("Avg Confidence", f"{avg_conf:.0f}%", "Multi-source", "#8b5cf6"),
+            ("Regions Monitored", str(regions_monitored), "Worldwide", "#06b6d4"),
         ]
-        for col, (title, value, delta, icon, color) in zip(cols, metrics):
+        for col, (title, value, subtitle, color) in zip(cols, metrics):
             with col:
                 st.markdown(
-                    render_metric_card(title, value, delta, icon, color),
+                    render_metric_card(title, value, subtitle, color),
                     unsafe_allow_html=True,
                 )
     except Exception:
@@ -805,18 +799,82 @@ def main() -> None:
 
     # ── Page header ──────────────────────────────────────────────────────────
     st.markdown(
-        '<div style="padding:0.5rem 0 0.3rem;">'
-        '<h1 style="font-size:2.4rem;font-weight:900;color:#f9fafb;'
-        'letter-spacing:-0.04em;margin:0;line-height:1;">🛡️ ORRAS</h1>'
-        '<p style="color:#9ca3af;font-size:1rem;margin:0.2rem 0 0.5rem;">'
-        "Open-source Real-time Risk Assessment System v2.0</p>"
-        '<span style="display:inline-block;padding:3px 10px;border-radius:99px;'
-        'background:#3b82f622;border:1px solid #3b82f644;'
-        'color:#93c5fd;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;">'
-        "v2.0 LIVE</span>"
-        f'<span style="margin-left:8px;font-size:0.72rem;color:#6b7280;">'
-        f'{last_updated}</span>'
-        "</div>",
+        """
+<div style="margin-bottom:1rem;">
+  <!-- Classification banner -->
+  <div style="
+      background:#0a0000;
+      border:1px solid #1a0000;
+      text-align:center;
+      padding:4px;
+      font-family:'Courier New',monospace;
+      font-size:0.65rem;
+      letter-spacing:4px;
+      text-transform:uppercase;
+      color:#ff4444;
+      margin-bottom:8px;
+  ">UNCLASSIFIED // OPEN SOURCE INTELLIGENCE</div>
+
+  <!-- Main header bar -->
+  <div style="
+      background:linear-gradient(135deg,#000000,#050510);
+      border:1px solid #1a3a5c;
+      border-left:4px solid #00d4ff;
+      padding:16px 20px;
+      display:flex;align-items:center;justify-content:space-between;
+  ">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="
+          display:inline-block;width:10px;height:10px;
+          border-radius:50%;background:#00ff88;
+          box-shadow:0 0 10px #00ff88;
+          animation:blink 1s infinite;
+          flex-shrink:0;
+      "></span>
+      <div>
+        <div style="
+            font-family:'Courier New',monospace;
+            font-size:1.5rem;font-weight:700;
+            color:#00d4ff;
+            text-shadow:0 0 20px rgba(0,212,255,0.6);
+            letter-spacing:2px;
+        ">ORRAS INTELLIGENCE SYSTEM v3.0</div>
+        <div style="
+            font-family:'Courier New',monospace;
+            font-size:0.65rem;
+            color:#7090a0;
+            letter-spacing:3px;
+            text-transform:uppercase;
+            margin-top:2px;
+        ">Operational Risk &amp; Resilience Assessment System</div>
+      </div>
+    </div>
+    <div id="orras-clock" style="
+        font-family:'Courier New',monospace;
+        font-size:0.75rem;
+        color:#7090a0;
+        letter-spacing:1px;
+        text-align:right;
+    ">
+      <div style="color:#4a6a7a;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;">Last Updated</div>
+      <div style="color:#00d4ff;" id="orras-ts">""" + last_updated + """</div>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  function pad(n){return n<10?'0'+n:n;}
+  function tick(){
+    var d=new Date();
+    var ts=pad(d.getUTCHours())+':'+pad(d.getUTCMinutes())+':'+pad(d.getUTCSeconds())+' UTC';
+    var el=document.getElementById('orras-ts');
+    if(el){el.textContent=ts;}
+  }
+  tick();
+  setInterval(tick,1000);
+})();
+</script>
+""",
         unsafe_allow_html=True,
     )
 
