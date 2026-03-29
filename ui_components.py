@@ -43,7 +43,20 @@ def _parse_color(color: str, default: str = "#00d4ff") -> tuple[str, int, int, i
         return default, int(c[0:2], 16), int(c[2:4], 16), int(c[4:6], 16)
 
 
-    return _SEVERITY_PALETTE.get(level.upper(), _SEVERITY_PALETTE["INFO"])
+def _severity(level: str) -> tuple:
+    """Returns (border_color, text_color, glow) for any severity level"""
+    level = str(level).upper()
+    mapping = {
+        "CRITICAL":     ("#ff0000", "#ff4444", "0 0 20px rgba(255,0,0,0.5)"),
+        "HIGH":         ("#ff6600", "#ff8833", "0 0 15px rgba(255,102,0,0.4)"),
+        "MEDIUM":       ("#ffaa00", "#ffcc33", "0 0 10px rgba(255,170,0,0.3)"),
+        "LOW":          ("#00ff88", "#33ffaa", "0 0 10px rgba(0,255,136,0.3)"),
+        "CATASTROPHIC": ("#ff0000", "#ff4444", "0 0 25px rgba(255,0,0,0.6)"),
+        "SEVERE":       ("#ff4400", "#ff6633", "0 0 20px rgba(255,68,0,0.5)"),
+        "MODERATE":     ("#ffaa00", "#ffcc33", "0 0 10px rgba(255,170,0,0.3)"),
+        "MINOR":        ("#00ff88", "#33ffaa", "0 0 10px rgba(0,255,136,0.3)"),
+    }
+    return mapping.get(level, ("#00d4ff", "#00d4ff", "none"))
 
 # Clamps a float value between lo and hi
 def _clamp(value: float, lo: float = 0.0, hi: float = 100.0) -> float:
@@ -294,6 +307,8 @@ def render_region_card(
     severity: str,
     trend: str,
     confidence: str,
+    disaster_score: float = 0,
+    disaster_severity: str = "MINOR",
 ) -> str:
     """Card showing region name, risk score, severity badge, trend arrow, and confidence bar.
 

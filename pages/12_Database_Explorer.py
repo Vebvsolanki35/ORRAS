@@ -286,7 +286,7 @@ if page_signals:
         "Severity": s.get("severity",""),
         "Title": (s.get("title",""))[:60],
     } for s in page_signals])
-    st.dataframe(df_sigs, use_container_width=True, height=300)
+    st.dataframe(df_sigs.astype(str), use_container_width=True)
 
 st.divider()
 
@@ -314,7 +314,7 @@ if alerts_raw:
     if alert_sev_filter != "All" and "severity" in df_alerts.columns:
         df_alerts = df_alerts[df_alerts["severity"] == alert_sev_filter]
 
-    st.dataframe(df_alerts, use_container_width=True, height=250)
+    st.dataframe(df_alerts.astype(str), use_container_width=True)
 
     # Bar chart
     if "severity" in df_alerts.columns:
@@ -376,7 +376,7 @@ st.divider()
 
 st.markdown("### 📦 Resource Deployment Log")
 if overrides:
-    st.dataframe(pd.DataFrame(overrides), use_container_width=True)
+    st.dataframe(pd.DataFrame(overrides).astype(str), use_container_width=True)
 else:
     st.info("No resource deployment records. Use the Resource Allocation page to log overrides.")
 
@@ -470,7 +470,7 @@ if st.button("▶️ Run Query"):
     else:
         try:
             df_query = pd.read_sql_query(raw_sql, conn)
-            st.dataframe(df_query, use_container_width=True)
+            st.dataframe(df_query.astype(str), use_container_width=True)
             st.caption(f"Returned {len(df_query)} rows.")
         except Exception as e:
             st.error(f"Query error: {e}")

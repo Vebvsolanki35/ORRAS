@@ -266,7 +266,7 @@ if signals:
         "Timestamp": (s.get("timestamp") or "")[:19],
     } for s in signals[:30]])
 
-    st.dataframe(df, use_container_width=True, height=300)
+    st.dataframe(df.astype(str), use_container_width=True)
 
 st.divider()
 
@@ -277,7 +277,7 @@ st.divider()
 st.markdown("### 🦠 WHO Disease Outbreak Monitor")
 outbreaks = _mock_disease_outbreaks()
 df_disease = pd.DataFrame(outbreaks)
-st.dataframe(df_disease, use_container_width=True)
+st.dataframe(df_disease.astype(str), use_container_width=True)
 
 st.divider()
 
@@ -320,7 +320,7 @@ if deployed_regions:
         res = random.choice(_RESOURCES)
         qty = random.randint(2, 15)
         deploy_rows.append({"Region": region, "Resource": res, "Units": qty, "Status": "Deployed"})
-    st.dataframe(pd.DataFrame(deploy_rows), use_container_width=True)
+    st.dataframe(pd.DataFrame(deploy_rows).astype(str), use_container_width=True)
 else:
     st.info("No major disaster regions requiring deployment at this time.")
 
