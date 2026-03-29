@@ -223,6 +223,9 @@ COUNTRY_COORDINATES: dict[str, tuple[float, float]] = {
     "Yemen":                (15.5527, 48.5164),
     "Zimbabwe":             (-19.0154, 29.1549),
 }
+
+
+def classify_risk_level(score: float) -> str:
     """
     Map a numeric score to a severity label.
 
@@ -250,6 +253,10 @@ COUNTRY_COORDINATES: dict[str, tuple[float, float]] = {
     if score >= medium_min:
         return "MEDIUM"
     return "LOW"
+
+
+# Alias for backward compatibility
+classify_severity = classify_risk_level
 
 
 # ---------------------------------------------------------------------------

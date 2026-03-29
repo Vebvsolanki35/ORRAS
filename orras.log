@@ -257,3 +257,10 @@
 2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Taiwan Strait' (only 1 day(s) of data).
 2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Venezuela' (only 1 day(s) of data).
 2026-03-28 23:02:15 [DEBUG] prediction_engine — forecast_all_regions: skipping 'Yemen' (only 1 day(s) of data).
+2026-03-29 03:24:10 [INFO] collectors.orchestrator — NewsAPI: MOCK (OFFLINE_MODE active) — 15 records
+2026-03-29 03:24:10 [INFO] collectors.orchestrator — GDELT: MOCK (OFFLINE_MODE active) — 10 records
+2026-03-29 03:24:10 [INFO] collectors.orchestrator — OpenSky: MOCK (OFFLINE_MODE active) — 8 records
+2026-03-29 03:24:10 [INFO] collectors.orchestrator — NASA FIRMS: MOCK (OFFLINE_MODE active) — 6 records
+2026-03-29 03:24:10 [INFO] collectors.orchestrator — Cloudflare Radar: MOCK (OFFLINE_MODE active) — 0 records
+2026-03-29 03:24:10 [INFO] collectors.orchestrator — Social/Mock: MOCK — 10 records
+2026-03-29 03:24:10 [INFO] collectors.orchestrator — NetBlocks: MOCK — 5 records
