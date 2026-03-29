@@ -1,12 +1,11 @@
 ```
- ██████╗ ██████╗ ██████╗  █████╗ ███████╗
-██╔═══██╗██╔══██╗██╔══██╗██╔══██╗██╔════╝
-██║   ██║██████╔╝██████╔╝███████║███████╗
-██║   ██║██╔══██╗██╔══██╗██╔══██║╚════██║
-╚██████╔╝██║  ██║██║  ██║██║  ██║███████║
- ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
-
-  Operational Risk & Regional Alert System  ·  v2.0
+  ██████╗ ██████╗ ██████╗  █████╗ ███████╗
+ ██╔═══██╗██╔══██╗██╔══██╗██╔══██╗██╔════╝
+ ██║   ██║██████╔╝██████╔╝███████║███████╗
+ ██║   ██║██╔══██╗██╔══██╗██╔══██╗╚════██║
+ ╚██████╔╝██║  ██║██║  ██║██║  ██║███████║
+  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
+  v3.0 — Integrated Intelligence Fusion & Disaster Response System
 ```
 
 ![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)
@@ -17,30 +16,48 @@
 
 ---
 
-## Overview
+## What is ORRAS?
 
-**ORRAS** (Operational Risk & Regional Alert System) is a real-time geopolitical intelligence dashboard that ingests signals from six live data sources, correlates them using statistical and ML-based engines, and surfaces actionable risk alerts with AI-powered analysis.
+**ORRAS** (Operational Risk & Regional Alert System) v3.0 is a production-grade, multi-source OSINT intelligence fusion and disaster response platform. It ingests signals from up to 13 real-time data sources, correlates them using statistical and AI-powered engines, and surfaces actionable risk alerts through a 12-page interactive Streamlit dashboard.
 
-It is designed for analysts, researchers, and security professionals who need a single pane of glass across military movements, cyber threats, humanitarian crises, infrastructure disruptions, and more. ORRAS v2.0 adds Claude AI integration, automated PDF reporting, multi-domain safety scoring, and six dedicated dashboard pages.
+ORRAS features dual-track threat analysis (conflict + disaster), AI-powered decision support via the Claude API, geofence monitoring, automated PDF reporting, resource allocation intelligence, crisis scenario simulation, SQLite persistence, and a fully explainable intelligence pipeline. It is designed for analysts, researchers, emergency management professionals, and security teams who need a single pane of glass across military movements, cyber threats, humanitarian crises, natural disasters, and more.
 
 ---
 
-## ✨ v2.0 Features
+## ✨ v3.0 Features (30+)
 
 | Feature | Description |
 |---|---|
 | 🤖 AI Assistant | Claude-powered natural-language Q&A over live signal data |
-| 📈 Prediction Engine | ARIMA-style 3-day forecasts with confidence scoring |
-| 🌍 Country Comparator | Side-by-side risk comparison across regions |
-| 🕐 Timeline View | Chronological signal replay with escalation overlays |
-| 🛡️ Safety Monitor | Multi-domain safety scores (cyber, nuclear, infrastructure, maritime, economic, humanitarian) |
-| 📄 Report Engine | One-click PDF reports with charts and signal tables |
+| 📈 Prediction Engine | Weighted linear regression 3-day forecasts with confidence scoring |
+| 🌍 Country Comparator | Side-by-side risk comparison, keyword overlap, global ranking table |
+| 🕐 Timeline View | Chronological signal replay with turning points and region drill-down |
+| 🛡️ Safety Monitor | 6-domain safety scores (cyber, nuclear, infrastructure, maritime, economic, humanitarian) |
+| 📄 Report Engine | One-click PDF reports and multi-format exports (CSV/JSON) |
 | 🔴 Live News Ticker | Auto-scrolling headlines from the signal feed |
 | 🌐 3D Globe View | Interactive Plotly globe with risk heat-overlay |
 | 📊 Anomaly Detection | Z-score rolling-window outlier detection per region |
 | 🔗 Correlation Engine | Cross-source signal correlation with configurable bonuses |
 | ⚡ Escalation Tracker | 72-hour escalation window with jump-level alerting |
 | 🔒 Confidence Engine | Per-signal confidence scoring with source reliability weights |
+| 🌋 Disaster Response | Dual-track disaster monitoring: globe, type breakdown, WHO feeds, USGS earthquakes |
+| 📦 Resource Allocation | Inventory tracking, deployment orders, scenario simulation, manual overrides |
+| 🎮 Scenario Simulator | 5 preset crisis scenarios + custom builder, before/after comparison, JSON export |
+| 🔍 Explainability Center | Full reasoning chain for every region, signal, anomaly, forecast, and allocation |
+| ⚡ Fusion Center | Fusion matrix heatmap, compound event detection, source corroboration analysis |
+| 🗄️ Database Explorer | SQLite browser, alert history, escalation chart, raw SQL query, data cleanup |
+| 🔒 Geofence Monitoring | Network/internet shutdown detection mapped by region |
+| 📍 Choropleth Coverage | Resource coverage percentage mapped by country |
+| 🤝 Source Corroboration | Cross-source region overlap analysis for intelligence validation |
+| 🎯 Fusion Confidence | Per-region confidence scoring based on multi-source corroboration |
+| 💥 Compound Events | Automatic detection of multi-domain event combinations |
+| 📋 Audit Trail | Full chronological pipeline decision log |
+| ⚙️ Offline Mock Mode | Complete functionality without any API keys via synthetic data |
+| 🗃️ SQLite Persistence | All signals, alerts, deployments, and scenarios stored in local DB |
+| 📥 Multi-format Export | Download signals, alerts, scenarios as CSV or JSON |
+| 🔬 Custom Scenarios | Build and run custom crisis scenarios with configurable parameters |
+| 📊 Worst-Case Analysis | Automated worst-case assessment across all 5 preset scenarios |
+| 🌡️ Safety SVG Gauge | Circular SVG safety score gauge with letter grades (A–F) |
 
 ---
 
@@ -76,6 +93,9 @@ It is designed for analysts, researchers, and security professionals who need a 
   │  01_AI_Assistant.py     02_Predictions.py                   │
   │  03_Country_Compare.py  04_Timeline.py                      │
   │  05_Safety_Monitor.py   06_Reports.py                       │
+  │  07_Disaster_Response.py  08_Resource_Allocation.py         │
+  │  09_Scenario_Simulator.py 10_Explainability.py              │
+  │  11_Fusion_Center.py    12_Database_Explorer.py             │
   └──────────────────────────────────────────────────────────────┘
 
   ┌───────────────────── Support Layer ─────────────────────────┐
@@ -141,55 +161,62 @@ All configuration is handled through environment variables in your `.env` file.
 
 ---
 
-## 📂 Module Reference
+## 📂 Module Reference (25+ modules)
 
 ### Core
 
 | File | Purpose |
 |---|---|
-| `app.py` | Main Streamlit application entry point; renders the globe, ticker, and alert feed |
+| `app.py` | Main Streamlit entry point; renders the globe, ticker, and alert feed |
 | `config.py` | Single source of truth for all constants, thresholds, and env-var bindings |
-| `utils.py` | Shared utility functions (formatting, date helpers, risk colour mapping) |
+| `utils.py` | Shared utilities: formatting, date helpers, severity classification, JSON I/O |
 
 ### Data Layer
 
 | File | Purpose |
 |---|---|
-| `data_collector.py` | Fetches raw signals from six live APIs (NewsAPI, GDELT, OpenSky, NASA FIRMS, Cloudflare Radar, NetBlocks) |
-| `data_processor.py` | Normalises raw API responses, applies keyword scoring, and builds the unified signal list |
-| `mock_data_generator.py` | Generates realistic synthetic signals for offline / demo mode |
+| `data_collector.py` | Fetches raw signals from 13 live APIs (NewsAPI, GDELT, OpenSky, NASA FIRMS, Cloudflare Radar, NetBlocks, WHO, USGS…) |
+| `data_processor.py` | Normalises raw API responses, applies keyword scoring, builds the unified signal schema |
+| `mock_data_generator.py` | Generates realistic synthetic signals for offline / demo / test mode |
 
 ### Engine Layer
 
 | File | Purpose |
 |---|---|
-| `anomaly_engine.py` | Z-score anomaly detection with configurable rolling window |
+| `anomaly_engine.py` | Z-score anomaly detection with configurable rolling 7-day window |
 | `correlation_engine.py` | Cross-source signal correlation with bonus scoring for co-occurring event types |
-| `prediction_engine.py` | Short-range risk forecasting (ARIMA-inspired) with confidence intervals |
+| `prediction_engine.py` | Weighted linear regression forecasting with confidence intervals and trend detection |
 | `confidence_engine.py` | Per-signal confidence scoring based on source reliability weights |
-| `safety_engine.py` | Multi-domain safety index (cyber, nuclear, infrastructure, maritime, economic, humanitarian) |
+| `safety_engine.py` | 6-domain safety index (cyber, nuclear, infrastructure, maritime, economic, humanitarian) |
 | `escalation_tracker.py` | Tracks risk-level trajectories and fires escalation alerts within a 72-hour window |
-| `threat_engine.py` | Aggregates engine outputs into a unified threat picture per region |
-| `timeline_engine.py` | Builds time-ordered signal sequences for the Timeline page |
-| `action_engine.py` | Suggests recommended actions based on current threat level and domain |
-| `report_engine.py` | Renders PDF intelligence reports via ReportLab |
-| `ai_assistant.py` | Claude API wrapper that provides natural-language analysis over signal data |
+| `threat_engine.py` | Keyword-based scoring engine: raw_score = Σ(keyword_weights) × source_multiplier |
+| `timeline_engine.py` | Builds time-ordered signal sequences and detects turning points |
+| `action_engine.py` | Recommends actions based on current threat level and domain |
+| `report_engine.py` | Generates professional multi-section PDF intelligence reports via ReportLab |
+| `ai_assistant.py` | Claude API wrapper providing natural-language analysis over live signal data |
 | `news_ticker.py` | Filters and formats headlines for the auto-scrolling ticker component |
-| `ui_components.py` | Reusable Streamlit UI widgets (risk gauges, signal cards, map overlays) |
+| `ui_components.py` | 12+ reusable Streamlit HTML components (gauges, badges, cards, comparison bars, timeline events) |
+| `comparison_engine.py` | Region-vs-region comparison with keyword overlap, score delta, and global ranking |
 
 ---
 
-## 🖥️ Dashboard Pages
+## 🖥️ Dashboard Pages (12 Pages)
 
 | Page | File | Description |
 |---|---|---|
 | **Main Dashboard** | `app.py` | Live 3D globe with risk heat-overlay, scrolling news ticker, and alert feed |
 | **AI Assistant** | `pages/01_AI_Assistant.py` | Chat interface powered by Claude; ask questions about current signals in plain English |
 | **Predictions** | `pages/02_Predictions.py` | 3-day risk forecasts per region with confidence bands and trend indicators |
-| **Country Compare** | `pages/03_Country_Compare.py` | Side-by-side comparison of risk scores, signal counts, and domain breakdowns for any two regions |
+| **Country Compare** | `pages/03_Country_Compare.py` | Side-by-side comparison of risk scores, signal counts, keyword overlap, global ranking |
 | **Timeline** | `pages/04_Timeline.py` | Chronological event replay with escalation overlays and filterable signal types |
-| **Safety Monitor** | `pages/05_Safety_Monitor.py` | Domain-level safety scores (cyber, nuclear, infrastructure, maritime, economic, humanitarian) with gauge charts |
-| **Reports** | `pages/06_Reports.py` | Generate and download PDF intelligence reports for any region and time range |
+| **Safety Monitor** | `pages/05_Safety_Monitor.py` | 6-domain safety scores (cyber, nuclear, infrastructure, maritime, economic, humanitarian) with SVG gauge |
+| **Reports** | `pages/06_Reports.py` | Generate/download PDF reports; export signals as CSV/JSON; alert history; custom report builder |
+| **Disaster Response** | `pages/07_Disaster_Response.py` | Disaster globe, type breakdown pie, top hotspots, WHO disease feed, USGS earthquakes, evacuation recommendations |
+| **Resource Allocation** | `pages/08_Resource_Allocation.py` | Global inventory, regional demand table, deployment orders, coverage map, scenario simulation, manual overrides |
+| **Scenario Simulator** | `pages/09_Scenario_Simulator.py` | 5 preset crisis scenarios + custom builder; before/after comparison; hour-by-hour escalation chart; JSON export |
+| **Explainability** | `pages/10_Explainability.py` | Full reasoning chain for regions, signals, anomalies, forecasts, resource allocations, and pipeline audit trail |
+| **Fusion Center** | `pages/11_Fusion_Center.py` | Fusion matrix heatmap, compound event cards, dual-track bar chart, source corroboration, AI SITREP, alert feed |
+| **Database Explorer** | `pages/12_Database_Explorer.py` | SQLite browser with pagination/filters, escalation chart, deployment log, DB health, cleanup slider, raw SQL input |
 
 ---
 
@@ -217,6 +244,12 @@ All keys are **free** at the links below. ORRAS degrades gracefully when keys ar
 | **GDELT** | No | Fully open, no key needed |
 | **OpenSky Network** | No | Fully open, no key needed |
 | **Cloudflare Radar** | No | Fully open, no key needed |
+
+---
+
+## 👨‍💻 Resume Line
+
+> **Developed ORRAS v3.0** — a production-grade multi-source OSINT intelligence fusion and disaster response platform featuring dual-track threat analysis (conflict + disaster), AI-powered decision support via Claude API, geofence monitoring, resource allocation engine, scenario simulation with 5 crisis presets, SQLite persistence, and a 12-page interactive Streamlit dashboard processing 13 real-time data sources.
 
 ---
 
