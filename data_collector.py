@@ -46,6 +46,40 @@ _TIMEOUT = 10
 
 
 # ---------------------------------------------------------------------------
+# Inline mock generators for live-only sources (USGS, NOAA, ReliefWeb)
+# ---------------------------------------------------------------------------
+
+def _mock_usgs_data() -> list[dict]:
+    """Generate realistic mock USGS earthquake records."""
+    return [
+        {"magnitude": 6.1, "place": "Near Kyiv, Ukraine", "lat": 50.45, "lon": 30.52, "time": 1700000000000, "depth": 10.0},
+        {"magnitude": 5.8, "place": "Off coast of Japan", "lat": 37.5, "lon": 143.0, "time": 1700050000000, "depth": 35.0},
+        {"magnitude": 7.2, "place": "Southern Turkey", "lat": 37.0, "lon": 37.5, "time": 1700100000000, "depth": 12.0},
+        {"magnitude": 4.9, "place": "Northern Iran", "lat": 36.8, "lon": 54.0, "time": 1700150000000, "depth": 8.0},
+        {"magnitude": 5.3, "place": "Eastern Afghanistan", "lat": 34.5, "lon": 69.2, "time": 1700200000000, "depth": 20.0},
+    ]
+
+
+def _mock_noaa_data() -> list[dict]:
+    """Generate realistic mock NOAA weather alert records."""
+    return [
+        {"event": "Tornado Warning", "areaDesc": "Central Oklahoma", "severity": "Extreme", "description": "Dangerous tornadoes capable of causing catastrophic damage.", "onset": "2025-01-10T15:00:00+00:00"},
+        {"event": "Hurricane Warning", "areaDesc": "Gulf Coast Texas", "severity": "Extreme", "description": "Category 4 hurricane with winds exceeding 130 mph.", "onset": "2025-01-11T08:00:00+00:00"},
+        {"event": "Flash Flood Warning", "areaDesc": "Southern Louisiana", "severity": "Severe", "description": "Catastrophic flooding expected. Move to higher ground.", "onset": "2025-01-10T20:00:00+00:00"},
+    ]
+
+
+def _mock_reliefweb_data() -> list[dict]:
+    """Generate realistic mock ReliefWeb disaster records."""
+    return [
+        {"name": "Cyclone Freddy — Southern Africa", "date": "2025-01-05", "type": "Tropical Cyclone", "country": "Mozambique", "status": "alert"},
+        {"name": "Flooding in Sudan", "date": "2025-01-07", "type": "Flood", "country": "Sudan", "status": "ongoing"},
+        {"name": "Drought — Horn of Africa", "date": "2025-01-01", "type": "Drought", "country": "Somalia", "status": "ongoing"},
+        {"name": "Earthquake — Turkey/Syria Border", "date": "2025-01-08", "type": "Earthquake", "country": "Syria", "status": "alert"},
+    ]
+
+
+# ---------------------------------------------------------------------------
 # Individual collector classes
 # ---------------------------------------------------------------------------
 
@@ -359,21 +393,21 @@ class DataCollectionOrchestrator:
 
         # USGS Earthquakes
         status, data = self._collect_source(
-            "USGS", self.usgs.fetch, lambda: [], {}
+            "USGS", self.usgs.fetch, _mock_usgs_data, {}
         )
         results["usgs"] = data
         self.source_health["USGS"] = status if data else "MOCK"
 
         # NOAA Weather Alerts
         status, data = self._collect_source(
-            "NOAA", self.noaa.fetch, lambda: [], {}
+            "NOAA", self.noaa.fetch, _mock_noaa_data, {}
         )
         results["noaa"] = data
         self.source_health["NOAA"] = status if data else "MOCK"
 
         # ReliefWeb Disasters
         status, data = self._collect_source(
-            "ReliefWeb", self.reliefweb.fetch, lambda: [], {}
+            "ReliefWeb", self.reliefweb.fetch, _mock_reliefweb_data, {}
         )
         results["reliefweb"] = data
         self.source_health["ReliefWeb"] = status if data else "MOCK"
@@ -384,9 +418,9 @@ class DataCollectionOrchestrator:
         self.source_health["WHO"] = "MOCK"
         logger.info(f"WHO: MOCK — {len(who_data)} records")
 
-        # ACLED Conflict Events
+        # ACLED Conflict Events (fetch() internally falls back to mock when no key)
         status, data = self._collect_source(
-            "ACLED", self.acled.fetch, lambda: [], {}
+            "ACLED", self.acled.fetch, self.acled.fetch, {}
         )
         results["acled"] = data
         self.source_health["ACLED"] = status if data else "MOCK"
