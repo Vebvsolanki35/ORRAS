@@ -472,8 +472,7 @@ with tab3:
                         render_metric_card(
                             title=sev,
                             value=str(count),
-                            delta="alerts",
-                            icon={"CRITICAL": "🔴", "HIGH": "🟠", "MEDIUM": "🟡", "LOW": "🟢"}.get(sev, "⚪"),
+                            subtitle="alerts",
                             color=sev_colors.get(sev, "#9ca3af"),
                         ),
                         unsafe_allow_html=True,

@@ -25,8 +25,24 @@ _SEVERITY_PALETTE: dict[str, tuple[str, str, str]] = {
     "INFO":     ("#3b82f6", "#93c5fd", "0 0 12px rgba(59,130,246,0.30)"),
 }
 
-# Returns colour tuple for a severity string; falls back to INFO
-def _severity(level: str) -> tuple[str, str, str]:
+# Parses a hex colour string and returns (normalized_hex, r, g, b).
+# Falls back to the provided default if the string is absent or malformed.
+def _parse_color(color: str, default: str = "#00d4ff") -> tuple[str, int, int, int]:
+    raw = color.strip() if color else ""
+    if not raw:
+        raw = default
+    try:
+        c = raw.lstrip("#")
+        if len(c) == 3:
+            c = "".join(ch * 2 for ch in c)
+        if len(c) != 6:
+            raise ValueError(f"Unexpected colour length: {raw!r}")
+        return raw, int(c[0:2], 16), int(c[2:4], 16), int(c[4:6], 16)
+    except (ValueError, IndexError):
+        c = default.lstrip("#")
+        return default, int(c[0:2], 16), int(c[2:4], 16), int(c[4:6], 16)
+
+
     return _SEVERITY_PALETTE.get(level.upper(), _SEVERITY_PALETTE["INFO"])
 
 # Clamps a float value between lo and hi
@@ -81,77 +97,51 @@ def render_severity_badge(severity: str) -> str:
 def render_metric_card(
     title: str,
     value: str,
-    delta: str,
-    icon: str,
+    subtitle: str,
     color: str,
 ) -> str:
-    """Renders a gradient KPI card with icon, large value, title, and delta arrow.
+    """Renders a dark intel-themed KPI card with large value, title, and subtitle.
 
     Args:
-        title:  Short label shown below the value (e.g. "Active Threats").
-        value:  The main display number or text (e.g. "142").
-        delta:  Change indicator (e.g. "+12 from yesterday"). Prefix "+" is green,
-                "-" is red, anything else is neutral grey.
-        icon:   Emoji or Unicode symbol shown at the top (e.g. "🚨").
-        color:  Hex accent colour for the gradient (e.g. "#3b82f6").
+        title:    Short label shown below the value (e.g. "Active Threats").
+        value:    The main display number or text (e.g. "142").
+        subtitle: Descriptive note shown below the title (e.g. "In DB").
+        color:    Hex accent colour for the left border and value glow (e.g. "#00d4ff").
 
     Returns:
         HTML string for the metric card.
     """
-    # Determine delta colour based on first character
-    if delta.startswith("+"):
-        delta_color = "#86efac"   # green
-        delta_prefix = "▲ "
-    elif delta.startswith("-"):
-        delta_color = "#fca5a5"   # red
-        delta_prefix = "▼ "
-    else:
-        delta_color = "#9ca3af"   # grey
-        delta_prefix = "● "
-
-    # Build a subtle two-tone gradient using the accent colour.
-    # Accepts full 6-digit hex ("#rrggbb") or 3-digit shorthand ("#rgb").
-    color = color.strip()
-    try:
-        c = color.lstrip("#")
-        if len(c) == 3:
-            c = "".join(ch * 2 for ch in c)
-        if len(c) != 6:
-            raise ValueError(f"Unexpected colour length: {color!r}")
-        r, g, b = int(c[0:2], 16), int(c[2:4], 16), int(c[4:6], 16)
-    except ValueError:
-        # Fall back to a neutral blue if the colour string is unparseable
-        r, g, b = 59, 130, 246
-    gradient = (
-        f"linear-gradient(135deg,"
-        f"rgba({r},{g},{b},0.18) 0%,"
-        f"rgba({r},{g},{b},0.06) 55%,"
-        f"#111827 100%)"
-    )
+    # Parse colour to RGB for glow effects
+    color, r, g, b = _parse_color(color)
 
     card = f"""
 <div style="
-    background:{gradient};
-    border:1px solid {color}44;
-    border-radius:20px;
-    padding:1.4rem 1.6rem;
-    box-shadow:0 4px 24px rgba(0,0,0,0.45),0 0 18px rgba({r},{g},{b},0.25);
+    background:linear-gradient(135deg,#0a0a1a,#0d1525);
+    border:1px solid #1a3a5c;
+    border-left:3px solid {color};
+    border-radius:4px;
+    padding:16px;
+    box-shadow:0 0 20px rgba({r},{g},{b},0.12);
     position:relative;overflow:hidden;
     animation:slide-in 0.4s ease both;
-    transition:transform 0.22s ease,box-shadow 0.22s ease;
 ">
-  <div style="font-size:2rem;margin-bottom:0.4rem;">{_esc(icon)}</div>
-  <div style="font-size:2.4rem;font-weight:800;color:#f9fafb;
-              letter-spacing:-0.04em;line-height:1;">
+  <div style="
+      font-size:2.5rem;font-weight:700;
+      font-family:'Courier New',monospace;
+      color:{color};
+      text-shadow:0 0 10px rgba({r},{g},{b},0.5);
+      line-height:1;margin-bottom:4px;">
     {_esc(value)}
   </div>
-  <div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;
-              letter-spacing:0.1em;color:#9ca3af;margin-top:0.3rem;">
+  <div style="
+      font-family:'Courier New',monospace;
+      font-size:0.65rem;font-weight:700;
+      text-transform:uppercase;letter-spacing:3px;
+      color:#7090a0;margin-top:2px;">
     {_esc(title)}
   </div>
-  <div style="font-size:0.78rem;font-weight:600;color:{delta_color};
-              margin-top:0.45rem;display:flex;align-items:center;gap:4px;">
-    {delta_prefix}{_esc(delta)}
+  <div style="font-size:0.72rem;color:#4a6a7a;margin-top:4px;">
+    {_esc(subtitle)}
   </div>
 </div>
 """
@@ -1067,7 +1057,98 @@ def render_safety_score_card(
     return card
 
 
-# ─── Module-level smoke test ──────────────────────────────────────────────────
+
+# ─── 14. Intel Card ──────────────────────────────────────────────────────────
+
+def render_intel_card(title: str, content: str, accent_color: str = "#00d4ff") -> str:
+    """Renders a professional intelligence-themed content card.
+
+    Args:
+        title:        Card header label (e.g. "THREAT ASSESSMENT").
+        content:      Body text or HTML content to display inside the card.
+        accent_color: Hex colour for the left border and header (default: #00d4ff).
+
+    Returns:
+        HTML string for the intel card.
+    """
+    accent_color, r, g, b = _parse_color(accent_color)
+
+    card = f"""
+<div class="intel-card" style="
+    background:linear-gradient(135deg,#0a0a1a,#0d1525);
+    border:1px solid #1a3a5c;
+    border-left:3px solid {accent_color};
+    border-radius:4px;
+    padding:16px;
+    box-shadow:0 0 20px rgba({r},{g},{b},0.1);
+    margin-bottom:12px;
+">
+  <div class="section-header" style="
+      font-family:'Courier New',monospace;
+      color:{accent_color};
+      font-size:0.7rem;
+      letter-spacing:3px;
+      text-transform:uppercase;
+      border-bottom:1px solid #1a3a5c;
+      padding-bottom:8px;
+      margin-bottom:12px;
+  ">{_esc(title)}</div>
+  <div style="font-size:0.85rem;color:#e0f0ff;line-height:1.6;">
+    {content}
+  </div>
+</div>
+"""
+    return card
+
+
+# ─── 15. Status Bar ──────────────────────────────────────────────────────────
+
+def render_status_bar(label: str, value: float, max_val: float, color: str = "#00d4ff") -> str:
+    """Renders a labeled progress/status bar in intel style.
+
+    Args:
+        label:   Text label displayed above the bar (e.g. "Threat Level").
+        value:   Current numeric value.
+        max_val: Maximum value (100% of bar).
+        color:   Hex colour for the filled portion (default: #00d4ff).
+
+    Returns:
+        HTML string for the status bar.
+    """
+    color, r, g, b = _parse_color(color)
+
+    max_val = max_val if max_val > 0 else 1
+    pct = max(0.0, min(100.0, (value / max_val) * 100))
+
+    bar = f"""
+<div style="margin-bottom:10px;">
+  <div style="
+      display:flex;justify-content:space-between;
+      font-family:'Courier New',monospace;
+      font-size:0.7rem;letter-spacing:1px;
+      color:#7090a0;margin-bottom:4px;
+  ">
+    <span style="text-transform:uppercase;">{_esc(label)}</span>
+    <span style="color:{color};">{value:.0f}/{max_val:.0f}</span>
+  </div>
+  <div style="
+      width:100%;height:6px;
+      background:rgba(255,255,255,0.05);
+      border:1px solid #1a3a5c;
+      border-radius:2px;overflow:hidden;
+  ">
+    <div style="
+        width:{pct:.1f}%;height:100%;
+        background:linear-gradient(90deg,{color},{color}88);
+        box-shadow:0 0 8px rgba({r},{g},{b},0.6);
+        transition:width 0.8s ease;
+    "></div>
+  </div>
+</div>
+"""
+    return bar
+
+
 # Run `python ui_components.py` directly to verify all functions return strings.
 
 if __name__ == "__main__":
@@ -1075,7 +1156,7 @@ if __name__ == "__main__":
 
     checks = [
         ("render_severity_badge",    render_severity_badge("CRITICAL")),
-        ("render_metric_card",       render_metric_card("Alerts", "142", "+12 today", "🚨", "#ef4444")),
+        ("render_metric_card",       render_metric_card("Alerts", "142", "Active signals", "#ef4444")),
         ("render_alert_banner",      render_alert_banner(["Attack detected in Zone 4"], "CRITICAL")),
         ("render_news_ticker",       render_news_ticker(["Headline one", "Headline two", "Headline three"])),
         ("render_region_card",       render_region_card("Eastern Europe", 21.5, "HIGH", "rising", "HIGH (85%)")),

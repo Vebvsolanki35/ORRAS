@@ -149,8 +149,7 @@ with col1:
         render_metric_card(
             title="Regions Escalating",
             value=str(escalating),
-            delta=f"{escalating} of {len(forecasts)} tracked",
-            icon="📈",
+            subtitle=f"{escalating} of {len(forecasts)} tracked",
             color="#ef4444",
         ),
         unsafe_allow_html=True,
@@ -160,8 +159,7 @@ with col2:
         render_metric_card(
             title="Regions Stable",
             value=str(stable),
-            delta=f"{stable} of {len(forecasts)} tracked",
-            icon="📊",
+            subtitle=f"{stable} of {len(forecasts)} tracked",
             color="#9ca3af",
         ),
         unsafe_allow_html=True,
@@ -171,8 +169,7 @@ with col3:
         render_metric_card(
             title="Regions De-escalating",
             value=str(de_escalating),
-            delta=f"{de_escalating} of {len(forecasts)} tracked",
-            icon="📉",
+            subtitle=f"{de_escalating} of {len(forecasts)} tracked",
             color="#22c55e",
         ),
         unsafe_allow_html=True,
