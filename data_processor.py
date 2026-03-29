@@ -176,6 +176,7 @@ def _fill_defaults(signal: dict) -> dict:
         "raw_score": 0.0,
         "keywords_matched": [],
         "severity": "LOW",
+        "track": "both",
     }
     for field, default in defaults.items():
         if field not in signal or signal[field] is None:
@@ -318,6 +319,7 @@ def normalize_opensky(states: list) -> list[dict]:
             "title": title,
             "description": description,
             "raw_score": 0.0,
+            "track": "conflict",
             "keywords_matched": [],
             "severity": "LOW",
         })
@@ -378,6 +380,7 @@ def normalize_firms(hotspots: list) -> list[dict]:
             "raw_score": raw_score,
             "keywords_matched": [],
             "severity": classify_severity(raw_score),
+            "track": "disaster",
         })
         signals.append(signal)
     return signals
@@ -418,6 +421,7 @@ def normalize_cloudflare(anomalies: list) -> list[dict]:
             "raw_score": 0.0,
             "keywords_matched": [],
             "severity": "LOW",
+            "track": "conflict",
         })
         signals.append(signal)
     return signals

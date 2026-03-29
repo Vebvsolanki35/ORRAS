@@ -53,6 +53,7 @@ def run_pipeline():
     from data_collector import DataCollectionOrchestrator
     from data_processor import DataProcessor
     from threat_engine import ThreatEngine
+    from disaster_engine import DisasterEngine
     from correlation_engine import CorrelationEngine
     from anomaly_engine import AnomalyEngine
     from escalation_tracker import EscalationTracker
@@ -64,6 +65,7 @@ def run_pipeline():
 
     signals = DataProcessor().process_all(raw)
     signals = ThreatEngine().score_all(signals)
+    signals = DisasterEngine().score_all(signals)
     signals = CorrelationEngine().correlate_all(signals)
     anomalies = AnomalyEngine().detect_anomalies(signals)
     escalation_data = EscalationTracker().run(signals)
@@ -95,6 +97,26 @@ def run_safety_pipeline(signals_tuple):
     scores = se.score_all_categories(signals)
     overall = se.compute_overall_safety_index(scores)
     return scores, overall
+
+
+@st.cache_data(ttl=60)
+def run_disaster_pipeline(signals_tuple):
+    """
+    Compute disaster hotspots and the disaster severity index from scored signals.
+
+    Args:
+        signals_tuple: Tuple-converted signals for cache-key hashing.
+
+    Returns:
+        Tuple: (hotspots list, index dict)
+    """
+    from disaster_engine import DisasterEngine
+
+    signals = list(signals_tuple)
+    de = DisasterEngine()
+    hotspots = de.get_disaster_hotspots(signals, n=5)
+    index = de.compute_disaster_index(signals)
+    return hotspots, index
 
 
 @st.cache_data(ttl=300)
@@ -496,6 +518,70 @@ def _render_safety_index(scores: dict, overall: dict) -> None:
                 st.write(f"**{cat_key}**: {cat_data.get('score', 0):.1f} — {cat_data.get('status', '?')}")
 
 
+# ── Disaster panel ────────────────────────────────────────────────────────────
+
+_DISASTER_SEV_COLORS: dict[str, str] = {
+    "CATASTROPHIC": "#ef4444",
+    "SEVERE":       "#f97316",
+    "MODERATE":     "#eab308",
+    "MINOR":        "#22c55e",
+}
+
+
+def _render_disaster_panel(hotspots: list, index: dict) -> None:
+    """Render the disaster-track section: severity index + hotspot table."""
+    st.markdown("### 🌪️ Disaster Track")
+
+    col_idx, col_hot = st.columns([1, 2])
+
+    with col_idx:
+        st.markdown(
+            '<div style="font-size:1rem;font-weight:700;color:#f9fafb;margin-bottom:0.5rem;">'
+            "Disaster Severity Index</div>",
+            unsafe_allow_html=True,
+        )
+        for level in ("CATASTROPHIC", "SEVERE", "MODERATE", "MINOR"):
+            count = index.get(level, 0)
+            color = _DISASTER_SEV_COLORS.get(level, "#9ca3af")
+            st.markdown(
+                f'<div style="display:flex;justify-content:space-between;'
+                f'padding:4px 10px;margin:3px 0;border-radius:6px;'
+                f'background:{color}18;border:1px solid {color}44;">'
+                f'<span style="color:{color};font-weight:700;font-size:0.82rem;">'
+                f'{level}</span>'
+                f'<span style="color:#e2e8f0;font-size:0.82rem;">{count}</span>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+
+    with col_hot:
+        st.markdown(
+            '<div style="font-size:1rem;font-weight:700;color:#f9fafb;margin-bottom:0.5rem;">'
+            "Top Disaster Hotspots</div>",
+            unsafe_allow_html=True,
+        )
+        if not hotspots:
+            st.info("No disaster hotspots detected.")
+        else:
+            for h in hotspots:
+                sev = h.get("max_severity", "MINOR")
+                color = _DISASTER_SEV_COLORS.get(sev, "#9ca3af")
+                location = h.get("location", "Unknown")
+                avg_score = h.get("avg_disaster_score", 0.0)
+                count = h.get("signal_count", 0)
+                st.markdown(
+                    f'<div style="background:#111827;border:1px solid {color}44;'
+                    f'border-radius:8px;padding:6px 12px;margin:4px 0;'
+                    f'display:flex;justify-content:space-between;align-items:center;">'
+                    f'<span style="color:#f9fafb;font-size:0.85rem;font-weight:600;">'
+                    f'{location}</span>'
+                    f'<span style="color:{color};font-size:0.78rem;font-weight:700;">'
+                    f'{sev} · score {avg_score:.1f} · {count} signals</span>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+
+
 # ── Action panel ──────────────────────────────────────────────────────────────
 
 def _render_action_panel(actions: list) -> None:
@@ -686,6 +772,17 @@ def main() -> None:
     except Exception:
         pass
 
+    # ── Run disaster pipeline ─────────────────────────────────────────────────
+    disaster_hotspots: list = []
+    disaster_index: dict = {}
+
+    try:
+        disaster_hotspots, disaster_index = run_disaster_pipeline(tuple(
+            tuple(sorted(s.items())) for s in signals
+        ))
+    except Exception:
+        pass
+
     # ── Sidebar ──────────────────────────────────────────────────────────────
     theme, auto_refresh = _render_sidebar(status_map, last_updated)
 
@@ -778,6 +875,11 @@ def main() -> None:
     if actions:
         _render_action_panel(actions)
         st.markdown("<br>", unsafe_allow_html=True)
+
+    # ── Disaster panel ────────────────────────────────────────────────────────
+    _render_disaster_panel(disaster_hotspots, disaster_index)
+
+    st.markdown("<br>", unsafe_allow_html=True)
 
     # ── AI Global SITREP ──────────────────────────────────────────────────────
     _render_ai_sitrep(signals, anomalies)
