@@ -65,7 +65,6 @@ def run_pipeline():
     from fusion_engine import FusionEngine
     from geofence_engine import GeofenceEngine
     from alert_engine import AlertEngine
-    from database_engine import DatabaseEngine
 
     raw = DataCollectionOrchestrator().collect_all()
     status_map = raw.pop("_status", {})
@@ -89,12 +88,7 @@ def run_pipeline():
 
     actions = ActionEngine().generate_region_actions(signals)
 
-    # Part 3 alerting & persistence
     active_alerts = AlertEngine().generate_alerts(signals)
-    db = DatabaseEngine()
-    db.insert_signals(signals)
-    for alert in active_alerts:
-        db.insert_alert(alert)
 
     return signals, anomalies, escalation_data, actions, status_map, conf_map, active_alerts
 
@@ -774,6 +768,15 @@ def main() -> None:
 
     try:
         signals, anomalies, escalation_data, actions, status_map, conf_map, active_alerts = run_pipeline()
+        # Persist outside the cached function to avoid duplicate insertions
+        try:
+            from database_engine import DatabaseEngine
+            db = DatabaseEngine()
+            db.insert_signals(signals)
+            for _alert in active_alerts:
+                db.insert_alert(_alert)
+        except Exception:
+            pass
     except Exception:
         pipeline_error = traceback.format_exc()
 

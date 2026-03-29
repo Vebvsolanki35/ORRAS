@@ -264,3 +264,7 @@
 2026-03-29 03:24:10 [INFO] collectors.orchestrator — Cloudflare Radar: MOCK (OFFLINE_MODE active) — 0 records
 2026-03-29 03:24:10 [INFO] collectors.orchestrator — Social/Mock: MOCK — 10 records
 2026-03-29 03:24:10 [INFO] collectors.orchestrator — NetBlocks: MOCK — 5 records
+2026-03-29 11:37:23 [INFO] threat_engine — ThreatEngine: scored 82 signals.
+2026-03-29 11:37:23 [INFO] correlation_engine — CorrelationEngine: processed 40 regions, 82 signals total.
+2026-03-29 11:37:23 [INFO] confidence_engine — ConfidenceEngine: scored 43 regions.
+2026-03-29 11:37:23 [INFO] __main__ — ActionEngine: logged 35 alert(s) to data/alert_log.json.
