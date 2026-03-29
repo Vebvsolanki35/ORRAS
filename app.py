@@ -775,8 +775,8 @@ def main() -> None:
             db.insert_signals(signals)
             for _alert in active_alerts:
                 db.insert_alert(_alert)
-        except Exception:
-            pass
+        except Exception as db_exc:  # noqa: BLE001
+            st.warning(f"DB persistence skipped: {db_exc}")
     except Exception:
         pipeline_error = traceback.format_exc()
 
