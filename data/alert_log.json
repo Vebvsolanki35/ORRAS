@@ -334,5 +334,755 @@
     "top_signals": [
       "troops massed near Armenia border amid escalating tensions"
     ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912168+00:00",
+    "region": "Persian Gulf",
+    "max_severity": "CRITICAL",
+    "recommendation": "Immediate escalation required. Activate full emergency protocol.",
+    "signal_count": 1,
+    "top_signals": [
+      "ACLED Coup: Military coup attempt underway in Persian Gulf (10 fatalities)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912175+00:00",
+    "region": "Baltic Sea",
+    "max_severity": "CRITICAL",
+    "recommendation": "Immediate escalation required. Activate full emergency protocol.",
+    "signal_count": 2,
+    "top_signals": [
+      "ACLED Coup: Military coup attempt underway in Baltic Sea (40 fatalities)",
+      "Missile launch detected near Baltic Sea coastline"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912178+00:00",
+    "region": "Serbia",
+    "max_severity": "CRITICAL",
+    "recommendation": "Immediate escalation required. Activate full emergency protocol.",
+    "signal_count": 2,
+    "top_signals": [
+      "ACLED Strategic development: Military deployment and mobilization ordered in Serbia (48 fatalities)",
+      "GDELT Event 18: Stein Forces vs Myanmar in Serbia"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912180+00:00",
+    "region": "Afghanistan",
+    "max_severity": "CRITICAL",
+    "recommendation": "Immediate escalation required. Activate full emergency protocol.",
+    "signal_count": 5,
+    "top_signals": [
+      "ACLED Strategic development: Military deployment and mobilization ordered in Afghanistan (20 fatalit",
+      "Fire hotspot detected in Afghanistan — FRP=34.8 MW",
+      "Trending: #riot in Afghanistan (490,296 engagements)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912182+00:00",
+    "region": "Myanmar",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 1,
+    "top_signals": [
+      "Internet shutdown detected in Myanmar — 92% connectivity loss"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912184+00:00",
+    "region": "Pakistan",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 4,
+    "top_signals": [
+      "Internet shutdown detected in Pakistan — 94% connectivity loss",
+      "ACLED Battles: Armed clash between state forces and rebel groups in Pakistan (15 fatalities)",
+      "Diplomatic relations strained between Pakistan and neighbors"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912185+00:00",
+    "region": "Venezuela",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "Internet shutdown detected in Venezuela — 60% connectivity loss",
+      "Naval vessels patrolling disputed waters near Venezuela"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912187+00:00",
+    "region": "Cuba",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 1,
+    "top_signals": [
+      "Internet shutdown detected in Cuba — 78% connectivity loss"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912188+00:00",
+    "region": "Russia",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "Internet shutdown detected in Russia — 92% connectivity loss",
+      "Military exercise conducted near Russia disputed zone"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912190+00:00",
+    "region": "Black Sea",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 1,
+    "top_signals": [
+      "ACLED Protests: Mass protest against government forces in Black Sea (45 fatalities)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912192+00:00",
+    "region": "South China Sea",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 1,
+    "top_signals": [
+      "ACLED Protests: Mass protest against government forces in South China Sea (7 fatalities)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912193+00:00",
+    "region": "Mali",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "GDELT Event 20: Marshall Government vs Kenya in Mali",
+      "Artillery shelling reported in Mali eastern province"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912195+00:00",
+    "region": "Mexico",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "GDELT Event 172: Hernandez Militia vs Aruba in Mexico",
+      "Aircraft REACH67 alt=38919ft spd=762kts near Mexico"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912197+00:00",
+    "region": "Red Sea",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "GDELT Event 174: Mcclure Army vs Slovakia (Slovak Republic) in Red Sea",
+      "Military exercise conducted near Red Sea disputed zone"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912198+00:00",
+    "region": "Ethiopia",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 3,
+    "top_signals": [
+      "GDELT Event 18: Meadows Forces vs Kiribati in Ethiopia",
+      "Trending: #invasion in Ethiopia (291,048 engagements)",
+      "Refugee crisis — border surge in Ethiopia — 2,591,656 displaced"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912200+00:00",
+    "region": "Iran",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 6,
+    "top_signals": [
+      "GDELT Event 174: Flores Forces vs Mauritius in Iran",
+      "GDELT Event 19: Murphy Government vs Korea in Iran",
+      "GDELT Event 173: Stuart Forces vs Saint Barthelemy in Iran"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912201+00:00",
+    "region": "Chad",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "GDELT Event 18: Adkins Government vs Mayotte in Chad",
+      "Polio resurgence in Chad — 77 cases, 21 deaths"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912203+00:00",
+    "region": "Somalia",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "GDELT Event 19: Wright Militia vs Taiwan in Somalia",
+      "Fire hotspot detected in Somalia — FRP=216.7 MW"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912204+00:00",
+    "region": "Taiwan Strait",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "Protest erupts in Taiwan Strait capital over government crackdown",
+      "Trending: #occupation in Taiwan Strait (343,871 engagements)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912206+00:00",
+    "region": "India",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 4,
+    "top_signals": [
+      "ACLED Explosions/Remote Violence: IED detonated in marketplace in India (49 fatalities)",
+      "Military exercise conducted near India disputed zone",
+      "Fire hotspot detected in India — FRP=206.5 MW"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912208+00:00",
+    "region": "Israel",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 1,
+    "top_signals": [
+      "Trending: #militarycoup in Israel (49,390 engagements)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912209+00:00",
+    "region": "Colombia",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "Fire hotspot detected in Colombia — FRP=217.3 MW",
+      "Civil unrest spreading across Colombia major cities"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912211+00:00",
+    "region": "Taiwan",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 1,
+    "top_signals": [
+      "Fire hotspot detected in Taiwan — FRP=376.5 MW"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912212+00:00",
+    "region": "Georgia (Country)",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 1,
+    "top_signals": [
+      "Fire hotspot detected in Georgia (Country) — FRP=258.8 MW"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912214+00:00",
+    "region": "Kashmir",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 1,
+    "top_signals": [
+      "Bombing campaign targets infrastructure in Kashmir"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912215+00:00",
+    "region": "Iraq-Syria Border",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 1,
+    "top_signals": [
+      "Trending: #sanctions in Iraq-Syria Border (55,309 engagements)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912217+00:00",
+    "region": "Palestine",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 1,
+    "top_signals": [
+      "Trending: #strike in Palestine (361,446 engagements)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912219+00:00",
+    "region": "Lebanon",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 1,
+    "top_signals": [
+      "Trending: #riot in Lebanon (335,030 engagements)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912220+00:00",
+    "region": "Sudan",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 3,
+    "top_signals": [
+      "Aircraft COBRA9 alt=25153ft spd=545kts near Sudan",
+      "Cholera outbreak in refugee camp in Sudan — 543,883 displaced",
+      "Humanitarian corridor established in Sudan — 891,570 displaced"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912222+00:00",
+    "region": "Yemen",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 2,
+    "top_signals": [
+      "Aircraft DUKE22 alt=39911ft spd=428kts near Yemen",
+      "Cholera epidemic in Yemen — 4970 cases, 1043 deaths"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912223+00:00",
+    "region": "Nigeria",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 1,
+    "top_signals": [
+      "Aircraft TOPCAT15 alt=19432ft spd=307kts near Nigeria"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912225+00:00",
+    "region": "Syria",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 1,
+    "top_signals": [
+      "Aircraft JAKE77 alt=23250ft spd=797kts near Syria"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912226+00:00",
+    "region": "Cameroon",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 1,
+    "top_signals": [
+      "Aircraft REACH67 alt=31677ft spd=494kts near Cameroon"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912228+00:00",
+    "region": "DR Congo",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 2,
+    "top_signals": [
+      "Aircraft STEEL3 alt=8550ft spd=400kts near DR Congo",
+      "Diplomatic relations strained between DR Congo and neighbors"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:37:23.912229+00:00",
+    "region": "Armenia",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 1,
+    "top_signals": [
+      "troops massed near Armenia border amid escalating tensions"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013899+00:00",
+    "region": "Persian Gulf",
+    "max_severity": "CRITICAL",
+    "recommendation": "Immediate escalation required. Activate full emergency protocol.",
+    "signal_count": 1,
+    "top_signals": [
+      "ACLED Coup: Military coup attempt underway in Persian Gulf (10 fatalities)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013906+00:00",
+    "region": "Baltic Sea",
+    "max_severity": "CRITICAL",
+    "recommendation": "Immediate escalation required. Activate full emergency protocol.",
+    "signal_count": 2,
+    "top_signals": [
+      "ACLED Coup: Military coup attempt underway in Baltic Sea (40 fatalities)",
+      "Missile launch detected near Baltic Sea coastline"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013909+00:00",
+    "region": "Serbia",
+    "max_severity": "CRITICAL",
+    "recommendation": "Immediate escalation required. Activate full emergency protocol.",
+    "signal_count": 2,
+    "top_signals": [
+      "ACLED Strategic development: Military deployment and mobilization ordered in Serbia (48 fatalities)",
+      "GDELT Event 18: Stein Forces vs Myanmar in Serbia"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013913+00:00",
+    "region": "Afghanistan",
+    "max_severity": "CRITICAL",
+    "recommendation": "Immediate escalation required. Activate full emergency protocol.",
+    "signal_count": 5,
+    "top_signals": [
+      "ACLED Strategic development: Military deployment and mobilization ordered in Afghanistan (20 fatalit",
+      "Fire hotspot detected in Afghanistan — FRP=34.8 MW",
+      "Trending: #riot in Afghanistan (490,296 engagements)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013914+00:00",
+    "region": "Myanmar",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 1,
+    "top_signals": [
+      "Internet shutdown detected in Myanmar — 92% connectivity loss"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013916+00:00",
+    "region": "Pakistan",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 4,
+    "top_signals": [
+      "Internet shutdown detected in Pakistan — 94% connectivity loss",
+      "ACLED Battles: Armed clash between state forces and rebel groups in Pakistan (15 fatalities)",
+      "Diplomatic relations strained between Pakistan and neighbors"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013918+00:00",
+    "region": "Venezuela",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "Internet shutdown detected in Venezuela — 60% connectivity loss",
+      "Naval vessels patrolling disputed waters near Venezuela"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013920+00:00",
+    "region": "Cuba",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 1,
+    "top_signals": [
+      "Internet shutdown detected in Cuba — 78% connectivity loss"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013921+00:00",
+    "region": "Russia",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "Internet shutdown detected in Russia — 92% connectivity loss",
+      "Military exercise conducted near Russia disputed zone"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013923+00:00",
+    "region": "Black Sea",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 1,
+    "top_signals": [
+      "ACLED Protests: Mass protest against government forces in Black Sea (45 fatalities)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013925+00:00",
+    "region": "South China Sea",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 1,
+    "top_signals": [
+      "ACLED Protests: Mass protest against government forces in South China Sea (7 fatalities)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013926+00:00",
+    "region": "Mali",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "GDELT Event 20: Marshall Government vs Kenya in Mali",
+      "Artillery shelling reported in Mali eastern province"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013928+00:00",
+    "region": "Mexico",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "GDELT Event 172: Hernandez Militia vs Aruba in Mexico",
+      "Aircraft REACH67 alt=38919ft spd=762kts near Mexico"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013929+00:00",
+    "region": "Red Sea",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "GDELT Event 174: Mcclure Army vs Slovakia (Slovak Republic) in Red Sea",
+      "Military exercise conducted near Red Sea disputed zone"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013931+00:00",
+    "region": "Ethiopia",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 3,
+    "top_signals": [
+      "GDELT Event 18: Meadows Forces vs Kiribati in Ethiopia",
+      "Trending: #invasion in Ethiopia (291,048 engagements)",
+      "Refugee crisis — border surge in Ethiopia — 2,591,656 displaced"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013933+00:00",
+    "region": "Iran",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 6,
+    "top_signals": [
+      "GDELT Event 174: Flores Forces vs Mauritius in Iran",
+      "GDELT Event 19: Murphy Government vs Korea in Iran",
+      "GDELT Event 173: Stuart Forces vs Saint Barthelemy in Iran"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013934+00:00",
+    "region": "Chad",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "GDELT Event 18: Adkins Government vs Mayotte in Chad",
+      "Polio resurgence in Chad — 77 cases, 21 deaths"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013936+00:00",
+    "region": "Somalia",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "GDELT Event 19: Wright Militia vs Taiwan in Somalia",
+      "Fire hotspot detected in Somalia — FRP=216.7 MW"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013937+00:00",
+    "region": "Taiwan Strait",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "Protest erupts in Taiwan Strait capital over government crackdown",
+      "Trending: #occupation in Taiwan Strait (343,871 engagements)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013939+00:00",
+    "region": "India",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 4,
+    "top_signals": [
+      "ACLED Explosions/Remote Violence: IED detonated in marketplace in India (49 fatalities)",
+      "Military exercise conducted near India disputed zone",
+      "Fire hotspot detected in India — FRP=206.5 MW"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013940+00:00",
+    "region": "Israel",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 1,
+    "top_signals": [
+      "Trending: #militarycoup in Israel (49,390 engagements)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013942+00:00",
+    "region": "Colombia",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 2,
+    "top_signals": [
+      "Fire hotspot detected in Colombia — FRP=217.3 MW",
+      "Civil unrest spreading across Colombia major cities"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013944+00:00",
+    "region": "Taiwan",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 1,
+    "top_signals": [
+      "Fire hotspot detected in Taiwan — FRP=376.5 MW"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013947+00:00",
+    "region": "Georgia (Country)",
+    "max_severity": "HIGH",
+    "recommendation": "Issue alert. Notify stakeholders. Prepare response protocols.",
+    "signal_count": 1,
+    "top_signals": [
+      "Fire hotspot detected in Georgia (Country) — FRP=258.8 MW"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013948+00:00",
+    "region": "Kashmir",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 1,
+    "top_signals": [
+      "Bombing campaign targets infrastructure in Kashmir"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013950+00:00",
+    "region": "Iraq-Syria Border",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 1,
+    "top_signals": [
+      "Trending: #sanctions in Iraq-Syria Border (55,309 engagements)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013952+00:00",
+    "region": "Palestine",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 1,
+    "top_signals": [
+      "Trending: #strike in Palestine (361,446 engagements)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013955+00:00",
+    "region": "Lebanon",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 1,
+    "top_signals": [
+      "Trending: #riot in Lebanon (335,030 engagements)"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013957+00:00",
+    "region": "Sudan",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 3,
+    "top_signals": [
+      "Aircraft COBRA9 alt=25153ft spd=545kts near Sudan",
+      "Cholera outbreak in refugee camp in Sudan — 543,883 displaced",
+      "Humanitarian corridor established in Sudan — 891,570 displaced"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013958+00:00",
+    "region": "Yemen",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 2,
+    "top_signals": [
+      "Aircraft DUKE22 alt=39911ft spd=428kts near Yemen",
+      "Cholera epidemic in Yemen — 4970 cases, 1043 deaths"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013960+00:00",
+    "region": "Nigeria",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 1,
+    "top_signals": [
+      "Aircraft TOPCAT15 alt=19432ft spd=307kts near Nigeria"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013961+00:00",
+    "region": "Syria",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 1,
+    "top_signals": [
+      "Aircraft JAKE77 alt=23250ft spd=797kts near Syria"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013963+00:00",
+    "region": "Cameroon",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 1,
+    "top_signals": [
+      "Aircraft REACH67 alt=31677ft spd=494kts near Cameroon"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013964+00:00",
+    "region": "DR Congo",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 2,
+    "top_signals": [
+      "Aircraft STEEL3 alt=8550ft spd=400kts near DR Congo",
+      "Diplomatic relations strained between DR Congo and neighbors"
+    ]
+  },
+  {
+    "timestamp": "2026-03-29T11:39:20.013966+00:00",
+    "region": "Armenia",
+    "max_severity": "MEDIUM",
+    "recommendation": "Increase monitoring frequency. Prepare contingency plans.",
+    "signal_count": 1,
+    "top_signals": [
+      "troops massed near Armenia border amid escalating tensions"
+    ]
   }
 ]

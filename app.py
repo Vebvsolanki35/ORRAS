@@ -48,7 +48,8 @@ def run_pipeline():
     Execute the full ORRAS data pipeline.
 
     Returns:
-        Tuple: (signals, anomalies, escalation_data, actions, status_map, conf_map)
+        Tuple: (signals, anomalies, escalation_data, actions, status_map, conf_map,
+                active_alerts)
     """
     from data_collector import DataCollectionOrchestrator
     from data_processor import DataProcessor
@@ -58,6 +59,12 @@ def run_pipeline():
     from escalation_tracker import EscalationTracker
     from confidence_engine import ConfidenceEngine
     from action_engine import ActionEngine
+    from classifier_engine import ClassifierEngine
+    from weight_engine import WeightEngine
+    from disaster_engine import DisasterEngine
+    from fusion_engine import FusionEngine
+    from geofence_engine import GeofenceEngine
+    from alert_engine import AlertEngine
 
     raw = DataCollectionOrchestrator().collect_all()
     status_map = raw.pop("_status", {})
@@ -68,13 +75,22 @@ def run_pipeline():
     anomalies = AnomalyEngine().detect_anomalies(signals)
     escalation_data = EscalationTracker().run(signals)
 
+    # Part 2 enrichment engines
+    signals = ClassifierEngine().classify_all(signals)
+    signals = WeightEngine().apply_weights(signals)
+    signals = DisasterEngine().score_all(signals)
+    signals = FusionEngine().fuse_all(signals)
+    signals = GeofenceEngine().tag_all(signals)
+
     conf_engine = ConfidenceEngine()
     conf_map = conf_engine.score_confidence(signals)
     signals = conf_engine.annotate_signals(signals, conf_map)
 
     actions = ActionEngine().generate_region_actions(signals)
 
-    return signals, anomalies, escalation_data, actions, status_map, conf_map
+    active_alerts = AlertEngine().generate_alerts(signals)
+
+    return signals, anomalies, escalation_data, actions, status_map, conf_map, active_alerts
 
 
 @st.cache_data(ttl=60)
@@ -113,6 +129,26 @@ def run_forecast_pipeline():
     forecasts = pe.forecast_all_regions(history)
     outlook = pe.get_high_risk_outlook(forecasts)
     return forecasts, outlook
+
+
+@st.cache_data(ttl=120)
+def run_disaster_pipeline(signals_tuple):
+    """
+    Compute disaster hotspots and a composite disaster index.
+
+    Args:
+        signals_tuple: Tuple-converted signals for cache-key hashing.
+
+    Returns:
+        Tuple: (hotspots list, disaster_index dict)
+    """
+    from disaster_engine import DisasterEngine
+
+    signals = list(signals_tuple)
+    de = DisasterEngine()
+    hotspots = de.get_disaster_hotspots(signals)
+    disaster_index = de.compute_disaster_index(signals)
+    return hotspots, disaster_index
 
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
@@ -654,6 +690,65 @@ def _render_footer(signals: list, anomalies: list, escalation_data: dict) -> Non
         )
 
 
+# ── Fusion & Alerts panel ─────────────────────────────────────────────────────
+
+def _render_fusion_and_alerts_panel(signals: list, active_alerts: list) -> None:
+    """Render the Active Alerts and Geofence Triggers sections."""
+    col_alerts, col_geo = st.columns(2)
+
+    with col_alerts:
+        st.markdown("#### 🚨 Active Alerts")
+        if active_alerts:
+            total = len(active_alerts)
+            critical = sum(1 for a in active_alerts if a.get("severity") == "CRITICAL")
+            high = sum(1 for a in active_alerts if a.get("severity") == "HIGH")
+            st.markdown(
+                f'<div style="padding:0.6rem 1rem;border-radius:8px;'
+                f'background:#1f2937;border:1px solid #374151;margin-bottom:0.5rem;">'
+                f'<span style="color:#f9fafb;font-weight:700;">{total}</span>'
+                f'<span style="color:#9ca3af;"> total · </span>'
+                f'<span style="color:#ef4444;font-weight:700;">{critical} CRITICAL</span>'
+                f'<span style="color:#9ca3af;"> · </span>'
+                f'<span style="color:#f97316;font-weight:700;">{high} HIGH</span>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
+            for alert in active_alerts[:5]:
+                sev = alert.get("severity", "LOW")
+                color = SEV_COLORS.get(sev, "#6b7280")
+                title = alert.get("title", alert.get("region", "Unknown"))
+                st.markdown(
+                    f'<div style="padding:0.4rem 0.8rem;border-left:3px solid {color};'
+                    f'margin-bottom:4px;font-size:0.82rem;color:#e2e8f0;">'
+                    f'<b style="color:{color};">[{sev}]</b> {title}'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+        else:
+            st.caption("No active alerts.")
+
+    with col_geo:
+        st.markdown("#### 🌐 Geofence Triggers")
+        critical_zone_signals = [s for s in signals if s.get("in_critical_zone")]
+        if critical_zone_signals:
+            st.caption(f"{len(critical_zone_signals)} signal(s) inside critical zones")
+            for sig in critical_zone_signals[:5]:
+                zones = ", ".join(sig.get("geofence_zones", []))
+                region = sig.get("region", "Unknown")
+                sev = sig.get("severity", "LOW")
+                color = SEV_COLORS.get(sev, "#6b7280")
+                st.markdown(
+                    f'<div style="padding:0.4rem 0.8rem;border-left:3px solid {color};'
+                    f'margin-bottom:4px;font-size:0.82rem;color:#e2e8f0;">'
+                    f'<b>{region}</b>'
+                    f'<span style="color:#9ca3af;font-size:0.75rem;"> · {zones}</span>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+        else:
+            st.caption("No signals in critical zones.")
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main() -> None:
@@ -668,10 +763,20 @@ def main() -> None:
     actions: list = []
     status_map: dict = {}
     conf_map: dict = {}
+    active_alerts: list = []
     pipeline_error: str | None = None
 
     try:
-        signals, anomalies, escalation_data, actions, status_map, conf_map = run_pipeline()
+        signals, anomalies, escalation_data, actions, status_map, conf_map, active_alerts = run_pipeline()
+        # Persist outside the cached function to avoid duplicate insertions
+        try:
+            from database_engine import DatabaseEngine
+            db = DatabaseEngine()
+            db.insert_signals(signals)
+            for _alert in active_alerts:
+                db.insert_alert(_alert)
+        except Exception as db_exc:  # noqa: BLE001
+            st.warning(f"DB persistence skipped: {db_exc}")
     except Exception:
         pipeline_error = traceback.format_exc()
 
@@ -778,6 +883,12 @@ def main() -> None:
     if actions:
         _render_action_panel(actions)
         st.markdown("<br>", unsafe_allow_html=True)
+
+    # ── Fusion & alerts panel ─────────────────────────────────────────────────
+    st.markdown("### 🔔 Alerts & Geofence")
+    _render_fusion_and_alerts_panel(signals, active_alerts)
+
+    st.markdown("<br>", unsafe_allow_html=True)
 
     # ── AI Global SITREP ──────────────────────────────────────────────────────
     _render_ai_sitrep(signals, anomalies)
