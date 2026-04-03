@@ -51,6 +51,23 @@ footer,
   visibility: hidden !important;
 }
 
+/* ─── Sidebar toggle button (collapse / expand) ─────────────── */
+/* Ensure the ">" slide-bar control is always visible even when
+   the rest of the header is hidden.                            */
+[data-testid="collapsedControl"],
+[data-testid="stSidebarCollapsedControl"],
+button[data-testid="stSidebarCollapseButton"],
+[data-testid="stSidebar"] button[kind="header"] {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #00d4ff !important;
+  background: #050510 !important;
+  border: 1px solid #1a3a5c !important;
+  border-radius: 0 4px 4px 0 !important;
+  z-index: 9999 !important;
+}
+
 /* ─── Sidebar ────────────────────────────────────────────────── */
 [data-testid="stSidebar"],
 [data-testid="stSidebarContent"] {
