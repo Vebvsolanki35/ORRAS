@@ -42,8 +42,15 @@
   font-family: var(--font-base);
 }
 
-/* Hide default header, footer, and deploy button */
-header[data-testid="stHeader"],
+/* Hide default header content (toolbar, menu, deploy), but keep the header
+   element itself in the DOM so the sidebar collapsed-control button — which
+   Streamlit ≥ 1.32 renders as a child of stHeader — remains accessible. */
+header[data-testid="stHeader"] {
+  background: transparent !important;
+}
+
+[data-testid="stToolbar"],
+[data-testid="stDecoration"],
 footer,
 #MainMenu,
 .stDeployButton {
