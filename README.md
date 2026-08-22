@@ -128,7 +128,7 @@ cp .env.example .env
 streamlit run app.py
 ```
 
-The dashboard will open at **http://localhost:8501** in your browser.
+The dashboard will open at **[https://orras-intel.streamlit.app/]** in your browser.
 
 ---
 
