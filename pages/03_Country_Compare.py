@@ -46,7 +46,7 @@ except ImportError as e:
     st.stop()
 
 try:
-    from utils import classify_severity
+    from utils import classify_severity, style_map
 except ImportError as e:
     st.error(f"❌ Failed to import utils: {e}")
     st.stop()
@@ -288,8 +288,10 @@ if ranking:
         }.get(sev, "")
         return [bg] * len(row)
 
-    styled_rank = df_rank.style.apply(_color_row, axis=1).applymap(
-        _color_severity, subset=["Severity"]
+    styled_rank = style_map(
+        df_rank.style.apply(_color_row, axis=1),
+        _color_severity,
+        subset=["Severity"],
     )
 
     st.dataframe(styled_rank, use_container_width=True, hide_index=True)

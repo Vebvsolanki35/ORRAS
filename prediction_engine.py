@@ -15,7 +15,13 @@ from datetime import datetime, timedelta, timezone
 import numpy as np
 import pandas as pd
 
-from config import FORECAST_DAYS, MIN_HISTORY_DAYS, RISK_THRESHOLDS
+from config import (
+    COLD_START_MAX_CONFIDENCE,
+    COLD_START_MIN_POINTS,
+    FORECAST_DAYS,
+    MIN_HISTORY_DAYS,
+    RISK_THRESHOLDS,
+)
 from utils import classify_severity, get_logger
 
 logger = get_logger(__name__)
@@ -33,6 +39,12 @@ class PredictionEngine:
 
     # Minimum number of data points required before any forecast is attempted
     MIN_POINTS: int = MIN_HISTORY_DAYS  # imported from config (default 3)
+
+    # Absolute floor: below this a region has no observable trend at all.
+    COLD_START_MIN_POINTS: int = COLD_START_MIN_POINTS
+
+    # Confidence ceiling for cold-start forecasts (they are indicative only).
+    COLD_START_MAX_CONFIDENCE: float = COLD_START_MAX_CONFIDENCE
 
     # Number of recent days used for linear-regression fitting
     REGRESSION_WINDOW: int = 7
@@ -322,11 +334,14 @@ class PredictionEngine:
 
     def forecast_all_regions(self, history: list) -> dict:
         """
-        Run the full forecasting pipeline for every region that has at least
-        MIN_HISTORY_DAYS days of data in the escalation history.
+        Run the full forecasting pipeline for every region present in the
+        escalation history.
 
-        Uses the linear method as the primary forecast; the weighted-average
-        result is included in `forecast_points` for comparison.
+        Regions with at least MIN_HISTORY_DAYS of data get a normal
+        regression-based forecast. Regions with only COLD_START_MIN_POINTS
+        days still get a forecast so the dashboard is useful from day one,
+        but it is flagged ``cold_start=True``, uses the more conservative
+        weighted-average method, and has its confidence capped.
 
         Args:
             history: Full escalation history list (from EscalationTracker.load_history).
@@ -336,10 +351,13 @@ class PredictionEngine:
             {
                 region: {
                     "current": float,           # latest observed score
-                    "predicted_3day": float,    # linear forecast 3 days out
+                    "predicted_3day": float,    # forecast 3 days out
                     "direction": str,           # trend direction label
                     "confidence": float,        # 0.0–1.0
-                    "forecast_points": list,    # list of linear forecast dicts
+                    "forecast_points": list,    # list of forecast dicts
+                    "history_days": int,        # distinct days observed
+                    "cold_start": bool,         # True when history is thin
+                    "method": str,              # "linear" or "weighted_average"
                 }
             }
         """
@@ -349,39 +367,123 @@ class PredictionEngine:
             all_regions.update((snapshot.get("regions") or {}).keys())
 
         results = {}
+        cold_start_regions: list[str] = []
+
         for region in sorted(all_regions):
             df = self.prepare_time_series(history, region)
+            history_days = len(df)
 
-            # Skip regions without enough data to forecast
-            if len(df) < self.MIN_POINTS:
+            # Below the absolute floor there is no observable trend at all.
+            if history_days < self.COLD_START_MIN_POINTS:
                 logger.debug(
                     f"forecast_all_regions: skipping '{region}' "
-                    f"(only {len(df)} day(s) of data)."
+                    f"(only {history_days} day(s) of data)."
                 )
                 continue
 
-            linear_pts = self.forecast_linear(df, days=FORECAST_DAYS)
-            if not linear_pts:
+            cold_start = history_days < self.MIN_POINTS
+
+            if cold_start:
+                # A 2-point regression extrapolates wildly, so prefer the
+                # damped weighted average while history accumulates.
+                points = self.forecast_weighted_average(df, days=FORECAST_DAYS)
+                method = "weighted_average"
+                if not points:
+                    points = self.forecast_linear(df, days=FORECAST_DAYS)
+                    method = "linear"
+            else:
+                points = self.forecast_linear(df, days=FORECAST_DAYS)
+                method = "linear"
+
+            if not points:
                 continue
 
             current_score = float(df["score"].iloc[-1])
-            predicted_3day = linear_pts[-1]["predicted_score"]  # last point = day 3
+            predicted_3day = points[-1]["predicted_score"]  # last point = day 3
             direction = self.detect_trend_direction(df)
             confidence = self.compute_forecast_confidence(df)
+
+            if cold_start:
+                confidence = min(confidence, self.COLD_START_MAX_CONFIDENCE)
+                cold_start_regions.append(region)
 
             results[region] = {
                 "current": round(current_score, 2),
                 "predicted_3day": predicted_3day,
                 "direction": direction,
                 "confidence": confidence,
-                "forecast_points": linear_pts,
+                "forecast_points": points,
+                "history_days": history_days,
+                "cold_start": cold_start,
+                "method": method,
             }
             logger.info(
                 f"Forecast for '{region}': current={current_score:.1f} → "
-                f"day3={predicted_3day:.1f} ({direction}, conf={confidence:.2f})"
+                f"day3={predicted_3day:.1f} ({direction}, conf={confidence:.2f}"
+                f"{', cold-start' if cold_start else ''})"
+            )
+
+        if cold_start_regions:
+            logger.info(
+                f"forecast_all_regions: {len(cold_start_regions)} region(s) "
+                f"forecast from thin history (cold start)."
             )
 
         return results
+
+    # ---------------------------------------------------------------------------
+    # Readiness reporting
+    # ---------------------------------------------------------------------------
+
+    def forecast_readiness(self, history: list) -> dict:
+        """
+        Report how much escalation history is available for forecasting.
+
+        Lets the UI explain *why* no forecast is available and how close it
+        is, instead of showing a dead-end warning.
+
+        Args:
+            history: Full escalation history list.
+
+        Returns:
+            Dict with keys:
+                regions:        total distinct regions seen in history
+                forecastable:   regions with >= COLD_START_MIN_POINTS days
+                mature:         regions with >= MIN_HISTORY_DAYS days
+                cold_start:     forecastable but not yet mature
+                days_available: distinct calendar days present in history
+                days_required:  MIN_HISTORY_DAYS
+        """
+        all_regions: set[str] = set()
+        days: set[str] = set()
+
+        for snapshot in history or []:
+            all_regions.update((snapshot.get("regions") or {}).keys())
+            ts_str = snapshot.get("timestamp", "")
+            try:
+                ts = datetime.fromisoformat(str(ts_str).replace("Z", "+00:00"))
+                days.add(ts.date().isoformat())
+            except (ValueError, AttributeError):
+                continue
+
+        forecastable = 0
+        mature = 0
+        for region in all_regions:
+            n = len(self.prepare_time_series(history, region))
+            if n >= self.MIN_POINTS:
+                mature += 1
+                forecastable += 1
+            elif n >= self.COLD_START_MIN_POINTS:
+                forecastable += 1
+
+        return {
+            "regions": len(all_regions),
+            "forecastable": forecastable,
+            "mature": mature,
+            "cold_start": forecastable - mature,
+            "days_available": len(days),
+            "days_required": self.MIN_POINTS,
+        }
 
     def get_high_risk_outlook(self, forecasts: dict) -> list:
         """

@@ -106,6 +106,15 @@ def load_history(signal_count: int) -> list:
         return []
 
 
+@st.cache_data(ttl=60)
+def load_readiness(signal_count: int) -> dict:
+    """Report how much escalation history is available for forecasting."""
+    try:
+        return PredictionEngine().forecast_readiness(load_history(signal_count))
+    except Exception:
+        return {}
+
+
 # ---------------------------------------------------------------------------
 # Load data
 # ---------------------------------------------------------------------------
@@ -114,6 +123,7 @@ with st.spinner("Loading forecast data…"):
     signals = load_signals()
     forecasts = load_forecasts(len(signals))
     history = load_history(len(signals))
+    readiness = load_readiness(len(signals))
 
 # ---------------------------------------------------------------------------
 # Page header
@@ -124,14 +134,23 @@ st.markdown("*3-day ahead risk projections using trend analysis*")
 st.divider()
 
 if not forecasts:
-    st.warning(
-        "⚠️ Insufficient historical data for forecasting. "
-        "At least 3 days of escalation history is required."
-    )
-    st.info(
-        "Run the main dashboard to generate escalation snapshots, "
-        "then return here for predictions."
-    )
+    st.warning("⚠️ Not enough escalation history to forecast any region yet.")
+    if readiness:
+        days_have = readiness.get("days_available", 0)
+        days_need = readiness.get("days_required", 3)
+        st.progress(
+            min(1.0, days_have / max(days_need, 1)),
+            text=(
+                f"Collecting history: {days_have}/{days_need} days "
+                f"({readiness.get('regions', 0)} regions tracked)"
+            ),
+        )
+        st.caption(
+            "ORRAS records one escalation snapshot per run. Open the main "
+            "dashboard on consecutive days to build forecasting history. "
+            "Backfill a baseline instantly from the sidebar on the main page "
+            "if you need forecasts today."
+        )
     st.stop()
 
 # ---------------------------------------------------------------------------

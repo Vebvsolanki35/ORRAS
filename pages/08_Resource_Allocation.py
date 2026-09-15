@@ -44,7 +44,9 @@ except ImportError as e:
     st.error(f"❌ {e}"); st.stop()
 
 try:
-    from utils import classify_severity, load_json, save_json, now_iso
+    from utils import (
+        classify_severity, load_json, save_json, now_iso, style_map,
+    )
 except ImportError as e:
     st.error(f"❌ {e}"); st.stop()
 
@@ -181,8 +183,8 @@ def _color_pct(val: float) -> str:
         return "color: #ef4444"
 
 
-def _style_inventory(df: pd.DataFrame) -> pd.io.formats.style.Styler:
-    return df.style.applymap(_color_pct, subset=["% Available"])
+def _style_inventory(df: pd.DataFrame):
+    return style_map(df.style, _color_pct, subset=["% Available"])
 
 
 st.dataframe(_style_inventory(inventory_df), use_container_width=True)
@@ -202,7 +204,7 @@ def _color_sev(val: str) -> str:
     return f"color: {_SEV_COLORS.get(val, '#e5e7eb')}"
 
 
-styled_needs = region_needs_df.style.applymap(_color_sev, subset=["Severity"])
+styled_needs = style_map(region_needs_df.style, _color_sev, subset=["Severity"])
 st.dataframe(styled_needs, use_container_width=True)
 
 st.divider()
@@ -220,7 +222,7 @@ def _color_priority(val: str) -> str:
     return f"color: {_PRIORITY_COLORS.get(val, '#e5e7eb')}"
 
 
-styled_orders = deployment_df.style.applymap(_color_priority, subset=["Priority"])
+styled_orders = style_map(deployment_df.style, _color_priority, subset=["Priority"])
 st.dataframe(styled_orders, use_container_width=True)
 
 st.divider()

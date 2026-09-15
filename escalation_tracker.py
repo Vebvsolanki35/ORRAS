@@ -9,7 +9,12 @@ from datetime import datetime, timedelta, timezone
 
 import pandas as pd
 
-from config import ESCALATION_FILE, ESCALATION_LEVEL_JUMP, ESCALATION_WINDOW_HOURS
+from config import (
+    ESCALATION_FILE,
+    ESCALATION_LEVEL_JUMP,
+    ESCALATION_WINDOW_HOURS,
+    MAX_HISTORY_SNAPSHOTS,
+)
 from utils import classify_severity, get_logger, load_json, now_iso, save_json
 
 logger = get_logger(__name__)
@@ -188,13 +193,147 @@ class EscalationTracker:
             Summary dict with keys: region_risk, escalation_alerts.
         """
         region_risk = self.compute_region_risk(signals)
+
+        # Derive any historical days the signals already describe, so
+        # forecasting and anomaly baselines work on the first run rather than
+        # after days of manual collection. Idempotent: only missing days are
+        # written.
+        try:
+            self.backfill_from_signals(signals)
+        except Exception as exc:  # noqa: BLE001 - history is non-critical
+            logger.warning(f"EscalationTracker: history backfill skipped ({exc}).")
+
         self.save_snapshot(region_risk)
+
+        # Keep the history file bounded on long-lived deployments.
+        try:
+            self.prune_history()
+        except Exception as exc:  # noqa: BLE001
+            logger.warning(f"EscalationTracker: history prune skipped ({exc}).")
+
         history = self.load_history()
         alerts = self.detect_rapid_escalation(history)
         return {
             "region_risk": region_risk,
             "escalation_alerts": alerts,
         }
+
+    # ------------------------------------------------------------------
+    # History backfill
+    # ------------------------------------------------------------------
+
+    def derive_historical_risk(self, signals: list[dict]) -> list[dict]:
+        """
+        Derive per-day regional risk snapshots from the signals themselves.
+
+        Signals carry their own timestamps, so a corpus spanning several days
+        already describes how regional risk moved across those days. This
+        turns that into snapshot records without inventing any data.
+
+        Args:
+            signals: Unified-schema signals with ``timestamp`` and ``location``.
+
+        Returns:
+            List of snapshot dicts in the same shape as save_snapshot() writes,
+            one per calendar day found in the signals, oldest first.
+        """
+        per_day: dict[str, dict[str, list[float]]] = {}
+
+        for sig in signals or []:
+            ts_str = sig.get("timestamp") or ""
+            try:
+                ts = datetime.fromisoformat(str(ts_str).replace("Z", "+00:00"))
+                if ts.tzinfo is None:
+                    ts = ts.replace(tzinfo=timezone.utc)
+            except (ValueError, AttributeError):
+                continue
+
+            location = sig.get("location") or "Unknown"
+            score = float(sig.get("raw_score") or 0.0)
+            per_day.setdefault(ts.date().isoformat(), {}).setdefault(
+                location, []
+            ).append(score)
+
+        snapshots: list[dict] = []
+        for day in sorted(per_day):
+            regions = {}
+            for region, scores in per_day[day].items():
+                avg = round(sum(scores) / len(scores), 2)
+                regions[region] = {
+                    "score": avg,
+                    "severity": classify_severity(avg),
+                    "timestamp": f"{day}T12:00:00+00:00",
+                    "signal_count": len(scores),
+                }
+            snapshots.append(
+                {"timestamp": f"{day}T12:00:00+00:00", "regions": regions}
+            )
+
+        return snapshots
+
+    def backfill_from_signals(self, signals: list[dict]) -> int:
+        """
+        Fill gaps in escalation history using the signals' own timestamps.
+
+        Only days that are *not already present* in the history are written,
+        so repeated calls are idempotent and never overwrite live snapshots.
+
+        Args:
+            signals: Unified-schema signals.
+
+        Returns:
+            Number of day-snapshots written.
+        """
+        history = self.load_history()
+        covered = set()
+        for snapshot in history:
+            ts_str = snapshot.get("timestamp") or ""
+            try:
+                ts = datetime.fromisoformat(str(ts_str).replace("Z", "+00:00"))
+                covered.add(ts.date().isoformat())
+            except (ValueError, AttributeError):
+                continue
+
+        additions = [
+            snap for snap in self.derive_historical_risk(signals)
+            if snap["timestamp"][:10] not in covered
+        ]
+
+        if not additions:
+            return 0
+
+        history.extend(additions)
+        history.sort(key=lambda s: s.get("timestamp", ""))
+        save_json(ESCALATION_FILE, history)
+        logger.info(
+            f"EscalationTracker: backfilled {len(additions)} day-snapshot(s) "
+            f"from signal timestamps."
+        )
+        return len(additions)
+
+    def prune_history(self, max_snapshots: int = MAX_HISTORY_SNAPSHOTS) -> int:
+        """
+        Cap the escalation history so the file cannot grow without bound.
+
+        Keeps the most recent *max_snapshots* entries.
+
+        Args:
+            max_snapshots: Maximum number of snapshots to retain.
+
+        Returns:
+            Number of snapshots removed (0 if nothing was pruned).
+        """
+        history = self.load_history()
+        if len(history) <= max_snapshots:
+            return 0
+
+        removed = len(history) - max_snapshots
+        save_json(ESCALATION_FILE, history[-max_snapshots:])
+        logger.info(
+            f"EscalationTracker: pruned {removed} snapshot(s); "
+            f"kept the most recent {max_snapshots}."
+        )
+        return removed
 
 
 # ---------------------------------------------------------------------------

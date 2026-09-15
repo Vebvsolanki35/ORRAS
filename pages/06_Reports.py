@@ -59,6 +59,12 @@ except ImportError as e:
     st.stop()
 
 try:
+    from utils import alert_region, alert_severity, normalize_alert_log
+except ImportError as e:
+    st.error(f"❌ Failed to import utils: {e}")
+    st.stop()
+
+try:
     from report_engine import ReportEngine
 except ImportError as e:
     st.error(f"❌ Failed to import report_engine: {e}")
@@ -146,8 +152,9 @@ def load_safety(signal_count: int) -> dict:
 
 @st.cache_data(ttl=60)
 def load_alert_log() -> list:
+    """Load the alert log and normalise both legacy and current record shapes."""
     try:
-        return load_json(ALERT_LOG_FILE)
+        return normalize_alert_log(load_json(ALERT_LOG_FILE))
     except Exception:
         return []
 
@@ -410,7 +417,7 @@ with tab3:
         with ah_col1:
             ah_region_filter = st.multiselect(
                 "Filter by Region",
-                options=["All"] + sorted({a.get("region", "Unknown") for a in alert_log}),
+                options=["All"] + sorted({alert_region(a) for a in alert_log}),
                 default=["All"],
                 key="ah_region",
             )
@@ -443,8 +450,8 @@ with tab3:
         filtered_alerts = []
         for alert in alert_log:
             a_date = (alert.get("timestamp") or "")[:10]
-            a_region = alert.get("region", "Unknown")
-            a_severity = alert.get("max_severity") or alert.get("severity") or "LOW"
+            a_region = alert_region(alert)
+            a_severity = alert_severity(alert)
 
             if not (ah_start <= a_date <= ah_end):
                 continue
@@ -503,7 +510,7 @@ with tab3:
             for a in sorted(filtered_alerts, key=lambda x: x.get("timestamp", ""), reverse=True):
                 alert_rows.append({
                     "Timestamp": (a.get("timestamp") or "")[:19],
-                    "Region": a.get("region", "Unknown"),
+                    "Region": alert_region(a),
                     "Severity": a.get("max_severity") or a.get("severity") or "LOW",
                     "Recommendation": a.get("recommendation") or a.get("action", "—"),
                     "Signal Count": a.get("signal_count", "—"),

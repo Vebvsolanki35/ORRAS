@@ -44,7 +44,15 @@ except ImportError as e:
     st.error(f"❌ {e}"); st.stop()
 
 try:
-    from utils import load_json, save_json, classify_severity
+    from utils import (
+        load_json, save_json, classify_severity, generate_id,
+        alert_region, alert_severity, normalize_alert_log,
+    )
+except ImportError as e:
+    st.error(f"❌ {e}"); st.stop()
+
+try:
+    from database_engine import DatabaseEngine
 except ImportError as e:
     st.error(f"❌ {e}"); st.stop()
 
@@ -66,110 +74,115 @@ _DB_FILE = "data/orras.db"
 # ---------------------------------------------------------------------------
 
 def _get_db() -> sqlite3.Connection:
-    """Return SQLite connection, creating tables if needed."""
+    """
+    Return a connection to the canonical ORRAS database.
+
+    Uses DatabaseEngine so this page shares one schema with the main
+    pipeline instead of maintaining a second, conflicting set of tables in
+    the same SQLite file.
+    """
     os.makedirs("data", exist_ok=True)
-    conn = sqlite3.connect(_DB_FILE, check_same_thread=False)
-    conn.row_factory = sqlite3.Row
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS signals (
-            id TEXT PRIMARY KEY,
-            timestamp TEXT,
-            type TEXT,
-            source TEXT,
-            location TEXT,
-            latitude REAL,
-            longitude REAL,
-            title TEXT,
-            description TEXT,
-            raw_score REAL,
-            severity TEXT,
-            keywords_matched TEXT
-        )
-    """)
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS alerts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            timestamp TEXT,
-            region TEXT,
-            severity TEXT,
-            recommendation TEXT,
-            signal_count INTEGER,
-            acknowledged INTEGER DEFAULT 0
-        )
-    """)
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS escalations (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            timestamp TEXT,
-            region TEXT,
-            score REAL,
-            severity TEXT
-        )
-    """)
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS deployments (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            timestamp TEXT,
-            region TEXT,
-            resource TEXT,
-            quantity INTEGER,
-            reason TEXT
-        )
-    """)
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS scenarios (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            timestamp TEXT,
-            region TEXT,
-            scenario_name TEXT,
-            baseline_score REAL,
-            result_score REAL
-        )
-    """)
-    conn.commit()
-    return conn
+    return DatabaseEngine().connect()
+
+
+# Canonical table names (see database_engine.TABLE_SCHEMAS)
+_T_SIGNALS = "signals"
+_T_ALERTS = "alerts"
+_T_ESCALATION = "escalation_history"
+_T_DEPLOYMENTS = "resource_deployments"
+_T_SCENARIOS = "scenarios"
 
 
 def _seed_db(conn: sqlite3.Connection, signals: list, alerts: list, escalations: list) -> None:
-    """Seed DB with current data if tables are empty."""
+    """Seed the canonical tables with current data if they are empty."""
     cur = conn.cursor()
-    # Signals
-    if cur.execute("SELECT COUNT(*) FROM signals").fetchone()[0] == 0:
+
+    # ── Signals ────────────────────────────────────────────────────────────
+    if cur.execute(f"SELECT COUNT(*) FROM {_T_SIGNALS}").fetchone()[0] == 0:
         for s in signals:
             kw = json.dumps(s.get("keywords_matched") or [])
             try:
                 cur.execute(
-                    "INSERT OR IGNORE INTO signals VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-                    (s.get("id", ""), s.get("timestamp", ""), s.get("type", ""),
-                     s.get("source", ""), s.get("location", ""),
-                     s.get("latitude"), s.get("longitude"),
-                     (s.get("title") or "")[:200], (s.get("description") or "")[:400],
-                     s.get("raw_score"), s.get("severity", ""), kw),
+                    f"INSERT OR IGNORE INTO {_T_SIGNALS} "
+                    "(id, timestamp, type, source, location, latitude, longitude,"
+                    " title, description, raw_score, conflict_score,"
+                    " disaster_score, keywords_matched, severity,"
+                    " conflict_severity, disaster_severity, confidence,"
+                    " correlated, created_at)"
+                    " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (
+                        s.get("id", ""), s.get("timestamp", ""), s.get("type", ""),
+                        s.get("source", ""), s.get("location", ""),
+                        s.get("latitude"), s.get("longitude"),
+                        (s.get("title") or "")[:200],
+                        (s.get("description") or "")[:400],
+                        s.get("raw_score"), s.get("conflict_score", 0.0),
+                        s.get("disaster_score", 0.0), kw,
+                        s.get("severity", ""),
+                        s.get("conflict_severity", s.get("severity", "")),
+                        s.get("disaster_severity", "MINOR"),
+                        s.get("confidence", "LOW"),
+                        int(bool(s.get("correlated", False))),
+                        s.get("created_at", s.get("timestamp", "")),
+                    ),
                 )
-            except Exception:
+            except Exception:  # noqa: BLE001 - one bad row must not abort seeding
                 pass
-    # Alerts
-    if cur.execute("SELECT COUNT(*) FROM alerts").fetchone()[0] == 0:
+
+    # ── Alerts ─────────────────────────────────────────────────────────────
+    if cur.execute(f"SELECT COUNT(*) FROM {_T_ALERTS}").fetchone()[0] == 0:
         for a in alerts:
-            cur.execute(
-                "INSERT INTO alerts (timestamp, region, severity, recommendation, signal_count) VALUES (?,?,?,?,?)",
-                (a.get("timestamp", ""), a.get("region", ""), a.get("max_severity", ""),
-                 a.get("recommendation", ""), a.get("signal_count", 0)),
-            )
-    # Escalations (from escalation_history.json)
-    if cur.execute("SELECT COUNT(*) FROM escalations").fetchone()[0] == 0:
+            region = alert_region(a)
+            severity = alert_severity(a)
+            try:
+                cur.execute(
+                    f"INSERT INTO {_T_ALERTS} "
+                    "(id, timestamp, location, alert_type, severity, title,"
+                    " description, recommendation, acknowledged)"
+                    " VALUES (?,?,?,?,?,?,?,?,?)",
+                    (
+                        a.get("id") or generate_id(),
+                        a.get("timestamp", ""),
+                        region,
+                        a.get("alert_type") or a.get("track") or "signal",
+                        severity,
+                        a.get("title") or f"Alert — {region}",
+                        a.get("description") or "",
+                        a.get("recommendation", ""),
+                        int(bool(a.get("acknowledged", False))),
+                    ),
+                )
+            except Exception:  # noqa: BLE001
+                pass
+
+    # ── Escalation history ─────────────────────────────────────────────────
+    if cur.execute(f"SELECT COUNT(*) FROM {_T_ESCALATION}").fetchone()[0] == 0:
         for snap in escalations[:50]:
             ts = snap.get("timestamp", "")
             for region, info in (snap.get("regions") or {}).items():
-                cur.execute(
-                    "INSERT INTO escalations (timestamp, region, score, severity) VALUES (?,?,?,?)",
-                    (ts, region, info.get("score", 0), info.get("severity", "")),
-                )
+                score = info.get("score", 0)
+                try:
+                    cur.execute(
+                        f"INSERT INTO {_T_ESCALATION} "
+                        "(id, timestamp, location, conflict_score,"
+                        " disaster_score, combined_score, severity, signal_count)"
+                        " VALUES (?,?,?,?,?,?,?,?)",
+                        (
+                            generate_id(), ts, region,
+                            score, 0.0, score,
+                            info.get("severity", ""),
+                            info.get("signal_count", 0),
+                        ),
+                    )
+                except Exception:  # noqa: BLE001
+                    pass
+
     conn.commit()
 
 
 @st.cache_data(ttl=60)
 def load_signals() -> list:
+    """Score the current mock signal set for display in the explorer."""
     try:
         return ThreatEngine().score_all(generate_all_mock_signals())
     except Exception as e:
@@ -180,10 +193,13 @@ def load_signals() -> list:
 def _cleanup_old(conn: sqlite3.Connection, days: int) -> int:
     cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
     cur = conn.cursor()
-    cur.execute("DELETE FROM signals WHERE timestamp < ?", (cutoff,))
-    deleted = cur.rowcount
-    cur.execute("DELETE FROM alerts WHERE timestamp < ?", (cutoff,))
-    deleted += cur.rowcount
+    deleted = 0
+    for table in (_T_SIGNALS, _T_ALERTS, _T_ESCALATION):
+        try:
+            cur.execute(f"DELETE FROM {table} WHERE timestamp < ?", (cutoff,))
+            deleted += cur.rowcount
+        except Exception:  # noqa: BLE001 - table may be absent
+            continue
     conn.commit()
     return deleted
 
@@ -197,7 +213,9 @@ st.divider()
 
 with st.spinner("Initialising database…"):
     signals = load_signals()
-    alerts_raw = load_json(_ALERT_LOG) if os.path.exists(_ALERT_LOG) else []
+    alerts_raw = normalize_alert_log(
+        load_json(_ALERT_LOG) if os.path.exists(_ALERT_LOG) else []
+    )
     esc_history = load_json(_ESC_HISTORY) if os.path.exists(_ESC_HISTORY) else []
     overrides = load_json(_OVERRIDES_FILE) if os.path.exists(_OVERRIDES_FILE) else []
 
@@ -223,8 +241,8 @@ def _db_count(table: str) -> int:
 
 total_signals = _db_count("signals")
 total_alerts = _db_count("alerts")
-total_esc = _db_count("escalations")
-total_deploy = _db_count("deployments")
+total_esc = _db_count(_T_ESCALATION)
+total_deploy = _db_count(_T_DEPLOYMENTS)
 total_scenarios = _db_count("scenarios")
 
 c1, c2, c3, c4, c5 = st.columns(5)
@@ -310,7 +328,14 @@ if alerts_raw:
 
     df_alerts = pd.DataFrame(alerts_raw)
     if "max_severity" in df_alerts.columns:
-        df_alerts = df_alerts.rename(columns={"max_severity": "severity"})
+        if "severity" in df_alerts.columns:
+            # Both keys present: keep the authoritative one and drop the
+            # alias, otherwise the duplicate column breaks arrow/arrow-serialisation.
+            df_alerts = df_alerts.drop(columns=["max_severity"])
+        else:
+            df_alerts = df_alerts.rename(columns={"max_severity": "severity"})
+    # Guard against any other duplicate column names before rendering.
+    df_alerts = df_alerts.loc[:, ~df_alerts.columns.duplicated()]
     if alert_sev_filter != "All" and "severity" in df_alerts.columns:
         df_alerts = df_alerts[df_alerts["severity"] == alert_sev_filter]
 

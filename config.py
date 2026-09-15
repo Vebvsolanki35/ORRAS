@@ -12,6 +12,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ---------------------------------------------------------------------------
+# Application identity
+# ---------------------------------------------------------------------------
+APP_NAME: str = "ORRAS"
+APP_VERSION: str = "3.1"
+APP_TAGLINE: str = "Operational Risk & Resilience Assessment System"
+VERSION_LABEL: str = f"{APP_NAME} v{APP_VERSION}"
+
+# ---------------------------------------------------------------------------
 # API keys & mode flags
 # ---------------------------------------------------------------------------
 ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
@@ -178,6 +186,14 @@ DISASTER_WEIGHT: float = 0.4
 Z_SCORE_THRESHOLD: float = 2.0
 ROLLING_WINDOW_DAYS: int = 7
 
+# Minimum number of *prior* days of history a region needs before its own
+# history is trusted as a baseline. Below this the engine falls back to a
+# cross-sectional (peer) baseline instead of reporting nothing.
+ANOMALY_MIN_BASELINE_POINTS: int = 2
+
+# Minimum number of regions required for the peer baseline to be meaningful.
+ANOMALY_PEER_MIN_REGIONS: int = 5
+
 # ---------------------------------------------------------------------------
 # Escalation tracking
 # ---------------------------------------------------------------------------
@@ -189,6 +205,13 @@ ESCALATION_LEVEL_JUMP: int = 2
 # ---------------------------------------------------------------------------
 FORECAST_DAYS: int = 3
 MIN_HISTORY_DAYS: int = 3
+
+# Two observations is the mathematical floor for any trend, but far too few
+# for a trustworthy regression. Below MIN_HISTORY_DAYS the engine still emits
+# a forecast, flagged as cold-start with capped confidence, rather than
+# showing an empty page until enough history has accumulated.
+COLD_START_MIN_POINTS: int = 2
+COLD_START_MAX_CONFIDENCE: float = 0.35
 
 # ---------------------------------------------------------------------------
 # Geofence Zones
@@ -270,3 +293,12 @@ THEME_DEFAULT: str = "Dark"
 TICKER_SPEED_SECONDS: int = 30
 GLOBE_DEFAULT_CENTER: dict = {"lat": 20, "lon": 0}
 GLOBE_ROTATION_SPEED: float = 0.5
+
+# ---------------------------------------------------------------------------
+# History retention
+# ---------------------------------------------------------------------------
+# Escalation history is appended on every pipeline run. Cap it so the file
+# cannot grow without bound on a long-lived deployment.
+MAX_HISTORY_SNAPSHOTS: int = 2000
+# Alert log retention cap (records kept, most recent first).
+MAX_ALERT_LOG_RECORDS: int = 5000

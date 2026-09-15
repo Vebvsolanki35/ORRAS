@@ -14,6 +14,7 @@ from typing import Any
 from config import (
     ALERT_DEDUP_WINDOW_MINUTES,
     ALERT_LOG_FILE,
+    MAX_ALERT_LOG_RECORDS,
     MAX_ALERTS_DISPLAYED,
 )
 from utils import generate_id, get_logger, now_iso
@@ -246,11 +247,22 @@ class AlertEngine:
             self._alerts = []
 
     def _save_log(self) -> None:
-        """Persist the current alert list to the log file."""
+        """
+        Persist the current alert list to the log file.
+
+        The log is capped at MAX_ALERT_LOG_RECORDS (most recent first) so a
+        long-running deployment cannot grow the file indefinitely.
+        """
         try:
             os.makedirs(os.path.dirname(self.log_file), exist_ok=True)
+            records = self._alerts
+            if len(records) > MAX_ALERT_LOG_RECORDS:
+                records = sorted(
+                    records, key=lambda a: a.get("timestamp", ""), reverse=True
+                )[:MAX_ALERT_LOG_RECORDS]
+                self._alerts = records
             with open(self.log_file, "w", encoding="utf-8") as fh:
-                json.dump(self._alerts, fh, indent=2, default=str)
+                json.dump(records, fh, indent=2, default=str)
         except Exception as exc:
             logger.warning(f"AlertEngine: failed to save alert log: {exc}")
 
