@@ -6,13 +6,20 @@ and similar-region discovery.
 """
 
 import streamlit as st
+
+from nav import render_top_nav
 import pandas as pd
 
 st.set_page_config(
     page_title="Country Comparison",
     page_icon="⚖️",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ---------------------------------------------------------------------------
 # Module imports with graceful fallback
@@ -120,7 +127,7 @@ else:
         )
     with btn_col:
         st.markdown("<br>", unsafe_allow_html=True)
-        compare_clicked = st.button("⚖️ Compare", use_container_width=True)
+        compare_clicked = st.button("⚖️ Compare", width="stretch")
 
     if "comparison_result" not in st.session_state:
         st.session_state.comparison_result = None
@@ -294,7 +301,7 @@ if ranking:
         subset=["Severity"],
     )
 
-    st.dataframe(styled_rank, use_container_width=True, hide_index=True)
+    st.dataframe(styled_rank, width="stretch", hide_index=True)
 
     # CSV download
     csv_data = df_rank.to_csv(index=False)

@@ -7,6 +7,8 @@ multi-scenario compare, worst-case analysis, JSON export, custom builder.
 """
 
 import streamlit as st
+
+from nav import render_top_nav
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -17,7 +19,12 @@ st.set_page_config(
     page_title="Scenario Simulator",
     page_icon="🎮",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ---------------------------------------------------------------------------
 # Imports
@@ -216,7 +223,7 @@ with col_reg:
 with col_scen:
     selected_scenario = st.selectbox("Crisis Scenario", list(PRESET_SCENARIOS.keys()))
 
-run_sim = st.button("🚀 Run Scenario", use_container_width=True, type="primary")
+run_sim = st.button("🚀 Run Scenario", width="stretch", type="primary")
 
 if run_sim:
     baseline = _region_baseline(signals, selected_region)
@@ -271,7 +278,7 @@ if run_sim:
     fig_time.update_layout(**_CHART_LAYOUT, height=350,
                            title=f"{selected_scenario} — {selected_region}",
                            xaxis_title="Hour", yaxis_title="Score")
-    st.plotly_chart(fig_time, use_container_width=True)
+    st.plotly_chart(fig_time, width="stretch")
 
     # Compound events
     st.markdown("### 💥 Compound Events Detected")
@@ -287,7 +294,7 @@ if run_sim:
         surge = int(base_need * (1 + delta_comb / 20))
         resource_rows.append({"Resource": res, "Baseline Need": base_need, "Scenario Need": surge,
                                "Additional Required": surge - base_need})
-    st.dataframe(pd.DataFrame(resource_rows), use_container_width=True)
+    st.dataframe(pd.DataFrame(resource_rows), width="stretch")
 
     # JSON export
     st.markdown("### 💾 Export Results")
@@ -316,7 +323,7 @@ compare_scenarios = st.multiselect("Select scenarios to compare", list(PRESET_SC
                                    default=list(PRESET_SCENARIOS.keys())[:3])
 compare_region = st.selectbox("Region for comparison", regions if regions else ["Unknown"], key="compare_region")
 
-if st.button("📊 Run Comparison", use_container_width=True):
+if st.button("📊 Run Comparison", width="stretch"):
     baseline = _region_baseline(signals, compare_region)
     comp_rows = []
     for sname in compare_scenarios:
@@ -330,7 +337,7 @@ if st.button("📊 Run Comparison", use_container_width=True):
             "Severity": result["severity"],
             "Duration (h)": scenario["duration_hours"],
         })
-    st.dataframe(pd.DataFrame(comp_rows), use_container_width=True)
+    st.dataframe(pd.DataFrame(comp_rows), width="stretch")
 
 st.divider()
 
@@ -341,7 +348,7 @@ st.divider()
 st.markdown("### ☠️ Worst-Case Analysis")
 wc_region = st.selectbox("Run worst-case for region", regions if regions else ["Unknown"], key="wc_region")
 
-if st.button("⚠️ Run All 5 Scenarios (Worst-Case)", use_container_width=True):
+if st.button("⚠️ Run All 5 Scenarios (Worst-Case)", width="stretch"):
     baseline = _region_baseline(signals, wc_region)
     wc_rows = []
     worst_combined = 0
@@ -359,7 +366,7 @@ if st.button("⚠️ Run All 5 Scenarios (Worst-Case)", use_container_width=True
             worst_combined = result["combined"]
             worst_name = sname
 
-    st.dataframe(pd.DataFrame(wc_rows), use_container_width=True)
+    st.dataframe(pd.DataFrame(wc_rows), width="stretch")
     st.error(f"🔴 **Worst-case scenario for {wc_region}: {worst_name}** — Combined Score: `{worst_combined}`")
 
 st.divider()
@@ -383,7 +390,7 @@ with c3:
     inc_cyber = st.checkbox("Cyber signals", value=False)
     inc_disease = st.checkbox("Disease signals", value=False)
 
-if st.button("🔧 Run Custom Scenario", use_container_width=True):
+if st.button("🔧 Run Custom Scenario", width="stretch"):
     baseline = _region_baseline(signals, custom_region)
     type_mult = sum([inc_conflict, inc_disaster, inc_cyber, inc_disease]) * 0.3 + 0.4
     custom_scen = {
@@ -417,4 +424,4 @@ if st.button("🔧 Run Custom Scenario", use_container_width=True):
     fig_custom.update_layout(**_CHART_LAYOUT, height=300,
                               title=f"Custom Scenario — {custom_region}",
                               xaxis_title="Hour", yaxis_title="Score")
-    st.plotly_chart(fig_custom, use_container_width=True)
+    st.plotly_chart(fig_custom, width="stretch")

@@ -18,11 +18,18 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from nav import render_top_nav
+
 st.set_page_config(
     page_title="System Health",
     page_icon="🩺",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ---------------------------------------------------------------------------
 # Imports
@@ -225,7 +232,7 @@ if status:
                 0,
             ),
         })
-    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
 
     if live_count == 0:
         st.info(
@@ -279,7 +286,7 @@ if dims:
         title="Quality score by dimension (0–100)",
         yaxis=dict(range=[0, 105]),
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
     detail_rows = []
     for key, data in dims.items():
@@ -291,7 +298,7 @@ if dims:
                 sub_val = ", ".join(f"{k}: {v}" for k, v in sub_val.items()) or "—"
             row[sub_key.replace("_", " ").title()] = sub_val
         detail_rows.append(row)
-    st.dataframe(pd.DataFrame(detail_rows), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(detail_rows), width="stretch", hide_index=True)
 else:
     st.info("No signals to assess.")
 
@@ -336,7 +343,7 @@ if by_source:
         }
         for source, data in by_source.items()
     ])
-    st.dataframe(census, use_container_width=True, hide_index=True)
+    st.dataframe(census, width="stretch", hide_index=True)
 else:
     st.info("No source data available.")
 
@@ -394,7 +401,7 @@ with r2:
                 pd.DataFrame(
                     [{"Table": t, "Rows": c} for t, c in counts.items()]
                 ),
-                use_container_width=True,
+                width="stretch",
                 hide_index=True,
             )
 
@@ -414,7 +421,7 @@ st.markdown("### 🧰 Maintenance")
 mc1, mc2 = st.columns(2)
 
 with mc1:
-    if st.button("⚡ Backfill escalation history", use_container_width=True):
+    if st.button("⚡ Backfill escalation history", width="stretch"):
         with st.spinner("Deriving history from signal timestamps…"):
             try:
                 added = EscalationTracker().backfill_from_signals(signals)
@@ -427,7 +434,7 @@ with mc1:
                 st.error(f"Backfill failed: {e}")
 
 with mc2:
-    if st.button("🔄 Refresh health assessment", use_container_width=True):
+    if st.button("🔄 Refresh health assessment", width="stretch"):
         st.cache_data.clear()
         st.rerun()
 

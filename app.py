@@ -15,6 +15,8 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from nav import render_top_nav
+
 from config import VERSION_LABEL
 
 # ── Page config must be the first Streamlit call ────────────────────────────
@@ -24,6 +26,10 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ── Load custom CSS ──────────────────────────────────────────────────────────
 try:
@@ -42,7 +48,8 @@ SEV_COLORS = {
 SEV_ORDER = {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3}
 
 
-# ── Data pipeline ─────────────────────────────────────────────────────────────
+# ── Data pipeline ───────────────────────────────────────────────────────────
+
 
 @st.cache_data(ttl=60)
 def run_pipeline():
@@ -250,7 +257,7 @@ def _render_sidebar(
 
         if st.button(
             "⚡ Backfill history",
-            use_container_width=True,
+            width="stretch",
             help=(
                 "Derive missing escalation-history days from the timestamps of "
                 "the current signal set, so forecasting and anomaly baselines "
@@ -411,7 +418,7 @@ def _render_globe(signals: list) -> None:
         margin=dict(l=0, r=0, t=0, b=0),
         height=600,
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 # ── Risk cards row ────────────────────────────────────────────────────────────
@@ -520,7 +527,7 @@ def _render_signal_feed(signals: list) -> None:
         return [style] * len(row)
 
     styled = df.style.apply(_color_row, axis=1)
-    st.dataframe(styled, use_container_width=True, height=400)
+    st.dataframe(styled, width="stretch", height=400)
 
 
 def _render_safety_index(scores: dict, overall: dict) -> None:

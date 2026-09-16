@@ -6,6 +6,8 @@ resource log, DB health, full export, data cleanup, raw SQL query.
 """
 
 import streamlit as st
+
+from nav import render_top_nav
 import plotly.graph_objects as go
 import pandas as pd
 import json
@@ -18,7 +20,12 @@ st.set_page_config(
     page_title="Database Explorer",
     page_icon="🗄️",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ---------------------------------------------------------------------------
 # Imports
@@ -304,7 +311,7 @@ if page_signals:
         "Severity": s.get("severity",""),
         "Title": (s.get("title",""))[:60],
     } for s in page_signals])
-    st.dataframe(df_sigs.astype(str), use_container_width=True)
+    st.dataframe(df_sigs.astype(str), width="stretch")
 
 st.divider()
 
@@ -339,7 +346,7 @@ if alerts_raw:
     if alert_sev_filter != "All" and "severity" in df_alerts.columns:
         df_alerts = df_alerts[df_alerts["severity"] == alert_sev_filter]
 
-    st.dataframe(df_alerts.astype(str), use_container_width=True)
+    st.dataframe(df_alerts.astype(str), width="stretch")
 
     # Bar chart
     if "severity" in df_alerts.columns:
@@ -350,7 +357,7 @@ if alerts_raw:
             marker_color=["#ef4444", "#f97316", "#eab308", "#22c55e"][:len(sev_counts)],
         ))
         fig_alert.update_layout(**_CHART_LAYOUT, height=260, title="Alert Counts by Severity")
-        st.plotly_chart(fig_alert, use_container_width=True)
+        st.plotly_chart(fig_alert, width="stretch")
 
     csv_alerts = df_alerts.to_csv(index=False).encode("utf-8")
     st.download_button("⬇️ Export Alert Log CSV", csv_alerts, "alert_log.csv", "text/csv")
@@ -387,7 +394,7 @@ if esc_regions and esc_history:
         fig_esc.update_layout(**_CHART_LAYOUT, height=300,
                               title=f"Escalation History — {sel_esc_region}",
                               xaxis_title="Time", yaxis_title="Score")
-        st.plotly_chart(fig_esc, use_container_width=True)
+        st.plotly_chart(fig_esc, width="stretch")
     else:
         st.info(f"No escalation history for {sel_esc_region}.")
 else:
@@ -401,7 +408,7 @@ st.divider()
 
 st.markdown("### 📦 Resource Deployment Log")
 if overrides:
-    st.dataframe(pd.DataFrame(overrides).astype(str), use_container_width=True)
+    st.dataframe(pd.DataFrame(overrides).astype(str), width="stretch")
 else:
     st.info("No resource deployment records. Use the Resource Allocation page to log overrides.")
 
@@ -458,7 +465,7 @@ if signals:
         data=csv_all,
         file_name="orras_full_export.csv",
         mime="text/csv",
-        use_container_width=True,
+        width="stretch",
     )
 
 st.divider()
@@ -495,7 +502,7 @@ if st.button("▶️ Run Query"):
     else:
         try:
             df_query = pd.read_sql_query(raw_sql, conn)
-            st.dataframe(df_query.astype(str), use_container_width=True)
+            st.dataframe(df_query.astype(str), width="stretch")
             st.caption(f"Returned {len(df_query)} rows.")
         except Exception as e:
             st.error(f"Query error: {e}")

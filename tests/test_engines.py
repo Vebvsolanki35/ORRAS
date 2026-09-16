@@ -140,6 +140,83 @@ def test_data_dir_bootstrap(r: Results) -> None:
         r.check("no .tmp file left behind", not os.path.exists(nested + ".tmp"))
 
 
+def test_sidebar_navigation_css(r: Results) -> None:
+    """
+    Guard the sidebar-toggle regression.
+
+    Hiding the whole toolbar removed the only control that reopens a
+    collapsed sidebar (stExpandSidebarButton lives inside stToolbar since
+    Streamlit 1.44), which left no way to change dashboards.
+    """
+    r.begin("sidebar navigation CSS")
+    import pathlib
+
+    css = pathlib.Path("assets/custom.css").read_text()
+
+    # 1. The toolbar must not be hidden wholesale.
+    toolbar_hidden = bool(
+        __import__("re").search(
+            r"\[data-testid=\"stToolbar\"\][^{]*\{[^}]*display:\s*none",
+            css,
+            __import__("re").S,
+        )
+    )
+    r.check("stToolbar is not display:none", not toolbar_hidden)
+
+    # 2. The expand control must be explicitly forced visible.
+    for sel in ("stExpandSidebarButton", "stSidebarCollapseButton"):
+        r.check(f"{sel} is forced visible", f'data-testid="{sel}"' in css)
+
+    # 3. Only individual chrome widgets may be hidden.
+    for sel in ("stStatusWidget", "stAppDeployButton", "stToolbarActionButton"):
+        r.check(f"{sel} is hidden individually", f'data-testid="{sel}"' in css)
+
+    # 4. Sidebar page navigation must never be hidden.
+    nav_hidden = bool(
+        __import__("re").search(
+            r"\[data-testid=\"stSidebarNav\"\][^{]*\{[^}]*display:\s*none",
+            css,
+            __import__("re").S,
+        )
+    )
+    r.check("stSidebarNav is not hidden", not nav_hidden)
+
+
+def test_navigation_bar(r: Results) -> None:
+    """Every page must render the in-content nav bar, and nav entries must exist."""
+    r.begin("in-content navigation bar")
+    import re
+    from pathlib import Path
+
+    from nav import PAGES, render_top_nav
+
+    # Every registered page file must actually exist.
+    missing = [p for p, _label, _icon in PAGES if not Path(p).exists()]
+    r.check("all registered nav pages exist", not missing, f"missing={missing}")
+
+    # Every page script must call the nav renderer.
+    scripts = [Path("app.py")] + sorted(Path("pages").glob("*.py"))
+    without_nav = [
+        p.name for p in scripts if not re.search(r"render_top_nav\(\s*__file__", p.read_text())
+    ]
+    r.check("every page renders the nav bar", not without_nav, f"missing={without_nav}")
+
+    # Every page must also keep the sidebar expanded by default.
+    without_state = [
+        p.name for p in scripts
+        if 'initial_sidebar_state="expanded"' not in p.read_text()
+    ]
+    r.check("every page keeps the sidebar expanded", not without_state,
+            f"missing={without_state}")
+
+    # The renderer must be callable without a Streamlit runtime blowing up.
+    try:
+        render_top_nav("pages/13_System_Health.py")
+        r.ok("render_top_nav() runs without raising")
+    except Exception as exc:  # noqa: BLE001
+        r.fail("render_top_nav() runs without raising", str(exc))
+
+
 def test_quality_engine(r: Results) -> None:
     r.begin("quality engine")
     from quality_engine import QualityEngine
@@ -410,6 +487,8 @@ def main() -> int:
     for fn in (
         test_alert_normalisation,
         test_data_dir_bootstrap,
+        test_sidebar_navigation_css,
+        test_navigation_bar,
         test_styler_shim,
         test_quality_engine,
         test_anomaly_engine,

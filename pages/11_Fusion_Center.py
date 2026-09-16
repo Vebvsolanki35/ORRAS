@@ -7,6 +7,8 @@ AI SITREP, real-time alert feed with acknowledge.
 """
 
 import streamlit as st
+
+from nav import render_top_nav
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
@@ -16,7 +18,12 @@ st.set_page_config(
     page_title="Fusion Center",
     page_icon="⚡",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ---------------------------------------------------------------------------
 # Imports
@@ -178,7 +185,7 @@ fig_heat = go.Figure(go.Heatmap(
     hovertemplate="Region: %{y}<br>Type: %{x}<br>Count: %{z}<extra></extra>",
 ))
 fig_heat.update_layout(**_CHART_LAYOUT, height=420, title="Signal Count by Region and Type")
-st.plotly_chart(fig_heat, use_container_width=True)
+st.plotly_chart(fig_heat, width="stretch")
 
 st.divider()
 
@@ -249,7 +256,7 @@ fig_bar.add_trace(go.Bar(
 fig_bar.update_layout(**_CHART_LAYOUT, barmode="group", height=380,
                       title="Conflict vs Disaster Score — Top 10 Regions",
                       xaxis_tickangle=-30)
-st.plotly_chart(fig_bar, use_container_width=True)
+st.plotly_chart(fig_bar, width="stretch")
 
 st.divider()
 
@@ -280,7 +287,7 @@ for i, s1 in enumerate(sources):
 
 if corroboration_rows:
     df_corr = pd.DataFrame(corroboration_rows).sort_values("Shared Regions", ascending=False)
-    st.dataframe(df_corr, use_container_width=True)
+    st.dataframe(df_corr, width="stretch")
 
 st.divider()
 
@@ -300,7 +307,7 @@ with col_pie:
         textinfo="label+percent",
     ))
     fig_pie.update_layout(**_CHART_LAYOUT, height=320)
-    st.plotly_chart(fig_pie, use_container_width=True)
+    st.plotly_chart(fig_pie, width="stretch")
 
 # ---------------------------------------------------------------------------
 # 6. Fusion Confidence by Region
@@ -331,7 +338,7 @@ with col_bar:
     ))
     fig_conf.update_layout(**_CHART_LAYOUT, height=320,
                            xaxis_title="Confidence (%)", yaxis_title="")
-    st.plotly_chart(fig_conf, use_container_width=True)
+    st.plotly_chart(fig_conf, width="stretch")
 
 st.divider()
 
@@ -344,7 +351,7 @@ st.markdown("### 🤖 AI-Generated SITREP")
 if "fusion_sitrep" not in st.session_state:
     st.session_state.fusion_sitrep = None
 
-if st.button("🔄 Generate / Regenerate SITREP", use_container_width=True):
+if st.button("🔄 Generate / Regenerate SITREP", width="stretch"):
     with st.spinner("Generating SITREP…"):
         try:
             st.session_state.fusion_sitrep = generate_global_sitrep(signals, anomalies)

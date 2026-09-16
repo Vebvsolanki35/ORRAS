@@ -1,4 +1,6 @@
-streamlit>=1.32.0
+# Streamlit >= 1.50 replaces the deprecated `use_container_width` argument
+# with `width="stretch"` / `width="content"`. ORRAS uses the new form.
+streamlit>=1.50.0
 pandas>=2.2.0
 numpy>=1.26.0
 requests>=2.31.0

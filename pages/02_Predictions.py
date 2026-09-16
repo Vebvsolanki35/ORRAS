@@ -6,6 +6,8 @@ with per-region drill-down charts and escalation outlook.
 """
 
 import streamlit as st
+
+from nav import render_top_nav
 import plotly.graph_objects as go
 import pandas as pd
 
@@ -13,7 +15,12 @@ st.set_page_config(
     page_title="ORRAS Predictions",
     page_icon="📈",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ---------------------------------------------------------------------------
 # Module imports with graceful fallback
@@ -242,7 +249,7 @@ if forecasts:
         return [c] * len(row)
 
     styled = df_table.style.apply(_color_row, axis=1)
-    st.dataframe(styled, use_container_width=True, hide_index=True)
+    st.dataframe(styled, width="stretch", hide_index=True)
 else:
     st.info("No forecast data available.")
 
@@ -412,7 +419,7 @@ if all_forecast_regions:
     fig.add_hline(y=11, line_dash="dot", line_color="#eab308", annotation_text="HIGH threshold")
     fig.add_hline(y=21, line_dash="dot", line_color="#ef4444", annotation_text="CRITICAL threshold")
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
     # Region forecast summary
     if region_data:

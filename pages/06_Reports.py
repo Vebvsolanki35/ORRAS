@@ -13,11 +13,18 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from nav import render_top_nav
+
 st.set_page_config(
     page_title="Reports",
     page_icon="📄",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ---------------------------------------------------------------------------
 # Module imports with graceful fallback
@@ -224,7 +231,7 @@ with tab1:
         st.markdown("<br>", unsafe_allow_html=True)
         generate_report = st.button(
             "📊 Generate PDF Report",
-            use_container_width=True,
+            width="stretch",
             key="gen_daily_report",
         )
 
@@ -269,7 +276,7 @@ with tab1:
             data=st.session_state.daily_report_bytes,
             file_name=st.session_state.get("daily_report_filename", "ORRAS_Report.pdf"),
             mime="application/pdf",
-            use_container_width=True,
+            width="stretch",
         )
 
 # ============================================================================
@@ -353,7 +360,7 @@ with tab2:
         df_preview = pd.DataFrame(preview_rows)
         if len(filtered_signals) > 100:
             st.info(f"Showing first 100 of {len(filtered_signals)} signals in preview.")
-        st.dataframe(df_preview, use_container_width=True, hide_index=True)
+        st.dataframe(df_preview, width="stretch", hide_index=True)
 
         # Export buttons
         dl_col1, dl_col2 = st.columns(2)
@@ -366,7 +373,7 @@ with tab2:
                 data=csv_data,
                 file_name=f"orras_signals_{today}.csv",
                 mime="text/csv",
-                use_container_width=True,
+                width="stretch",
             )
 
         with dl_col2:
@@ -391,7 +398,7 @@ with tab2:
                 data=json_str,
                 file_name=f"orras_signals_{today}.json",
                 mime="application/json",
-                use_container_width=True,
+                width="stretch",
             )
     else:
         st.warning("⚠️ No signals match the current filters.")
@@ -502,7 +509,7 @@ with tab3:
                 yaxis_title="Count",
                 **_CHART_LAYOUT,
             )
-            st.plotly_chart(fig_bar, use_container_width=True)
+            st.plotly_chart(fig_bar, width="stretch")
 
         # Alert table
         if filtered_alerts:
@@ -516,7 +523,7 @@ with tab3:
                     "Signal Count": a.get("signal_count", "—"),
                 })
             df_alerts = pd.DataFrame(alert_rows)
-            st.dataframe(df_alerts, use_container_width=True, hide_index=True)
+            st.dataframe(df_alerts, width="stretch", hide_index=True)
 
             # Export
             csv_alerts = df_alerts.to_csv(index=False)
@@ -576,7 +583,7 @@ with tab4:
     st.markdown("---")
     generate_custom = st.button(
         "🛠️ Generate Custom PDF Report",
-        use_container_width=True,
+        width="stretch",
         key="gen_custom_report",
     )
 
@@ -654,5 +661,5 @@ with tab4:
             data=st.session_state.custom_report_bytes,
             file_name=st.session_state.get("custom_report_filename", "ORRAS_Custom_Report.pdf"),
             mime="application/pdf",
-            use_container_width=True,
+            width="stretch",
         )

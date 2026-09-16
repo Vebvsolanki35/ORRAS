@@ -6,13 +6,20 @@ prediction reasoning, resource allocation reasoning, full audit trail.
 """
 
 import streamlit as st
+
+from nav import render_top_nav
 import pandas as pd
 
 st.set_page_config(
     page_title="Explainability",
     page_icon="🔍",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ---------------------------------------------------------------------------
 # Imports
@@ -333,4 +340,4 @@ pipeline_steps = [
 ]
 
 with st.expander("🕵️ Full Pipeline Audit (chronological)", expanded=False):
-    st.dataframe(pd.DataFrame(pipeline_steps).astype(str), use_container_width=True)
+    st.dataframe(pd.DataFrame(pipeline_steps).astype(str), width="stretch")
