@@ -116,6 +116,30 @@ def test_styler_shim(r: Results) -> None:
         r.fail("style_map output renders to HTML", str(exc))
 
 
+def test_data_dir_bootstrap(r: Results) -> None:
+    """
+    Guard against the fresh-clone failure: git does not track empty
+    directories, so a checkout has no data/ until something creates it.
+    Any code path that writes there must create the directory itself.
+    """
+    r.begin("data directory bootstrap")
+    import tempfile
+
+    from utils import save_json
+
+    with tempfile.TemporaryDirectory() as tmp:
+        nested = os.path.join(tmp, "data", "nested", "escalation_history.json")
+        try:
+            save_json(nested, [{"a": 1}])
+            r.ok("save_json creates missing parent directories")
+        except Exception as exc:  # noqa: BLE001
+            r.fail("save_json creates missing parent directories", str(exc))
+            return
+
+        r.check("written file is readable", os.path.exists(nested))
+        r.check("no .tmp file left behind", not os.path.exists(nested + ".tmp"))
+
+
 def test_quality_engine(r: Results) -> None:
     r.begin("quality engine")
     from quality_engine import QualityEngine
@@ -385,6 +409,7 @@ def main() -> int:
     r = Results("Engine unit tests")
     for fn in (
         test_alert_normalisation,
+        test_data_dir_bootstrap,
         test_styler_shim,
         test_quality_engine,
         test_anomaly_engine,

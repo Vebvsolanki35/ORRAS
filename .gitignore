@@ -21,7 +21,8 @@ data/signals.json
 data/resources.json
 data/scenarios.json
 data/resource_overrides.json
-data/reports/
+data/reports/*
+!data/reports/.gitkeep
 
 # Tests
 .pytest_cache/

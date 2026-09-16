@@ -102,10 +102,18 @@ def save_json(filepath: str, data: Any) -> None:
     Writes to a temporary file first, then replaces the target to avoid
     partial writes on crash.
 
+    The parent directory is created if it does not exist, so callers can
+    write to paths inside directories that a fresh checkout does not
+    materialise (git does not track empty directories).
+
     Args:
         filepath: Destination path.
         data: JSON-serialisable Python object.
     """
+    directory = os.path.dirname(os.path.abspath(filepath))
+    if directory:
+        os.makedirs(directory, exist_ok=True)
+
     tmp_path = filepath + ".tmp"
     with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
