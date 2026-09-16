@@ -125,7 +125,12 @@ class PredictionEngine:
     # Forecasting methods
     # ---------------------------------------------------------------------------
 
-    def forecast_linear(self, df: pd.DataFrame, days: int = FORECAST_DAYS) -> list:
+    def forecast_linear(
+        self,
+        df: pd.DataFrame,
+        days: int = FORECAST_DAYS,
+        min_points: int | None = None,
+    ) -> list:
         """
         Project risk scores forward using a linear regression fit on the
         most recent REGRESSION_WINDOW data points.
@@ -140,10 +145,17 @@ class PredictionEngine:
 
         Returns:
             List of forecast dicts, one per future day:
+            days:       Number of future days to forecast.
+            min_points: Override for the minimum number of observations.
+                        Defaults to MIN_POINTS; pass a lower value to
+                        allow cold-start forecasting.
+
+        Returns:
             {date: str, predicted_score: float, severity: str, method: str}
-            Returns [] if there are fewer than MIN_POINTS rows.
+            Returns [] if there are fewer than min_points rows.
         """
-        if len(df) < self.MIN_POINTS:
+        floor = self.MIN_POINTS if min_points is None else min_points
+        if len(df) < floor:
             logger.warning("forecast_linear: insufficient data points.")
             return []
 
@@ -176,7 +188,10 @@ class PredictionEngine:
         return forecasts
 
     def forecast_weighted_average(
-        self, df: pd.DataFrame, days: int = FORECAST_DAYS
+        self,
+        df: pd.DataFrame,
+        days: int = FORECAST_DAYS,
+        min_points: int | None = None,
     ) -> list:
         """
         Project risk scores using a weighted average of recent observations.
@@ -186,17 +201,19 @@ class PredictionEngine:
         current direction of travel without over-fitting a straight line.
 
         Args:
-            df:   Time-series DataFrame from prepare_time_series.
-            days: Number of future days to forecast.
+            df:         Time-series DataFrame from prepare_time_series.
+            days:       Number of future days to forecast.
+            min_points: Override for the minimum number of observations.
 
         Returns:
             Same structure as forecast_linear, with method="weighted_avg".
-            Returns [] if there are fewer than MIN_POINTS rows.
+            Returns [] if there are fewer than min_points rows.
             The decay formula is ``weighted_avg + momentum * 0.5**step``,
             so momentum halves each successive day, pulling the forecast
             toward the long-run weighted average over the horizon.
         """
-        if len(df) < self.MIN_POINTS:
+        floor = self.MIN_POINTS if min_points is None else min_points
+        if len(df) < floor:
             logger.warning("forecast_weighted_average: insufficient data points.")
             return []
 
@@ -386,10 +403,15 @@ class PredictionEngine:
             if cold_start:
                 # A 2-point regression extrapolates wildly, so prefer the
                 # damped weighted average while history accumulates.
-                points = self.forecast_weighted_average(df, days=FORECAST_DAYS)
+                points = self.forecast_weighted_average(
+                    df, days=FORECAST_DAYS, min_points=self.COLD_START_MIN_POINTS
+                )
                 method = "weighted_average"
                 if not points:
-                    points = self.forecast_linear(df, days=FORECAST_DAYS)
+                    points = self.forecast_linear(
+                        df, days=FORECAST_DAYS,
+                        min_points=self.COLD_START_MIN_POINTS,
+                    )
                     method = "linear"
             else:
                 points = self.forecast_linear(df, days=FORECAST_DAYS)

@@ -145,10 +145,26 @@ def _explain_anomaly(anomaly: dict) -> str:
     region = anomaly.get("region") or anomaly.get("location") or "Unknown"
     z = anomaly.get("z_score") or anomaly.get("zscore") or 0
     count = anomaly.get("signal_count") or anomaly.get("count") or 0
+    method = anomaly.get("method") or "temporal"
+    baseline = anomaly.get("baseline") or anomaly.get("rolling_mean") or 0
+
+    if method == "peer":
+        basis = (
+            f"compared against the cross-sectional mean of **{float(baseline):.2f}** "
+            f"signals across all monitored regions today. Too little history "
+            f"exists for this region to use its own baseline."
+        )
+    else:
+        basis = (
+            f"compared against a baseline of **{float(baseline):.2f}** signals "
+            f"derived from the {anomaly.get('prior_days', 0)} preceding day(s) "
+            f"in the 7-day rolling window."
+        )
+
     return (
         f"A statistical anomaly was detected in **{region}**. "
-        f"The signal count spiked to **{count}** — a Z-score of **{float(z):.2f}σ** "
-        f"above the 7-day rolling mean. This indicates an unusual surge in threat activity "
+        f"The signal count reached **{count}** — a Z-score of **{float(z):.2f}σ** "
+        f"{basis} This indicates an unusual surge in threat activity "
         f"that warrants immediate analyst review."
     )
 
@@ -309,7 +325,7 @@ st.markdown("### 📋 Decision Audit Trail")
 pipeline_steps = [
     {"Step": "1. Data Collection", "Input": "13 data sources (mock/live)", "Output": f"{len(signals)} raw signals", "Key Decision": "Sources polled; failed sources skipped gracefully"},
     {"Step": "2. ThreatEngine.score_all()", "Input": f"{len(signals)} raw signals", "Output": f"{len(signals)} scored signals", "Key Decision": "Keyword matching + source multiplier applied; clamped to [0,30]"},
-    {"Step": "3. AnomalyEngine.detect_anomalies()", "Input": f"{len(signals)} scored signals", "Output": f"{len(anomalies)} anomalies", "Key Decision": "Z-score > 2.0 threshold; rolling 7-day window"},
+    {"Step": "3. AnomalyEngine.detect_anomalies()", "Input": f"{len(signals)} scored signals", "Output": f"{len(anomalies)} anomalies", "Key Decision": "Z-score > 2.0 vs prior-day baseline; peer baseline on cold start"},
     {"Step": "4. EscalationTracker.run()", "Input": f"{len(signals)} signals", "Output": f"{len(escalations)} escalation alerts", "Key Decision": "Region score delta > threshold triggers escalation"},
     {"Step": "5. PredictionEngine.forecast_all_regions()", "Input": "History snapshots", "Output": f"{len(forecasts)} region forecasts", "Key Decision": "Weighted linear regression; 3-day horizon"},
     {"Step": "6. ActionEngine.generate_region_actions()", "Input": "Scored signals", "Output": "Resource recommendations", "Key Decision": "Severity-based action mapping; CRITICAL → immediate deployment"},
