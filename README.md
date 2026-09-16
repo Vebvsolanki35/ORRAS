@@ -58,6 +58,12 @@ ORRAS features dual-track threat analysis (conflict + disaster), AI-powered deci
 | 🔬 Custom Scenarios | Build and run custom crisis scenarios with configurable parameters |
 | 📊 Worst-Case Analysis | Automated worst-case assessment across all 5 preset scenarios |
 | 🌡️ Safety SVG Gauge | Circular SVG safety score gauge with letter grades (A–F) |
+| 🩺 Data Quality Scoring | Composite trust score across completeness, geolocation, freshness, uniqueness and source diversity |
+| 📡 Source Health Monitor | Per-source LIVE / MOCK / FAILED / OFFLINE status with record counts |
+| ⚡ Cold-Start Forecasting | Usable 3-day forecasts from the first run, with confidence capped until history matures |
+| 🕳️ History Backfill | Derives escalation history from real signal timestamps instead of inventing data |
+| ⌨️ Headless CLI | `orras_cli.py` runs the pipeline for automation: sitrep, signals, quality, health |
+| 🧪 Headless Test Suite | 98+ automated checks across engines, pipeline and all 13 pages |
 
 ---
 
@@ -169,7 +175,8 @@ All configuration is handled through environment variables in your `.env` file.
 |---|---|
 | `app.py` | Main Streamlit entry point; renders the globe, ticker, and alert feed |
 | `config.py` | Single source of truth for all constants, thresholds, and env-var bindings |
-| `utils.py` | Shared utilities: formatting, date helpers, severity classification, JSON I/O |
+| `utils.py` | Shared utilities: formatting, date helpers, severity classification, JSON I/O, alert-schema normalisation, pandas `Styler` compatibility shim |
+| `orras_cli.py` | Headless command-line pipeline: `sitrep`, `signals`, `quality`, `sources`, `health`, `selftest` |
 
 ### Data Layer
 
@@ -183,12 +190,12 @@ All configuration is handled through environment variables in your `.env` file.
 
 | File | Purpose |
 |---|---|
-| `anomaly_engine.py` | Z-score anomaly detection with configurable rolling 7-day window |
+| `anomaly_engine.py` | Z-score anomaly detection: prior-day rolling baseline, with a cross-sectional peer baseline for cold start |
 | `correlation_engine.py` | Cross-source signal correlation with bonus scoring for co-occurring event types |
-| `prediction_engine.py` | Weighted linear regression forecasting with confidence intervals and trend detection |
+| `prediction_engine.py` | Weighted linear regression forecasting with confidence scoring, trend detection, and cold-start support |
 | `confidence_engine.py` | Per-signal confidence scoring based on source reliability weights |
 | `safety_engine.py` | 6-domain safety index (cyber, nuclear, infrastructure, maritime, economic, humanitarian) |
-| `escalation_tracker.py` | Tracks risk-level trajectories and fires escalation alerts within a 72-hour window |
+| `escalation_tracker.py` | Tracks risk-level trajectories, fires 72-hour escalation alerts, backfills history from signal timestamps, and caps retention |
 | `threat_engine.py` | Keyword-based scoring engine: raw_score = Σ(keyword_weights) × source_multiplier |
 | `timeline_engine.py` | Builds time-ordered signal sequences and detects turning points |
 | `action_engine.py` | Recommends actions based on current threat level and domain |
@@ -197,10 +204,12 @@ All configuration is handled through environment variables in your `.env` file.
 | `news_ticker.py` | Filters and formats headlines for the auto-scrolling ticker component |
 | `ui_components.py` | 12+ reusable Streamlit HTML components (gauges, badges, cards, comparison bars, timeline events) |
 | `comparison_engine.py` | Region-vs-region comparison with keyword overlap, score delta, and global ranking |
+| `quality_engine.py` | Data-quality scoring across completeness, geolocation, freshness, uniqueness and source diversity |
+| `database_engine.py` | SQLite persistence for signals, alerts, escalation history, deployments and scenarios; self-heals stale schemas |
 
 ---
 
-## 🖥️ Dashboard Pages (12 Pages)
+## 🖥️ Dashboard Pages (13 Pages)
 
 | Page | File | Description |
 |---|---|---|
@@ -217,6 +226,58 @@ All configuration is handled through environment variables in your `.env` file.
 | **Explainability** | `pages/10_Explainability.py` | Full reasoning chain for regions, signals, anomalies, forecasts, resource allocations, and pipeline audit trail |
 | **Fusion Center** | `pages/11_Fusion_Center.py` | Fusion matrix heatmap, compound event cards, dual-track bar chart, source corroboration, AI SITREP, alert feed |
 | **Database Explorer** | `pages/12_Database_Explorer.py` | SQLite browser with pagination/filters, escalation chart, deployment log, DB health, cleanup slider, raw SQL input |
+| **System Health** | `pages/13_System_Health.py` | Source liveness, data-quality score across 5 dimensions, actionable findings, source census, forecast readiness, DB schema integrity |
+
+---
+
+## 🧪 Testing
+
+ORRAS ships with a headless test suite that needs no browser. Three
+complementary suites, all runnable from the repo root:
+
+```bash
+python tests/run_all.py            # everything
+python tests/run_all.py --quick    # skip the slower page-render suite
+python tests/test_engines.py       # unit tests for the analytics engines
+python tests/test_pipeline.py      # end-to-end pipeline contract checks
+python tests/test_pages.py         # renders every Streamlit page headlessly
+```
+
+| Suite | What it verifies |
+|---|---|
+| `test_engines.py` | Alert-schema normalisation, quality scoring, anomaly baselines (temporal + cold start), cold-start forecasting, escalation backfill, DB schema migration |
+| `test_pipeline.py` | Signal schema, source coverage, source-health accuracy, enrichment annotations, anomaly validity |
+| `test_pages.py` | Every page in `app.py` + `pages/` renders without raising, using Streamlit's `AppTest` |
+
+Every module also has a built-in self-test:
+
+```bash
+python orras_cli.py selftest      # runs all 19 module self-tests
+python anomaly_engine.py          # or run one module directly
+```
+
+CI runs all of the above on Python 3.11 and 3.12 — see
+`.github/workflows/ci.yml`.
+
+---
+
+## ⌨️ Command Line Interface
+
+`orras_cli.py` runs the full intelligence pipeline headlessly — no browser,
+no Streamlit runtime — which makes ORRAS scriptable and automation-friendly.
+
+```bash
+python orras_cli.py sitrep                        # text situation report
+python orras_cli.py signals --format csv --out s.csv
+python orras_cli.py signals --top 20              # 20 highest-risk signals
+python orras_cli.py quality                       # data-quality metrics
+python orras_cli.py sources                       # per-source liveness
+python orras_cli.py health --out health.json      # exits 1 when unhealthy
+python orras_cli.py selftest                      # module self-tests
+```
+
+`health` is designed for monitoring: it exits non-zero when the pipeline
+produces no signals, so it can be wired into cron or a health check.
 
 ---
 

@@ -193,6 +193,13 @@ _MOCK_EVENTS = [
 class ACLEDCollector:
     """Fetches armed conflict event data from ACLED, or returns mock data."""
 
+    def __init__(self) -> None:
+        # Reflects how the most recent fetch() call actually obtained its data.
+        # The orchestrator reads this because fetch() falls back to mock data
+        # internally, which would otherwise be indistinguishable from a
+        # successful live fetch.
+        self.last_status: str = "UNKNOWN"
+
     def fetch(self) -> list[dict]:
         """
         Retrieve conflict events from ACLED API.
@@ -208,6 +215,7 @@ class ACLEDCollector:
 
         if not acled_key or not acled_email:
             logger.warning("ACLED: ACLED_KEY or ACLED_EMAIL not set — returning mock data.")
+            self.last_status = "MOCK"
             return list(_MOCK_EVENTS)
 
         try:
@@ -237,9 +245,11 @@ class ACLEDCollector:
                     "longitude": float(rec.get("longitude") or 0.0),
                 })
             logger.info(f"ACLED: fetched {len(results)} conflict events.")
+            self.last_status = "LIVE" if results else "MOCK"
             return results
         except Exception as exc:
             logger.warning(f"ACLED fetch failed: {exc} — returning mock data.")
+            self.last_status = "FAILED"
             return list(_MOCK_EVENTS)
 
 

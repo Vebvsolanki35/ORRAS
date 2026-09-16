@@ -102,10 +102,18 @@ def save_json(filepath: str, data: Any) -> None:
     Writes to a temporary file first, then replaces the target to avoid
     partial writes on crash.
 
+    The parent directory is created if it does not exist, so callers can
+    write to paths inside directories that a fresh checkout does not
+    materialise (git does not track empty directories).
+
     Args:
         filepath: Destination path.
         data: JSON-serialisable Python object.
     """
+    directory = os.path.dirname(os.path.abspath(filepath))
+    if directory:
+        os.makedirs(directory, exist_ok=True)
+
     tmp_path = filepath + ".tmp"
     with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
@@ -307,6 +315,148 @@ def truncate_text(text: str, max_chars: int = 300) -> str:
     if len(text) <= max_chars:
         return text
     return text[: max_chars - 1] + "…"
+
+
+# ---------------------------------------------------------------------------
+# Alert schema normalisation
+# ---------------------------------------------------------------------------
+#
+# Two alert shapes coexist in ORRAS and in persisted alert logs:
+#
+#   legacy : {timestamp, region, max_severity, recommendation, signal_count,
+#             top_signals}
+#   current: {id, timestamp, severity, title, location, fusion_score,
+#             geofence_zones, in_critical_zone, source, signal_class, track,
+#             signal_id}
+#
+# Reading one shape with the other's key names silently yields "Unknown" or
+# crashes downstream DataFrame/arrow conversion, so everything that touches
+# alert records should go through these helpers.
+
+# Keys that mean "the region this alert is about", in priority order.
+_REGION_KEYS = ("location", "region", "country")
+# Keys that mean "the severity of this alert", in priority order.
+_SEVERITY_KEYS = ("severity", "max_severity", "alert_severity")
+
+
+def _first_str(mapping: dict, keys: tuple[str, ...], default: str = "Unknown") -> str:
+    """Return the first non-empty string value among *keys*."""
+    for key in keys:
+        value = mapping.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return default
+
+
+def alert_region(alert: dict) -> str:
+    """
+    Return the region/location an alert refers to, across both alert schemas.
+
+    Args:
+        alert: Alert record dict (legacy or current schema).
+
+    Returns:
+        Region name, or "Unknown" when the alert carries no region.
+    """
+    if not isinstance(alert, dict):
+        return "Unknown"
+    return _first_str(alert, _REGION_KEYS)
+
+
+def alert_severity(alert: dict) -> str:
+    """
+    Return the severity of an alert, across both alert schemas.
+
+    Args:
+        alert: Alert record dict (legacy or current schema).
+
+    Returns:
+        Upper-cased severity string, defaulting to "LOW".
+    """
+    if not isinstance(alert, dict):
+        return "LOW"
+    return _first_str(alert, _SEVERITY_KEYS, "LOW").upper()
+
+
+def normalize_alert(alert: dict) -> dict:
+    """
+    Return a copy of *alert* carrying both legacy and current key names.
+
+    This makes mixed-format alert logs safe to load into a DataFrame (no
+    duplicate columns after renaming) and safe to filter with either schema.
+
+    Args:
+        alert: Alert record dict (legacy or current schema).
+
+    Returns:
+        New dict with region/location, severity/max_severity, and the
+        remaining fields of the input preserved.
+    """
+    if not isinstance(alert, dict):
+        return {}
+
+    out = dict(alert)
+    region = alert_region(alert)
+    severity = alert_severity(alert)
+
+    out["region"] = region
+    out["location"] = region
+    out["severity"] = severity
+    out["max_severity"] = severity
+    out.setdefault("id", generate_id())
+    out.setdefault("timestamp", now_iso())
+    out.setdefault(
+        "title",
+        (alert.get("top_signals") or [f"Alert — {region}"])[0]
+        if isinstance(alert.get("top_signals"), list) and alert.get("top_signals")
+        else f"Alert — {region}",
+    )
+    out.setdefault("recommendation", "")
+    out.setdefault("signal_count", 1)
+    return out
+
+
+def normalize_alert_log(alerts: list) -> list[dict]:
+    """
+    Normalise every record in an alert log so mixed schemas can coexist.
+
+    Args:
+        alerts: List of alert dicts (any mix of legacy/current schema).
+
+    Returns:
+        List of normalised alert dicts with a consistent key set.
+    """
+    return [normalize_alert(a) for a in alerts or [] if isinstance(a, dict)]
+
+
+# ---------------------------------------------------------------------------
+# pandas Styler compatibility
+# ---------------------------------------------------------------------------
+
+def style_map(styler, func, subset=None):
+    """
+    Apply an element-wise (cell-level) styling function to a Styler.
+
+    ``Styler.applymap`` was deprecated in pandas 2.1 and removed in pandas 3.0,
+    where ``Styler.map`` is the supported spelling. This helper picks the right
+    one so ORRAS works across both.
+
+    Args:
+        styler: A pandas Styler instance.
+        func:   Callable taking a single cell value and returning a CSS string.
+        subset: Optional column selector to limit the styling to.
+
+    Returns:
+        The Styler, for chaining.
+    """
+    if hasattr(styler, "map"):
+        target = styler.map
+    else:  # pandas < 2.1
+        target = styler.applymap
+
+    if subset is None:
+        return target(func)
+    return target(func, subset=subset)
 
 
 # ---------------------------------------------------------------------------

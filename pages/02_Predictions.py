@@ -6,6 +6,8 @@ with per-region drill-down charts and escalation outlook.
 """
 
 import streamlit as st
+
+from nav import render_top_nav
 import plotly.graph_objects as go
 import pandas as pd
 
@@ -13,7 +15,12 @@ st.set_page_config(
     page_title="ORRAS Predictions",
     page_icon="📈",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ---------------------------------------------------------------------------
 # Module imports with graceful fallback
@@ -106,6 +113,15 @@ def load_history(signal_count: int) -> list:
         return []
 
 
+@st.cache_data(ttl=60)
+def load_readiness(signal_count: int) -> dict:
+    """Report how much escalation history is available for forecasting."""
+    try:
+        return PredictionEngine().forecast_readiness(load_history(signal_count))
+    except Exception:
+        return {}
+
+
 # ---------------------------------------------------------------------------
 # Load data
 # ---------------------------------------------------------------------------
@@ -114,6 +130,7 @@ with st.spinner("Loading forecast data…"):
     signals = load_signals()
     forecasts = load_forecasts(len(signals))
     history = load_history(len(signals))
+    readiness = load_readiness(len(signals))
 
 # ---------------------------------------------------------------------------
 # Page header
@@ -124,14 +141,23 @@ st.markdown("*3-day ahead risk projections using trend analysis*")
 st.divider()
 
 if not forecasts:
-    st.warning(
-        "⚠️ Insufficient historical data for forecasting. "
-        "At least 3 days of escalation history is required."
-    )
-    st.info(
-        "Run the main dashboard to generate escalation snapshots, "
-        "then return here for predictions."
-    )
+    st.warning("⚠️ Not enough escalation history to forecast any region yet.")
+    if readiness:
+        days_have = readiness.get("days_available", 0)
+        days_need = readiness.get("days_required", 3)
+        st.progress(
+            min(1.0, days_have / max(days_need, 1)),
+            text=(
+                f"Collecting history: {days_have}/{days_need} days "
+                f"({readiness.get('regions', 0)} regions tracked)"
+            ),
+        )
+        st.caption(
+            "ORRAS records one escalation snapshot per run. Open the main "
+            "dashboard on consecutive days to build forecasting history. "
+            "Backfill a baseline instantly from the sidebar on the main page "
+            "if you need forecasts today."
+        )
     st.stop()
 
 # ---------------------------------------------------------------------------
@@ -223,7 +249,7 @@ if forecasts:
         return [c] * len(row)
 
     styled = df_table.style.apply(_color_row, axis=1)
-    st.dataframe(styled, use_container_width=True, hide_index=True)
+    st.dataframe(styled, width="stretch", hide_index=True)
 else:
     st.info("No forecast data available.")
 
@@ -393,7 +419,7 @@ if all_forecast_regions:
     fig.add_hline(y=11, line_dash="dot", line_color="#eab308", annotation_text="HIGH threshold")
     fig.add_hline(y=21, line_dash="dot", line_color="#ef4444", annotation_text="CRITICAL threshold")
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
     # Region forecast summary
     if region_data:

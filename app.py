@@ -1,5 +1,5 @@
 """
-app.py — ORRAS v2.0 Advanced Dashboard.
+app.py — ORRAS Advanced Dashboard (entry point).
 
 Orchestrates the full data pipeline and renders an advanced, dark-themed
 real-time risk assessment dashboard with 3D globe, AI SITREP, safety
@@ -15,13 +15,21 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from nav import render_top_nav
+
+from config import VERSION_LABEL
+
 # ── Page config must be the first Streamlit call ────────────────────────────
 st.set_page_config(
-    page_title="ORRAS v2.0",
+    page_title=VERSION_LABEL,
     page_icon="🛡️",
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ── Load custom CSS ──────────────────────────────────────────────────────────
 try:
@@ -40,7 +48,8 @@ SEV_COLORS = {
 SEV_ORDER = {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3}
 
 
-# ── Data pipeline ─────────────────────────────────────────────────────────────
+# ── Data pipeline ───────────────────────────────────────────────────────────
+
 
 @st.cache_data(ttl=60)
 def run_pipeline():
@@ -153,16 +162,23 @@ def run_disaster_pipeline(signals_tuple):
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 
-def _render_sidebar(status_map: dict, last_updated: str) -> tuple[str, bool]:
+def _render_sidebar(
+    status_map: dict, last_updated: str, signals: list | None = None
+) -> tuple[str, bool]:
     """
     Render the sidebar and return (theme, auto_refresh_enabled).
+
+    Args:
+        status_map:    Source-health report from the collection orchestrator.
+        last_updated:  Human-readable UTC timestamp string.
+        signals:       Current signals, used to show per-source record counts.
     """
     with st.sidebar:
         st.markdown(
             '<div style="text-align:center;padding:1rem 0 0.5rem;">'
             '<span style="font-size:2.5rem;">🛡️</span>'
             '<div style="font-size:1.4rem;font-weight:800;color:#f9fafb;'
-            'letter-spacing:-0.02em;margin-top:0.2rem;">ORRAS v2.0</div>'
+            'letter-spacing:-0.02em;margin-top:0.2rem;">' + VERSION_LABEL + '</div>'
             '<div style="font-size:0.75rem;color:#6b7280;letter-spacing:0.08em;'
             'text-transform:uppercase;">Operational Risk Assessment</div>'
             '</div>',
@@ -187,42 +203,79 @@ def _render_sidebar(status_map: dict, last_updated: str) -> tuple[str, bool]:
             unsafe_allow_html=True,
         )
 
+        # Record counts per source, so the health list doubles as a feed census.
+        counts: dict[str, int] = {}
+        for sig in signals or []:
+            src = sig.get("source") or "Unknown"
+            counts[src] = counts.get(src, 0) + 1
+
+        # Canonical display labels for every source the orchestrator reports on.
         _source_labels = {
-            "newsapi":   "NewsAPI",
-            "gdelt":     "GDELT",
-            "opensky":   "OpenSky Network",
-            "firms":     "NASA FIRMS",
-            "netblocks": "NetBlocks",
-            "social":    "Social Media",
+            "NewsAPI":         "NewsAPI",
+            "GDELT":           "GDELT",
+            "OpenSky":         "OpenSky Network",
+            "NASA FIRMS":      "NASA FIRMS",
+            "NetBlocks":       "NetBlocks",
+            "Cloudflare Radar": "Cloudflare Radar",
+            "USGS":            "USGS Earthquakes",
+            "NOAA":            "NOAA Weather",
+            "ReliefWeb":       "ReliefWeb",
+            "WHO":             "WHO Outbreaks",
+            "ACLED":           "ACLED Conflict",
+            "Social/Mock":     "Social / OSINT",
         }
 
-        try:
-            from ui_components import render_source_health_badge
+        if status_map:
+            live_count = sum(1 for v in status_map.values() if str(v).upper() == "LIVE")
+            st.caption(
+                f"{live_count}/{len(status_map)} live · "
+                f"{len(status_map) - live_count} on synthetic or backup data"
+            )
+            for key, status in status_map.items():
+                label = _source_labels.get(key, key)
+                try:
+                    from ui_components import render_source_status_row
 
-            if status_map:
-                for key, label in _source_labels.items():
-                    is_live = status_map.get(key, False)
                     st.markdown(
-                        render_source_health_badge(label, bool(is_live)),
+                        render_source_status_row(label, status, counts.get(key)),
                         unsafe_allow_html=True,
                     )
-            else:
-                for label in _source_labels.values():
-                    st.markdown(
-                        render_source_health_badge(label, True),
-                        unsafe_allow_html=True,
-                    )
-        except Exception:
-            for label in _source_labels.values():
-                color = "#22c55e"
-                st.markdown(
-                    f'<div style="display:flex;align-items:center;gap:8px;'
-                    f'padding:4px 0;font-size:0.82rem;color:#d1d5db;">'
-                    f'<span style="width:8px;height:8px;border-radius:50%;'
-                    f'background:{color};display:inline-block;"></span>'
-                    f'{label}</div>',
-                    unsafe_allow_html=True,
-                )
+                except Exception:  # noqa: BLE001 - cosmetic degradation
+                    st.markdown(f"• {label} — {status}", unsafe_allow_html=True)
+        else:
+            st.caption("Source health unavailable.")
+
+        st.divider()
+
+        # ── Maintenance ────────────────────────────────────────────────────
+        st.markdown(
+            '<div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;'
+            'letter-spacing:0.08em;color:#9ca3af;margin-bottom:0.5rem;">'
+            '🧰 Maintenance</div>',
+            unsafe_allow_html=True,
+        )
+
+        if st.button(
+            "⚡ Backfill history",
+            width="stretch",
+            help=(
+                "Derive missing escalation-history days from the timestamps of "
+                "the current signal set, so forecasting and anomaly baselines "
+                "have data to work with."
+            ),
+        ):
+            with st.spinner("Backfilling escalation history…"):
+                try:
+                    from escalation_tracker import EscalationTracker
+
+                    added = EscalationTracker().backfill_from_signals(signals or [])
+                    if added:
+                        st.success(f"Added {added} day-snapshot(s).")
+                    else:
+                        st.info("History already covers every day in the signal set.")
+                    st.cache_data.clear()
+                except Exception as exc:  # noqa: BLE001
+                    st.error(f"Backfill failed: {exc}")
 
         st.divider()
         st.markdown(
@@ -365,7 +418,7 @@ def _render_globe(signals: list) -> None:
         margin=dict(l=0, r=0, t=0, b=0),
         height=600,
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 # ── Risk cards row ────────────────────────────────────────────────────────────
@@ -474,7 +527,7 @@ def _render_signal_feed(signals: list) -> None:
         return [style] * len(row)
 
     styled = df.style.apply(_color_row, axis=1)
-    st.dataframe(styled, use_container_width=True, height=400)
+    st.dataframe(styled, width="stretch", height=400)
 
 
 def _render_safety_index(scores: dict, overall: dict) -> None:
@@ -678,7 +731,7 @@ def _render_footer(signals: list, anomalies: list, escalation_data: dict) -> Non
             '<div style="font-size:0.78rem;color:#6b7280;text-align:right;">'
             '<a href="https://github.com/your-org/ORRAS" '
             'style="color:#3b82f6;text-decoration:none;">🔗 GitHub</a>'
-            " · ORRAS v2.0"
+            " · " + VERSION_LABEL +
             "</div>",
             unsafe_allow_html=True,
         )
@@ -728,7 +781,7 @@ def _render_fusion_and_alerts_panel(signals: list, active_alerts: list) -> None:
             st.caption(f"{len(critical_zone_signals)} signal(s) inside critical zones")
             for sig in critical_zone_signals[:5]:
                 zones = ", ".join(sig.get("geofence_zones", []))
-                region = sig.get("region", "Unknown")
+                region = sig.get("location") or sig.get("region") or "Unknown"
                 sev = sig.get("severity", "LOW")
                 color = SEV_COLORS.get(sev, "#6b7280")
                 st.markdown(
@@ -746,7 +799,7 @@ def _render_fusion_and_alerts_panel(signals: list, active_alerts: list) -> None:
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main() -> None:
-    """Entry point — assembles the full ORRAS v2.0 dashboard."""
+    """Entry point — assembles the full ORRAS dashboard."""
 
     last_updated = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
@@ -786,7 +839,7 @@ def main() -> None:
         pass
 
     # ── Sidebar ──────────────────────────────────────────────────────────────
-    theme, auto_refresh = _render_sidebar(status_map, last_updated)
+    theme, auto_refresh = _render_sidebar(status_map, last_updated, signals)
 
     # ── Auto-refresh ─────────────────────────────────────────────────────────
     if auto_refresh:
@@ -838,7 +891,7 @@ def main() -> None:
             color:#00d4ff;
             text-shadow:0 0 20px rgba(0,212,255,0.6);
             letter-spacing:2px;
-        ">ORRAS INTELLIGENCE SYSTEM v3.0</div>
+        ">""" + VERSION_LABEL + """ INTELLIGENCE SYSTEM</div>
         <div style="
             font-family:'Courier New',monospace;
             font-size:0.65rem;

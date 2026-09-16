@@ -216,7 +216,16 @@ def normalize_newsapi(articles: list) -> list[dict]:
         title = truncate_text(art.get("title") or "", 100)
         desc = truncate_text(art.get("description") or art.get("content") or "", 500)
         published = art.get("publishedAt") or now_iso()
-        source_name = (art.get("source") or {}).get("name") or "NewsAPI"
+
+        # NewsAPI returns ``source`` as {"id":..., "name":...}, but mock and
+        # cached records often carry it as a plain string. Accept both.
+        raw_source = art.get("source")
+        if isinstance(raw_source, dict):
+            source_name = raw_source.get("name") or "NewsAPI"
+        elif isinstance(raw_source, str) and raw_source.strip():
+            source_name = raw_source.strip()
+        else:
+            source_name = "NewsAPI"
 
         # Try to identify location from source name or title
         location = _guess_country(title) or _guess_country(source_name) or "Unknown"

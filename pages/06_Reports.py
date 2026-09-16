@@ -13,11 +13,18 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from nav import render_top_nav
+
 st.set_page_config(
     page_title="Reports",
     page_icon="📄",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ---------------------------------------------------------------------------
 # Module imports with graceful fallback
@@ -56,6 +63,12 @@ try:
     from safety_engine import SafetyEngine
 except ImportError as e:
     st.error(f"❌ Failed to import safety_engine: {e}")
+    st.stop()
+
+try:
+    from utils import alert_region, alert_severity, normalize_alert_log
+except ImportError as e:
+    st.error(f"❌ Failed to import utils: {e}")
     st.stop()
 
 try:
@@ -146,8 +159,9 @@ def load_safety(signal_count: int) -> dict:
 
 @st.cache_data(ttl=60)
 def load_alert_log() -> list:
+    """Load the alert log and normalise both legacy and current record shapes."""
     try:
-        return load_json(ALERT_LOG_FILE)
+        return normalize_alert_log(load_json(ALERT_LOG_FILE))
     except Exception:
         return []
 
@@ -217,7 +231,7 @@ with tab1:
         st.markdown("<br>", unsafe_allow_html=True)
         generate_report = st.button(
             "📊 Generate PDF Report",
-            use_container_width=True,
+            width="stretch",
             key="gen_daily_report",
         )
 
@@ -262,7 +276,7 @@ with tab1:
             data=st.session_state.daily_report_bytes,
             file_name=st.session_state.get("daily_report_filename", "ORRAS_Report.pdf"),
             mime="application/pdf",
-            use_container_width=True,
+            width="stretch",
         )
 
 # ============================================================================
@@ -346,7 +360,7 @@ with tab2:
         df_preview = pd.DataFrame(preview_rows)
         if len(filtered_signals) > 100:
             st.info(f"Showing first 100 of {len(filtered_signals)} signals in preview.")
-        st.dataframe(df_preview, use_container_width=True, hide_index=True)
+        st.dataframe(df_preview, width="stretch", hide_index=True)
 
         # Export buttons
         dl_col1, dl_col2 = st.columns(2)
@@ -359,7 +373,7 @@ with tab2:
                 data=csv_data,
                 file_name=f"orras_signals_{today}.csv",
                 mime="text/csv",
-                use_container_width=True,
+                width="stretch",
             )
 
         with dl_col2:
@@ -384,7 +398,7 @@ with tab2:
                 data=json_str,
                 file_name=f"orras_signals_{today}.json",
                 mime="application/json",
-                use_container_width=True,
+                width="stretch",
             )
     else:
         st.warning("⚠️ No signals match the current filters.")
@@ -410,7 +424,7 @@ with tab3:
         with ah_col1:
             ah_region_filter = st.multiselect(
                 "Filter by Region",
-                options=["All"] + sorted({a.get("region", "Unknown") for a in alert_log}),
+                options=["All"] + sorted({alert_region(a) for a in alert_log}),
                 default=["All"],
                 key="ah_region",
             )
@@ -443,8 +457,8 @@ with tab3:
         filtered_alerts = []
         for alert in alert_log:
             a_date = (alert.get("timestamp") or "")[:10]
-            a_region = alert.get("region", "Unknown")
-            a_severity = alert.get("max_severity") or alert.get("severity") or "LOW"
+            a_region = alert_region(alert)
+            a_severity = alert_severity(alert)
 
             if not (ah_start <= a_date <= ah_end):
                 continue
@@ -495,7 +509,7 @@ with tab3:
                 yaxis_title="Count",
                 **_CHART_LAYOUT,
             )
-            st.plotly_chart(fig_bar, use_container_width=True)
+            st.plotly_chart(fig_bar, width="stretch")
 
         # Alert table
         if filtered_alerts:
@@ -503,13 +517,13 @@ with tab3:
             for a in sorted(filtered_alerts, key=lambda x: x.get("timestamp", ""), reverse=True):
                 alert_rows.append({
                     "Timestamp": (a.get("timestamp") or "")[:19],
-                    "Region": a.get("region", "Unknown"),
+                    "Region": alert_region(a),
                     "Severity": a.get("max_severity") or a.get("severity") or "LOW",
                     "Recommendation": a.get("recommendation") or a.get("action", "—"),
                     "Signal Count": a.get("signal_count", "—"),
                 })
             df_alerts = pd.DataFrame(alert_rows)
-            st.dataframe(df_alerts, use_container_width=True, hide_index=True)
+            st.dataframe(df_alerts, width="stretch", hide_index=True)
 
             # Export
             csv_alerts = df_alerts.to_csv(index=False)
@@ -569,7 +583,7 @@ with tab4:
     st.markdown("---")
     generate_custom = st.button(
         "🛠️ Generate Custom PDF Report",
-        use_container_width=True,
+        width="stretch",
         key="gen_custom_report",
     )
 
@@ -647,5 +661,5 @@ with tab4:
             data=st.session_state.custom_report_bytes,
             file_name=st.session_state.get("custom_report_filename", "ORRAS_Custom_Report.pdf"),
             mime="application/pdf",
-            use_container_width=True,
+            width="stretch",
         )

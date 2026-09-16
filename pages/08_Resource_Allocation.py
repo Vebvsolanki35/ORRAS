@@ -6,6 +6,8 @@ shortfall alerts, simulation, manual override, historical deployments.
 """
 
 import streamlit as st
+
+from nav import render_top_nav
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
@@ -18,7 +20,12 @@ st.set_page_config(
     page_title="Resource Allocation",
     page_icon="📦",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ---------------------------------------------------------------------------
 # Imports
@@ -44,7 +51,9 @@ except ImportError as e:
     st.error(f"❌ {e}"); st.stop()
 
 try:
-    from utils import classify_severity, load_json, save_json, now_iso
+    from utils import (
+        classify_severity, load_json, save_json, now_iso, style_map,
+    )
 except ImportError as e:
     st.error(f"❌ {e}"); st.stop()
 
@@ -181,11 +190,11 @@ def _color_pct(val: float) -> str:
         return "color: #ef4444"
 
 
-def _style_inventory(df: pd.DataFrame) -> pd.io.formats.style.Styler:
-    return df.style.applymap(_color_pct, subset=["% Available"])
+def _style_inventory(df: pd.DataFrame):
+    return style_map(df.style, _color_pct, subset=["% Available"])
 
 
-st.dataframe(_style_inventory(inventory_df), use_container_width=True)
+st.dataframe(_style_inventory(inventory_df), width="stretch")
 
 st.divider()
 
@@ -202,8 +211,8 @@ def _color_sev(val: str) -> str:
     return f"color: {_SEV_COLORS.get(val, '#e5e7eb')}"
 
 
-styled_needs = region_needs_df.style.applymap(_color_sev, subset=["Severity"])
-st.dataframe(styled_needs, use_container_width=True)
+styled_needs = style_map(region_needs_df.style, _color_sev, subset=["Severity"])
+st.dataframe(styled_needs, width="stretch")
 
 st.divider()
 
@@ -220,8 +229,8 @@ def _color_priority(val: str) -> str:
     return f"color: {_PRIORITY_COLORS.get(val, '#e5e7eb')}"
 
 
-styled_orders = deployment_df.style.applymap(_color_priority, subset=["Priority"])
-st.dataframe(styled_orders, use_container_width=True)
+styled_orders = style_map(deployment_df.style, _color_priority, subset=["Priority"])
+st.dataframe(styled_orders, width="stretch")
 
 st.divider()
 
@@ -245,7 +254,7 @@ fig_cov.update_layout(
     height=420,
     coloraxis_colorbar=dict(title="Coverage %"),
 )
-st.plotly_chart(fig_cov, use_container_width=True)
+st.plotly_chart(fig_cov, width="stretch")
 
 st.divider()
 
@@ -274,7 +283,7 @@ with col_s1:
 with col_s2:
     st.markdown(f"**{_SCENARIOS[scenario_name]['description']}**")
 
-if st.button("▶️ Run Simulation", use_container_width=True):
+if st.button("▶️ Run Simulation", width="stretch"):
     mult = _SCENARIOS[scenario_name]["multiplier"]
     sim_df = region_needs_df.copy()
     sim_df["Simulated Demand"] = (sim_df["Demand Level"] * mult).clip(0, 100).astype(int)
@@ -282,7 +291,7 @@ if st.button("▶️ Run Simulation", use_container_width=True):
 
     st.markdown(f"**Scenario: {scenario_name}** — Demand multiplier: `{mult}x`")
     st.dataframe(sim_df[["Region", "Demand Level", "Simulated Demand", "Gap", "Priority Resource"]],
-                 use_container_width=True)
+                 width="stretch")
 
     total_gap = sim_df["Gap"].sum()
     st.metric("Total Resource Gap (simulated)", total_gap, delta=f"+{total_gap} units needed")
@@ -328,7 +337,7 @@ st.markdown("### 📜 Historical Deployment Log")
 try:
     overrides = load_json(_OVERRIDES_FILE) if os.path.exists(_OVERRIDES_FILE) else []
     if overrides:
-        st.dataframe(pd.DataFrame(overrides), use_container_width=True)
+        st.dataframe(pd.DataFrame(overrides), width="stretch")
     else:
         st.info("No manual overrides logged yet.")
 except Exception:

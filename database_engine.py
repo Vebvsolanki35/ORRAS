@@ -113,6 +113,83 @@ class DatabaseEngine:
         conn.execute("PRAGMA foreign_keys=ON;")
         return conn
 
+    # Canonical column order per table. Used by _migrate_schema() to repair
+    # databases created by older ORRAS versions (or by an ad-hoc schema that
+    # happened to use the same file), which CREATE TABLE IF NOT EXISTS leaves
+    # untouched.
+    TABLE_SCHEMAS: dict[str, list[tuple[str, str]]] = {
+        "signals": [
+            ("id", "TEXT"), ("timestamp", "TEXT"), ("type", "TEXT"),
+            ("source", "TEXT"), ("location", "TEXT"), ("latitude", "REAL"),
+            ("longitude", "REAL"), ("title", "TEXT"), ("description", "TEXT"),
+            ("raw_score", "REAL"), ("conflict_score", "REAL"),
+            ("disaster_score", "REAL"), ("keywords_matched", "TEXT"),
+            ("severity", "TEXT"), ("conflict_severity", "TEXT"),
+            ("disaster_severity", "TEXT"), ("confidence", "TEXT"),
+            ("correlated", "INTEGER"), ("created_at", "TEXT"),
+        ],
+        "alerts": [
+            ("id", "TEXT"), ("timestamp", "TEXT"), ("location", "TEXT"),
+            ("alert_type", "TEXT"), ("severity", "TEXT"), ("title", "TEXT"),
+            ("description", "TEXT"), ("recommendation", "TEXT"),
+            ("acknowledged", "INTEGER"),
+        ],
+        "escalation_history": [
+            ("id", "TEXT"), ("timestamp", "TEXT"), ("location", "TEXT"),
+            ("conflict_score", "REAL"), ("disaster_score", "REAL"),
+            ("combined_score", "REAL"), ("severity", "TEXT"),
+            ("signal_count", "INTEGER"),
+        ],
+        "resource_deployments": [
+            ("id", "TEXT"), ("timestamp", "TEXT"), ("location", "TEXT"),
+            ("resource_type", "TEXT"), ("quantity", "INTEGER"),
+            ("status", "TEXT"), ("incident_id", "TEXT"),
+        ],
+        "scenarios": [
+            ("id", "TEXT"), ("name", "TEXT"), ("created_at", "TEXT"),
+            ("parameters", "TEXT"), ("results", "TEXT"), ("risk_score", "REAL"),
+        ],
+    }
+
+    def _migrate_schema(self, conn: sqlite3.Connection) -> list[str]:
+        """
+        Add any canonical columns missing from existing tables.
+
+        SQLite cannot reorder or retype columns, so this only appends columns
+        that the current code needs but an older database lacks. That is enough
+        to stop the app crashing on a stale database file.
+
+        Args:
+            conn: Open connection to the ORRAS database.
+
+        Returns:
+            List of "table.column" strings that were added (may be empty).
+        """
+        added: list[str] = []
+        for table, columns in self.TABLE_SCHEMAS.items():
+            exists = conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+                (table,),
+            ).fetchone()
+            if exists is None:
+                continue
+
+            present = {
+                row["name"] for row in conn.execute(f"PRAGMA table_info({table})")
+            }
+            for column, col_type in columns:
+                if column not in present:
+                    try:
+                        conn.execute(
+                            f"ALTER TABLE {table} ADD COLUMN {column} {col_type}"
+                        )
+                        added.append(f"{table}.{column}")
+                    except sqlite3.Error as exc:
+                        logger.warning(
+                            f"Could not add {table}.{column}: {exc}"
+                        )
+        return added
+
     def _init_tables(self) -> None:
         with self._connect() as conn:
             for ddl in (
@@ -123,8 +200,51 @@ class DatabaseEngine:
                 _CREATE_SCENARIOS,
             ):
                 conn.execute(ddl)
+
+            added = self._migrate_schema(conn)
+            if added:
+                logger.info("DatabaseEngine migrated schema: added %s", ", ".join(added))
             conn.commit()
         logger.info("DatabaseEngine initialised at %s", self.db_path)
+
+    def connect(self) -> sqlite3.Connection:
+        """
+        Open a connection to the ORRAS database for ad-hoc queries.
+
+        The caller owns the returned connection and should close it.
+
+        Returns:
+            A sqlite3.Connection with row_factory set to sqlite3.Row.
+        """
+        return self._connect()
+
+    def list_tables(self) -> list[str]:
+        """Return the names of all user tables currently in the database."""
+        with self._connect() as conn:
+            rows = conn.execute(
+                "SELECT name FROM sqlite_master "
+                "WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name"
+            ).fetchall()
+        return [row["name"] for row in rows]
+
+    def count_rows(self, table: str) -> int:
+        """
+        Count rows in *table*, returning 0 if the table does not exist.
+
+        Args:
+            table: Table name. Validated against list_tables() to prevent
+                   SQL injection through user-supplied names.
+
+        Returns:
+            Row count, or 0 on error.
+        """
+        if table not in self.list_tables():
+            return 0
+        with self._connect() as conn:
+            try:
+                return int(conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0])
+            except sqlite3.Error:
+                return 0
 
     # ------------------------------------------------------------------
     # Signals

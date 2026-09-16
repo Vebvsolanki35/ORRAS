@@ -322,12 +322,26 @@ class DataCollectionOrchestrator:
             logger.info(f"{name}: MOCK (OFFLINE_MODE active) — {len(data)} records")
             return "MOCK", data
 
-        live_data = live_fn()
+        try:
+            live_data = live_fn()
+            live_error: Exception | None = None
+        except Exception as exc:  # noqa: BLE001 - collector failures are expected
+            live_data = []
+            live_error = exc
+
         if live_data:
             logger.info(f"{name}: LIVE — {len(live_data)} records")
             return "LIVE", live_data
 
         mock_data = (mock_fn(**(mock_kwargs or {})))
+
+        if live_error is not None:
+            logger.error(
+                f"{name}: FAILED ({type(live_error).__name__}: {live_error}) — "
+                f"fell back to {len(mock_data)} mock records"
+            )
+            return "FAILED", mock_data
+
         logger.warning(f"{name}: MOCK (live fetch returned empty) — {len(mock_data)} records")
         return "MOCK", mock_data
 
@@ -418,12 +432,17 @@ class DataCollectionOrchestrator:
         self.source_health["WHO"] = "MOCK"
         logger.info(f"WHO: MOCK — {len(who_data)} records")
 
-        # ACLED Conflict Events (fetch() internally falls back to mock when no key)
-        status, data = self._collect_source(
-            "ACLED", self.acled.fetch, self.acled.fetch, {}
-        )
-        results["acled"] = data
-        self.source_health["ACLED"] = status if data else "MOCK"
+        # ACLED Conflict Events (fetch() falls back to mock internally, so read
+        # the collector's own view of what happened rather than assuming LIVE)
+        acled_data = self.acled.fetch()
+        acled_status = getattr(self.acled, "last_status", "MOCK") if acled_data else "MOCK"
+        results["acled"] = acled_data
+        self.source_health["ACLED"] = acled_status
+        logger.info(f"ACLED: {acled_status} — {len(acled_data)} records")
+
+        # Expose health under a reserved key so callers (e.g. the Streamlit
+        # sidebar) can read it from the same dict as the collected records.
+        results["_status"] = self.get_source_health_report()
 
         return results
 

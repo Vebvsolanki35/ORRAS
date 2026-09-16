@@ -452,6 +452,83 @@ def render_source_health_badge(source: str, is_live: bool) -> str:
     return badge
 
 
+# Visual treatment for each collection status the orchestrator can report.
+# LIVE    → data really came from the upstream API
+# MOCK    → synthetic data (no key configured, or upstream returned nothing)
+# FAILED  → upstream raised an error and mock data was substituted
+# OFFLINE → source disabled / not applicable
+_SOURCE_STATUS_STYLES: dict[str, tuple[str, str, str, str, bool]] = {
+    # status: (dot colour, background, border, text colour, animate dot)
+    "LIVE":    ("#22c55e", "rgba(34,197,94,0.12)",  "rgba(34,197,94,0.40)",  "#86efac", True),
+    "MOCK":    ("#eab308", "rgba(234,179,8,0.12)",  "rgba(234,179,8,0.40)",  "#fde047", False),
+    "FAILED":  ("#f97316", "rgba(249,115,22,0.12)", "rgba(249,115,22,0.40)", "#fdba74", False),
+    "OFFLINE": ("#ef4444", "rgba(239,68,68,0.10)",  "rgba(239,68,68,0.35)",  "#fca5a5", False),
+    "UNKNOWN": ("#6b7280", "rgba(107,114,128,0.10)", "rgba(107,114,128,0.35)", "#9ca3af", False),
+}
+
+_SOURCE_STATUS_LABELS: dict[str, str] = {
+    "LIVE":    "live feed",
+    "MOCK":    "synthetic data",
+    "FAILED":  "upstream error",
+    "OFFLINE": "unavailable",
+    "UNKNOWN": "not yet polled",
+}
+
+
+def render_source_status_row(source: str, status: str, records: int | None = None) -> str:
+    """
+    Render a data-source health row supporting the full LIVE/MOCK/FAILED
+    lifecycle, rather than the binary live/offline view.
+
+    Args:
+        source:  Human-readable source name (e.g. "GDELT").
+        status:  One of LIVE, MOCK, FAILED, OFFLINE, UNKNOWN.
+        records: Optional record count to display on the right-hand side.
+
+    Returns:
+        HTML string for one sidebar row.
+    """
+    key = str(status or "UNKNOWN").upper()
+    dot_color, bg, border, text_col, animate = _SOURCE_STATUS_STYLES.get(
+        key, _SOURCE_STATUS_STYLES["UNKNOWN"]
+    )
+    label = _SOURCE_STATUS_LABELS.get(key, "unknown")
+
+    dot_class = "_orras_dot_live" if animate else ""
+    anim_style = (
+        '<style>@keyframes _blink_live{'
+        '0%,100%{opacity:1;}50%{opacity:0.3;}}'
+        '._orras_dot_live{animation:_blink_live 1.6s ease-in-out infinite;}'
+        '</style>'
+    ) if animate else ""
+
+    count_html = (
+        f'<span style="margin-left:auto;font-size:0.7rem;color:#6b7280;'
+        f'font-variant-numeric:tabular-nums;">{records}</span>'
+        if records is not None else ""
+    )
+
+    return (
+        f"{anim_style}"
+        f'<div title="{_esc(source)} — {_esc(label)}" style="'
+        f'display:flex;align-items:center;gap:8px;'
+        f'padding:4px 9px;margin-bottom:3px;border-radius:7px;'
+        f'background:{bg};border:1px solid {border};'
+        f'font-size:0.76rem;color:#d1d5db;'
+        f'">'
+        f'<span class="{dot_class}" style="'
+        f'width:7px;height:7px;border-radius:50%;'
+        f'background:{dot_color};flex-shrink:0;display:inline-block;'
+        f'"></span>'
+        f'<span style="flex:1;overflow:hidden;text-overflow:ellipsis;'
+        f'white-space:nowrap;">{_esc(source)}</span>'
+        f'<span style="font-size:0.62rem;font-weight:700;letter-spacing:0.07em;'
+        f'color:{text_col};text-transform:uppercase;">{_esc(key)}</span>'
+        f"{count_html}"
+        f"</div>"
+    )
+
+
 # ─── 7. Threat Gauge (SVG circular) ──────────────────────────────────────────
 
 def render_threat_gauge(score: float) -> str:

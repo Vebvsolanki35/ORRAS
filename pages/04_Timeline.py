@@ -6,6 +6,8 @@ turning point detection, and annotated time-series charts.
 """
 
 import streamlit as st
+
+from nav import render_top_nav
 import plotly.graph_objects as go
 import pandas as pd
 from datetime import datetime, timedelta, timezone
@@ -14,7 +16,12 @@ st.set_page_config(
     page_title="Event Timeline",
     page_icon="📅",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ---------------------------------------------------------------------------
 # Module imports with graceful fallback
@@ -243,7 +250,7 @@ if global_timeline:
             yaxis=dict(range=[0, 30]),
             **_CHART_LAYOUT,
         )
-        st.plotly_chart(fig_global, use_container_width=True)
+        st.plotly_chart(fig_global, width="stretch")
     else:
         st.info("No events match the current filters.")
 else:
@@ -438,7 +445,7 @@ if all_regions:
                 yaxis=dict(range=[0, 30]),
                 **_CHART_LAYOUT,
             )
-            st.plotly_chart(fig_region, use_container_width=True)
+            st.plotly_chart(fig_region, width="stretch")
         else:
             st.info(f"No data for **{chart_region}** in the selected date range.")
     else:

@@ -7,11 +7,18 @@ with context-aware signal awareness and quick-prompt actions.
 
 import streamlit as st
 
+from nav import render_top_nav
+
 st.set_page_config(
     page_title="ORRAS AI Assistant",
     page_icon="🤖",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ---------------------------------------------------------------------------
 # Module imports with graceful fallback
@@ -167,7 +174,7 @@ with st.sidebar:
         st.info("No threat data available.")
 
     st.markdown("---")
-    if st.button("🗑️ Clear Conversation", use_container_width=True):
+    if st.button("🗑️ Clear Conversation", width="stretch"):
         st.session_state.chat_history = []
         if st.session_state.ai_assistant:
             try:
@@ -199,19 +206,19 @@ col1, col2, col3, col4 = st.columns(4)
 quick_prompt: str | None = None
 
 with col1:
-    if st.button("📊 Generate Global SITREP", use_container_width=True):
+    if st.button("📊 Generate Global SITREP", width="stretch"):
         quick_prompt = "Generate a comprehensive Global SITREP based on current threat intelligence."
 
 with col2:
-    if st.button("🔍 Analyze top threats", use_container_width=True):
+    if st.button("🔍 Analyze top threats", width="stretch"):
         quick_prompt = "Analyze the top active threats and provide a detailed breakdown."
 
 with col3:
-    if st.button("⚠️ Explain current anomalies", use_container_width=True):
+    if st.button("⚠️ Explain current anomalies", width="stretch"):
         quick_prompt = "Explain the current anomalies detected in the signal data and their implications."
 
 with col4:
-    if st.button("📋 Daily intelligence brief", use_container_width=True):
+    if st.button("📋 Daily intelligence brief", width="stretch"):
         quick_prompt = "Generate today's daily intelligence brief."
 
 # ---------------------------------------------------------------------------

@@ -6,6 +6,8 @@ disease outbreaks, earthquake feed, resource deployment, evacuation panel.
 """
 
 import streamlit as st
+
+from nav import render_top_nav
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
@@ -16,7 +18,12 @@ st.set_page_config(
     page_title="Disaster Response",
     page_icon="🌋",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ---------------------------------------------------------------------------
 # Imports
@@ -203,7 +210,7 @@ fig_globe.update_layout(
     height=500,
     legend=dict(bgcolor="#111827", bordercolor="#374151", borderwidth=1),
 )
-st.plotly_chart(fig_globe, use_container_width=True)
+st.plotly_chart(fig_globe, width="stretch")
 
 # ---------------------------------------------------------------------------
 # 3. Type breakdown pie + top hotspots
@@ -226,7 +233,7 @@ with col_left:
         textinfo="label+percent",
     ))
     fig_pie.update_layout(**_CHART_LAYOUT, height=350, showlegend=True)
-    st.plotly_chart(fig_pie, use_container_width=True)
+    st.plotly_chart(fig_pie, width="stretch")
 
 with col_right:
     st.markdown("### 🔥 Top 5 Disaster Hotspots")
@@ -266,7 +273,7 @@ if signals:
         "Timestamp": (s.get("timestamp") or "")[:19],
     } for s in signals[:30]])
 
-    st.dataframe(df.astype(str), use_container_width=True)
+    st.dataframe(df.astype(str), width="stretch")
 
 st.divider()
 
@@ -277,7 +284,7 @@ st.divider()
 st.markdown("### 🦠 WHO Disease Outbreak Monitor")
 outbreaks = _mock_disease_outbreaks()
 df_disease = pd.DataFrame(outbreaks)
-st.dataframe(df_disease.astype(str), use_container_width=True)
+st.dataframe(df_disease.astype(str), width="stretch")
 
 st.divider()
 
@@ -301,7 +308,7 @@ if not eq_df.empty:
 
     fig_eq.update_layout(**_CHART_LAYOUT, barmode="stack", height=300,
                          title="Earthquakes by Magnitude (Last 7 Days)")
-    st.plotly_chart(fig_eq, use_container_width=True)
+    st.plotly_chart(fig_eq, width="stretch")
 
 st.divider()
 
@@ -320,7 +327,7 @@ if deployed_regions:
         res = random.choice(_RESOURCES)
         qty = random.randint(2, 15)
         deploy_rows.append({"Region": region, "Resource": res, "Units": qty, "Status": "Deployed"})
-    st.dataframe(pd.DataFrame(deploy_rows).astype(str), use_container_width=True)
+    st.dataframe(pd.DataFrame(deploy_rows).astype(str), width="stretch")
 else:
     st.info("No major disaster regions requiring deployment at this time.")
 

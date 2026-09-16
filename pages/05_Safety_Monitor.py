@@ -6,6 +6,8 @@ six safety categories with anomaly detection and 7-day trend charts.
 """
 
 import streamlit as st
+
+from nav import render_top_nav
 import plotly.graph_objects as go
 from datetime import datetime, timedelta, timezone
 import random
@@ -14,7 +16,12 @@ st.set_page_config(
     page_title="Safety Monitor",
     page_icon="🔒",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
+
+# Persistent navigation — rendered in the main area so dashboards stay
+# switchable even when the sidebar is collapsed or unreachable.
+render_top_nav(__file__)
 
 # ---------------------------------------------------------------------------
 # Module imports with graceful fallback
@@ -337,7 +344,7 @@ if scores:
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
         **_CHART_LAYOUT,
     )
-    st.plotly_chart(fig_trend, use_container_width=True)
+    st.plotly_chart(fig_trend, width="stretch")
 else:
     st.info("No safety category data available for trend chart.")
 

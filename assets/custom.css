@@ -42,15 +42,28 @@
   font-family: var(--font-base);
 }
 
-/* Hide default header content (toolbar, menu, deploy), but keep the header
-   element itself in the DOM so the sidebar collapsed-control button — which
-   Streamlit ≥ 1.32 renders as a child of stHeader — remains accessible. */
-header[data-testid="stHeader"] {
+/* ─── Header / toolbar ──────────────────────────────────────────
+   IMPORTANT: do NOT hide the toolbar wholesale.
+
+   Since Streamlit 1.44 the control that REOPENS a collapsed sidebar
+   (data-testid="stExpandSidebarButton") is rendered *inside*
+   [data-testid="stToolbar"]. Hiding the toolbar therefore removes the only
+   way to get the sidebar — and the page navigation inside it — back, leaving
+   the dashboard impossible to change.
+
+   Hide the individual chrome widgets instead, and always keep the sidebar
+   expand/collapse controls visible.                                        */
+header[data-testid="stHeader"],
+header[data-testid="stHeader"] [data-testid="stToolbar"] {
   background: transparent !important;
+  border: none !important;
 }
 
-[data-testid="stToolbar"],
+/* Chrome we genuinely do not want in an operational dashboard */
 [data-testid="stDecoration"],
+[data-testid="stStatusWidget"],
+[data-testid="stAppDeployButton"],
+[data-testid="stToolbarActionButton"],
 footer,
 #MainMenu,
 .stDeployButton {
@@ -58,21 +71,40 @@ footer,
   visibility: hidden !important;
 }
 
-/* ─── Sidebar toggle button (collapse / expand) ─────────────── */
-/* Ensure the ">" slide-bar control is always visible even when
-   the rest of the header is hidden.                            */
+/* ─── Sidebar toggle buttons (collapse / expand) ─────────────
+   Streamlit ≥ 1.44 names come first; the older names are kept so the
+   stylesheet still works if the app is run on an older Streamlit.      */
+[data-testid="stExpandSidebarButton"],
+[data-testid="stSidebarCollapseButton"],
 [data-testid="collapsedControl"],
 [data-testid="stSidebarCollapsedControl"],
-button[data-testid="stSidebarCollapseButton"],
-[data-testid="stSidebar"] button[kind="header"] {
-  display: flex !important;
+[data-testid="stSidebar"] button[kind="header"],
+[data-testid="stSidebar"] button[kind="headerNoPadding"] {
+  display: inline-flex !important;
   visibility: visible !important;
   opacity: 1 !important;
+  pointer-events: auto !important;
   color: #00d4ff !important;
   background: #050510 !important;
   border: 1px solid #1a3a5c !important;
-  border-radius: 0 4px 4px 0 !important;
-  z-index: 9999 !important;
+  border-radius: 0 6px 6px 0 !important;
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.25) !important;
+  z-index: 999999 !important;
+}
+
+/* Make the expand control obvious enough to find when the sidebar is closed */
+[data-testid="stExpandSidebarButton"]:hover,
+[data-testid="stSidebarCollapseButton"]:hover,
+[data-testid="collapsedControl"]:hover {
+  background: rgba(0, 212, 255, 0.15) !important;
+  box-shadow: 0 0 18px rgba(0, 212, 255, 0.45) !important;
+}
+
+/* Ensure the multipage navigation inside the sidebar is never hidden */
+[data-testid="stSidebarNav"],
+[data-testid="stSidebarNavItems"] {
+  display: block !important;
+  visibility: visible !important;
 }
 
 /* ─── Sidebar ────────────────────────────────────────────────── */
